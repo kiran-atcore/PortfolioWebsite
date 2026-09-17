@@ -1,0 +1,229 @@
+================================================================================
+FULL-PAGE PRESENTATION SCROLL & RESPONSIVE ANIMATION ARCHITECTURE GUIDE
+================================================================================
+Reference Document for Portfolio Animations & Future Section Implementations
+Repository: c:\dev\Portfolio\website
+Primary Files: 
+  - src/components/home/HomeHero.tsx
+  - src/components/home/HeroCardGrid.tsx
+  - src/components/ui/SlideTelemetryHUD.tsx
+  - src/app/globals.css
+================================================================================
+
+
+1. OVERVIEW & ARCHITECTURAL GOALS
+--------------------------------------------------------------------------------
+The objective was to build a presentation-style, full-page snapped slide experience 
+for the Hero section that seamlessly blends into the rest of the standard scrolling 
+webpage, providing:
+  1. Static visual background with crisp foreground cybernetic UI elements.
+  2. Single discrete slide progression per swipe/scroll (no skipping multiple slides).
+  3. Divergent responsive mechanics:
+     - Desktop (>= 992px): Slide 1 displays centered text. Transitioning to Slide 2 
+       smoothly morphs the text to a 6-column left pane while cyber cards glide in on 
+       the right pane in real time.
+     - Mobile (< 992px): Slide 1 is centered text. Slide 2 is a dedicated full-screen 
+       card grid. Elements must never collide or display simultaneously on mobile.
+  4. Smooth release to downstream sections (#hero-overview) with a dedicated exit 
+     animation, plus sticky re-entry catch when scrolling back up.
+
+
+2. CORE SYSTEM ARCHITECTURE
+--------------------------------------------------------------------------------
+The system is built on a 4-tier architecture:
+
+[Tier 1: Global Synthetic Event Interceptor]
+  - Intercepts `wheel`, `touchstart`, `touchmove`, and `touchend` at `window` level.
+  - Calls `e.preventDefault()` with `{ passive: false }` while inside the hero section.
+  - Employs calibrated sensitivity thresholds and debounce timers.
+
+[Tier 2: Cooldown & State Machine]
+  - State variables:
+    * `currentSlide` (0 | 1): Active hero slide.
+    * `isReleased` (boolean): Whether full-page snapping is released to normal document flow.
+    * `isExitingToOverview` (boolean): Flag active during exit outro before release.
+    * `windowWidth` (number): Tracks responsive breakpoint dynamically.
+  - Mutable Refs (Synchronous Locks):
+    * `isTransitioning` (boolean ref): Locks inputs for the exact duration of the transition (850ms).
+    * `isScrollCooldown` (boolean ref): Blocks further slide progression during continuous inertia.
+    * `lastWheelTime` (number ref): Timestamp of last significant wheel event.
+    * `touchStartY` (number ref): Starting Y position for touch gestures.
+
+[Tier 3: Framer Motion Responsive Orchestrator]
+  - Desktop: Employs Framer Motion's `<motion.div layout>` on the text container.
+    When `currentSlide` switches from 0 to 1, Framer Motion automatically calculates 
+    the bounding box delta and animates the text smoothly from center to left.
+  - Mobile: Employs `<AnimatePresence mode="wait">` to strictly wait for Slide 1 
+    to complete its exit animation before Slide 2 mounts its intro animation.
+
+[Tier 4: CSS Asymmetrical Transform Wrappers]
+  - Separates layout geometry from visual offsets.
+  - Uses `.hero-card-offset-wrapper` to shift individual cards without breaking 
+    parent flex/grid flow or interfering with Framer Motion transforms.
+
+
+3. MAJOR PROBLEMS FACED & HOW WE SOLVED THEM
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+PROBLEM 1: Simultaneous Intro and Outro Animation Collisions (Layout Jitter)
+--------------------------------------------------------------------------------
+- SYMPTOM:
+  When swiping between slides, the incoming slide appeared on screen while the 
+  outgoing slide was still fading out. On desktop, text disappeared and reappeared 
+  awkwardly on the left rather than moving smoothly. On mobile, cards and text 
+  overlapped and pushed the layout around.
+- ROOT CAUSE:
+  Both slides were mounted at the same time in the same DOM flow, causing flex/grid 
+  recalculations while both were rendering.
+- SOLUTION:
+  1. Desktop: Used Framer Motion `layout` prop on the parent column:
+       <motion.div layout transition={{ layout: { duration: 0.75, ease: [0.16, 1, 0.3, 1] } }} ...>
+     This allowed the text to remain mounted and glide continuously from center to 
+     left while cards slid in from the right (`x: 60` -> `0`).
+  2. Mobile: Used `<AnimatePresence mode="wait">`. This guarantees that Slide 1 
+     completely exits before Slide 2 begins its intro, eliminating visual overlap.
+
+--------------------------------------------------------------------------------
+PROBLEM 2: Trackpad Inertia Lockup ("Swipe Stops Working Until Mouse Moves")
+--------------------------------------------------------------------------------
+- SYMPTOM:
+  On macOS trackpads and Windows precision touchpads, after swiping once, subsequent 
+  swipes would completely stop working. Moving the mouse cursor immediately made it 
+  work again.
+- ROOT CAUSE:
+  Trackpads send continuous sub-pixel inertia events (e.g. `deltaY: 0.1`) for 
+  seconds after fingers are lifted. The previous logic had an inertia drain timeout 
+  that reset on EVERY event. Because sub-pixel events kept firing, the timer never 
+  expired. Moving the mouse told the OS to terminate trackpad inertia, which allowed 
+  the timer to finally expire.
+- SOLUTION:
+  1. Sub-pixel event filtering:
+     Events with `Math.abs(e.deltaY) < 8` and horizontal swipes (`deltaX > deltaY`) 
+     are discarded immediately and DO NOT update `lastWheelTime`.
+  2. Time-delta gesture detection:
+     const timeDiff = now - lastWheelTime.current;
+     if (timeDiff > 250) { isScrollCooldown.current = false; }
+  3. Because tiny residual momentum is ignored, `timeDiff` naturally exceeds 250ms 
+     even if the OS continues trickling micro-events. When the user intentionally 
+     swipes again (`deltaY > 15`), it is recognized as a clean, new gesture.
+
+--------------------------------------------------------------------------------
+PROBLEM 3: Hard Swipes Skipping Multiple Slides
+--------------------------------------------------------------------------------
+- SYMPTOM:
+  A fast or hard flick on trackpad or mobile would fly past Slide 2 directly into 
+  downstream content.
+- ROOT CAUSE:
+  A single strong physical flick outputs a high velocity of wheel/touch events that 
+  outlasted the transition period.
+- SOLUTION:
+  1. Strict single-step state machines: Each scroll event only advances `currentSlide` 
+     by +1 or -1.
+  2. Instant Cooldown Engagement: Immediately on triggering a slide, 
+     `isScrollCooldown.current = true`. This cooldown cannot be unlocked until 
+     there is at least a 250ms total silence/pause in valid scroll events.
+
+--------------------------------------------------------------------------------
+PROBLEM 4: Missing Exit Animation When Scrolling Down to Overview
+--------------------------------------------------------------------------------
+- SYMPTOM:
+  Swiping down on Slide 2 instantly jumped the page down without playing an outro 
+  animation for the cards or text.
+- ROOT CAUSE:
+  `window.scrollTo` or `scrollIntoView` was called synchronously on gesture trigger.
+- SOLUTION:
+  Implemented a staged release pipeline:
+  1. On swipe down at Slide 1: Set `isExitingToOverview(true)` and `isTransitioning.current = true`.
+  2. The cards and text trigger their Framer Motion `exit` variants (fading & scaling down).
+  3. A 750ms timeout runs while the exit animation plays.
+  4. Only after 750ms: Set `isReleased(true)`, set `isExitingToOverview(false)`, 
+     unlock transition, and invoke:
+     document.getElementById("hero-overview")?.scrollIntoView({ behavior: "smooth" });
+
+--------------------------------------------------------------------------------
+PROBLEM 5: Catching Re-Entry From Downstream
+--------------------------------------------------------------------------------
+- SYMPTOM:
+  Scrolling back up from the rest of the website either skipped Slide 2 or conflicted 
+  with native scrolling.
+- ROOT CAUSE:
+  The hero component did not know whether the user was at the top of the page or 
+  deep in the document when scrolling up.
+- SOLUTION:
+  Added an upstream catch condition in both `wheel` and `touch`:
+    if (isReleased) {
+      if (e.deltaY < -15 && window.scrollY < 80) {
+        e.preventDefault();
+        window.scrollTo(0, 0);
+        setIsReleased(false);
+        setIsExitingToOverview(false);
+        setCurrentSlide(1);
+        isTransitioning.current = true;
+        setTimeout(() => { isTransitioning.current = false; }, 850);
+      }
+      return;
+    }
+  This seamlessly catches the user when they hit the top threshold and re-arms 
+  the presentation slide controller.
+
+--------------------------------------------------------------------------------
+PROBLEM 6: HUD and Layout Jitter / Asymmetrical Card Offsets
+--------------------------------------------------------------------------------
+- SYMPTOM:
+  1. SlideTelemetryHUD jittered on mobile (jumped from center-right to bottom-right).
+  2. Asymmetrical card styling broke when resizing between desktop and mobile.
+- ROOT CAUSE:
+  1. HUD position was affected by relative document height shifts during text intro.
+  2. CSS `transform` on the cards was overriding Framer Motion's inline animation transforms.
+- SOLUTION:
+  1. Positioned HUD as `position: fixed` or absolute to the fixed viewport container 
+     with specific safe-area offsets (`bottom: 1.5rem; right: 1.5rem; z-index: 100`).
+  2. Created `.hero-card-offset-wrapper` divs inside `HeroCardGrid.tsx`:
+     The wrapper handles static asymmetrical transforms (`transform: translateY(-16px)`), 
+     while Framer Motion handles `opacity` and entrance transforms on the card container, 
+     preventing transform overwrite collisions.
+
+
+4. BLUEPRINT FOR IMPLEMENTING IN NEXT SECTIONS
+--------------------------------------------------------------------------------
+When building presentation-style or snap-scroll transitions for future sections 
+(e.g., Projects Showcase, Experience Timeline, Skills Terminal):
+
+[CHECKLIST]:
+1. State & Ref Setup:
+   ```typescript
+   const [slideIndex, setSlideIndex] = useState(0);
+   const [isReleased, setIsReleased] = useState(false);
+   const isTransitioning = useRef(false);
+   const isScrollCooldown = useRef(false);
+   const lastWheelTime = useRef(0);
+   const touchStartY = useRef(0);
+   ```
+
+2. Event Handling Pattern:
+   - Always attach wheel/touch with `{ passive: false }`.
+   - Filter `deltaX > deltaY` and sub-pixel noise (`Math.abs(deltaY) < 8`).
+   - Use `timeDiff > 250` for gesture reset.
+   - Enforce transition lockout (`800ms - 850ms`).
+
+3. Responsive Animation Rule:
+   - If elements share both slides (e.g. title/sidebar persists):
+     Use `<motion.div layout transition={{ layout: { duration: 0.75, ease: [0.16, 1, 0.3, 1] } }}>`
+   - If slides are completely mutually exclusive (e.g. Mobile view):
+     Use `<AnimatePresence mode="wait">` to prevent layout reflow collisions.
+
+4. Exit Staging:
+   - Never switch pages or scroll natively on the same frame as an exit gesture.
+   - Set an `isExiting` state -> let Framer Motion `exit` variants execute -> release 
+     after 600-750ms via `setTimeout`.
+
+5. Layout Isolation:
+   - Never apply static CSS `transform` to an element animated by Framer Motion's `x/y`.
+   - Always wrap it: 
+       <motion.div (Framer Motion entrance)>
+         <div className="custom-offset-wrapper" (CSS offsets & tilts)>
+           <ActualContent />
+         </div>
+       </motion.div>
+================================================================================

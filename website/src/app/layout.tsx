@@ -2,11 +2,10 @@ import type { Metadata } from "next";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "./globals.css";
-import BootstrapClient from "./components/BootstrapClient";
 
 export const metadata: Metadata = {
-  title: "Personal Portfolio",
-  description: "Personal portfolio website built with Next.js, Bootstrap, and Framer Motion",
+  title: "Kiran Chand S | Software Engineer & Full Stack Developer",
+  description: "Portfolio of Kiran Chand S - Full Stack Software Engineer specializing in Next.js, Django REST, Python, AWS, and Applied AI.",
 };
 
 export default function RootLayout({
@@ -17,7 +16,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <BootstrapClient />
         {children}
       </body>
     </html>
