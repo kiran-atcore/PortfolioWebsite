@@ -127,8 +127,8 @@ export default function HomePrinciples({ isExiting = false }: HomePrinciplesProp
             </motion.h2>
             <motion.p
               variants={subtitleVariants}
-              className="font-oxanium text-light text-opacity-75 small mx-auto mb-1"
-              style={{ maxWidth: "600px", fontSize: "0.8rem", letterSpacing: "0.025em" }}
+              className="font-space-grotesk text-light text-opacity-75 small mx-auto mb-1"
+              style={{ maxWidth: "600px", fontSize: "0.75rem", letterSpacing: "0.025em" }}
             >
               Technical standards guiding every system I architect, from fault-tolerant backends to sub-second reactive interfaces.
             </motion.p>

@@ -22,7 +22,7 @@ export default function SlideTelemetryHUD({
   className = "",
 }: SlideTelemetryHUDProps) {
   const [internalSlide, setInternalSlide] = useState(0);
-  const [internalTotal, setInternalTotal] = useState(6);
+  const [internalTotal, setInternalTotal] = useState(7);
 
   useEffect(() => {
     const unsub = subscribeSlideState((data: SlideStatePayload) => {

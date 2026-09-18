@@ -520,7 +520,8 @@ body {
 .hero-slides-container,
 .overview-slides-container,
 .telemetry-slides-container,
-.principles-slides-container {
+.principles-slides-container,
+.connect-slides-container {
   grid-row: 1;
   grid-column: 1;
   width: 100%;
@@ -529,7 +530,8 @@ body {
 
 .overview-slides-container,
 .telemetry-slides-container,
-.principles-slides-container {
+.principles-slides-container,
+.connect-slides-container {
   justify-content: flex-start !important;
 }
 
@@ -539,18 +541,46 @@ body {
   margin-top: -15px;
 }
 
+.connect-offset-wrapper {
+  width: 100%;
+  margin-top: 0;
+}
+
 .principles-slides-container {
   padding-bottom: 85px;
   box-sizing: border-box;
 }
 
+.connect-slides-container {
+  box-sizing: border-box;
+  padding-bottom: 10px;
+}
+
+@media (min-width: 576px) {
+  .connect-slides-container {
+    padding-bottom: 24px;
+  }
+}
+
+@media (min-width: 768px) {
+  .connect-slides-container {
+    padding-bottom: 28px;
+  }
+}
+
 @media (min-width: 992px) {
+
   .overview-offset-wrapper,
   .principles-offset-wrapper {
     margin-top: -30px;
   }
+
   .principles-slides-container {
     padding-bottom: 75px;
+  }
+
+  .connect-slides-container {
+    padding-bottom: 74px;
   }
 }
 
@@ -749,6 +779,241 @@ body {
   border-color: rgba(0, 242, 254, 0.65);
   box-shadow: 0 20px 45px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 242, 254, 0.3), 0 0 15px rgba(255, 42, 133, 0.2);
   transform: translateY(-3px);
+}
+
+/* ==========================================================================
+   Slide 7: HomeConnect & Connect3DCarousel Responsive Design (4 Tiers)
+   ========================================================================== */
+.connect-section-title {
+  --connect-tracking: clamp(0.1em, 1.8vw, 0.22em);
+  font-size: clamp(1.15rem, 3.8vw, 1.45rem);
+  line-height: 1.25;
+  letter-spacing: var(--connect-tracking);
+  text-align: center;
+}
+
+.connect-section-desc {
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
+.connect-cta-btn {
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  padding: 0.45rem 1.4rem !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.connect-cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 25px rgba(0, 242, 254, 0.45);
+}
+
+.connect-card-active,
+.avionics-slate-active,
+.isometric-deck-card-active {
+  transform: translateY(-2px);
+}
+
+/* Isometric Deck Card & Quantum Pylon Styling */
+.isometric-deck-card {
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Laser Target Reticle on Card */
+.laser-receiver-target {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 14px;
+  height: 14px;
+  border: 1px dashed;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+.receiver-core {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  box-shadow: 0 0 6px currentColor;
+}
+
+.laser-pulse-active {
+  animation: laserPulseSurge 0.38s ease-out;
+}
+
+@keyframes laserPulseSurge {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+
+  50% {
+    transform: scale(1.6);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+}
+
+/* Pagination Live Ping Ripple Animation */
+.ping-ripple {
+  inset: 0;
+  border: 1.5px solid;
+  animation: pingAnimation 1.6s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+  pointer-events: none;
+}
+
+@keyframes pingAnimation {
+  0% {
+    transform: scale(0.6);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(2.0);
+    opacity: 0;
+  }
+}
+
+/* Avionics Slate Bracket Overlays */
+.avionics-slate {
+  position: relative;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.slate-bracket-tl,
+.slate-bracket-tr,
+.slate-bracket-bl,
+.slate-bracket-br {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  pointer-events: none;
+}
+
+.slate-bracket-tl {
+  top: 3px;
+  left: 3px;
+  border-top: 1.5px solid;
+  border-left: 1.5px solid;
+}
+
+.slate-bracket-tr {
+  top: 3px;
+  right: 3px;
+  border-top: 1.5px solid;
+  border-right: 1.5px solid;
+}
+
+.slate-bracket-bl {
+  bottom: 3px;
+  left: 3px;
+  border-bottom: 1.5px solid;
+  border-left: 1.5px solid;
+}
+
+.slate-bracket-br {
+  bottom: 3px;
+  right: 3px;
+  border-bottom: 1.5px solid;
+  border-right: 1.5px solid;
+}
+
+.hover-cyan:hover {
+  color: #00f2fe !important;
+  text-shadow: 0 0 8px rgba(0, 242, 254, 0.6);
+}
+
+/* Tier 1: Mobile (< 576px) - Strict Viewport Budget */
+@media (max-width: 575.98px) {
+  .connect-offset-wrapper {
+    margin-top: 0 !important;
+  }
+
+  .connect-section-title {
+    font-size: 0.98rem;
+    letter-spacing: 0.08em;
+  }
+
+  .connect-section-desc {
+    font-size: 0.62rem;
+    max-width: 90% !important;
+  }
+
+  .connect-slide-footer {
+    margin-top: auto !important;
+    padding-top: 0.35rem !important;
+  }
+}
+
+/* Tier 2: Small to Medium (576px - 767px) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .connect-offset-wrapper {
+    margin-top: -6px;
+  }
+
+  .connect-section-title {
+    font-size: 1.15rem;
+    letter-spacing: 0.10em;
+  }
+
+  .connect-section-desc {
+    font-size: 0.68rem;
+  }
+
+  .connect-slide-footer {
+    margin-top: auto !important;
+  }
+}
+
+/* Tier 3: Medium to Large (768px - 991px) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .connect-offset-wrapper {
+    margin-top: -10px;
+  }
+
+  .connect-section-title {
+    font-size: 1.35rem;
+    letter-spacing: 0.12em;
+  }
+
+  .connect-section-desc {
+    font-size: 0.74rem;
+  }
+
+  .connect-slide-footer {
+    margin-top: auto !important;
+  }
+}
+
+/* Tier 4: Large Desktop (>= 992px) */
+@media (min-width: 992px) {
+  .connect-offset-wrapper {
+    margin-top: -16px;
+  }
+
+  .connect-section-title {
+    font-size: clamp(1.35rem, 2.2vw, 1.6rem);
+    letter-spacing: 0.14em;
+  }
+
+  .connect-section-desc {
+    font-size: 0.78rem;
+  }
+
+  .connect-slide-footer {
+    margin-top: auto !important;
+  }
 }
 
 /* Blended Hero Portrait (No Frame) */

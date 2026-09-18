@@ -2,7 +2,7 @@ import { PERSONAL_INFO } from "../data/portfolioData";
 
 export default function Footer() {
   return (
-    <footer className="py-4 border-top border-white border-opacity-10 mt-auto bg-transparent">
+    <footer id="site-footer" className="py-4 border-top border-white border-opacity-10 mt-auto bg-transparent">
       <div className="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
         <div className="text-light text-opacity-75 small">
           <span className="text-white fw-bold">{PERSONAL_INFO.name}</span>

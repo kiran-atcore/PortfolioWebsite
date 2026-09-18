@@ -8,20 +8,22 @@ import HeroCardGrid from "./HeroCardGrid";
 import HomeOverview from "./HomeOverview";
 import HomeTelemetry from "./HomeTelemetry";
 import HomePrinciples from "./HomePrinciples";
+import HomeConnect from "./HomeConnect";
 import CardDetailModal from "./CardDetailModal";
 import { HERO_CARDS, HeroCardData } from "@/data/heroCardsData";
 import { publishSlideState, subscribeSlideSelect, subscribeSlideRequest } from "@/lib/slideEvents";
 import CyberFlickerTitle from "../ui/CyberFlickerTitle";
 
 export default function HomeHero() {
-  const [currentSlide, setCurrentSlide] = useState(0); // 0 = Hero 1, 1 = Hero 2, 2 = Overview 3, 3 = Overview 4, 4 = Telemetry 5, 5 = Principles 6
+  const [currentSlide, setCurrentSlide] = useState(0); // 0 = Hero 1, 1 = Hero 2, 2 = Overview 3, 3 = Overview 4, 4 = Telemetry 5, 5 = Principles 6, 6 = Connect 7
   const [selectedHeroCard, setSelectedHeroCard] = useState<HeroCardData | null>(null);
   const [isReleased, setIsReleased] = useState(false);
-  const [isExitingToConnect, setIsExitingToConnect] = useState(false);
+  const [isExitingToFooter, setIsExitingToFooter] = useState(false);
   const [isExitingSlide2, setIsExitingSlide2] = useState(false);
   const [isExitingSlide4, setIsExitingSlide4] = useState(false);
   const [isExitingSlide5, setIsExitingSlide5] = useState(false);
   const [isExitingSlide6, setIsExitingSlide6] = useState(false);
+  const [isExitingSlide7, setIsExitingSlide7] = useState(false);
   const [isBgSlidingUp, setIsBgSlidingUp] = useState(false);
   const [isContentsRevealed, setIsContentsRevealed] = useState(false);
   const [windowWidth, setWindowWidth] = useState(1200);
@@ -146,8 +148,42 @@ export default function HomeHero() {
     }, 450);
   };
 
+  // Phase-by-phase transition: Slide 6 -> Slide 7 (Connect)
+  const transitionSlide6To7 = () => {
+    if (isTransitioning.current) return;
+    isTransitioning.current = true;
+    isScrollCooldown.current = true;
+    // Phase 1: Slide 6 outro
+    setIsExitingSlide6(true);
+    setTimeout(() => {
+      // Phase 2: Switch to Slide 7
+      setCurrentSlide(6);
+      setIsExitingSlide6(false);
+      setTimeout(() => {
+        isTransitioning.current = false;
+      }, 750);
+    }, 450);
+  };
+
+  // Phase-by-phase reverse transition: Slide 7 -> Slide 6
+  const transitionSlide7To6 = () => {
+    if (isTransitioning.current) return;
+    isTransitioning.current = true;
+    isScrollCooldown.current = true;
+    // Phase 1: Slide 7 outro
+    setIsExitingSlide7(true);
+    setTimeout(() => {
+      // Phase 2: Switch back to Slide 6
+      setCurrentSlide(5);
+      setIsExitingSlide7(false);
+      setTimeout(() => {
+        isTransitioning.current = false;
+      }, 750);
+    }, 450);
+  };
+
   const handleSlideJump = (index: number) => {
-    if (index !== currentSlide && !isExitingToConnect && !isTransitioning.current) {
+    if (index !== currentSlide && !isExitingToFooter && !isTransitioning.current) {
       if (currentSlide === 3 && index === 4) {
         transitionSlide4To5();
         return;
@@ -162,6 +198,14 @@ export default function HomeHero() {
       }
       if (currentSlide === 5 && index === 4) {
         transitionSlide6To5();
+        return;
+      }
+      if (currentSlide === 5 && index === 6) {
+        transitionSlide6To7();
+        return;
+      }
+      if (currentSlide === 6 && index === 5) {
+        transitionSlide7To6();
         return;
       }
       if (currentSlide < 2 && index >= 2) {
@@ -190,7 +234,7 @@ export default function HomeHero() {
   };
 
   useEffect(() => {
-    publishSlideState({ currentSlide, totalSlides: 6 });
+    publishSlideState({ currentSlide, totalSlides: 7 });
   }, [currentSlide]);
 
   useEffect(() => {
@@ -198,13 +242,13 @@ export default function HomeHero() {
       handleSlideJump(targetIndex);
     });
     const unsubRequest = subscribeSlideRequest(() => {
-      publishSlideState({ currentSlide, totalSlides: 6 });
+      publishSlideState({ currentSlide, totalSlides: 7 });
     });
     return () => {
       unsubSelect();
       unsubRequest();
     };
-  }, [currentSlide, isExitingToConnect]);
+  }, [currentSlide, isExitingToFooter]);
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -241,16 +285,16 @@ export default function HomeHero() {
       const timeDiff = now - lastWheelTime.current;
       lastWheelTime.current = now;
 
-      // 2. If released downstream to connect
+      // 2. If released downstream to footer
       if (isReleased) {
         if (e.deltaY < -15 && window.scrollY < 80) {
           e.preventDefault();
           window.scrollTo(0, 0);
           setIsReleased(false);
-          setIsExitingToConnect(false);
+          setIsExitingToFooter(false);
           setIsBgSlidingUp(true);
           setIsContentsRevealed(true);
-          setCurrentSlide(5); // Catch re-entry into Slide 6: Principles
+          setCurrentSlide(6); // Catch re-entry into Slide 7: Connect
           isTransitioning.current = true;
           isScrollCooldown.current = true;
           setTimeout(() => {
@@ -275,7 +319,7 @@ export default function HomeHero() {
         return;
       }
 
-      // 5. Guaranteed single-slide progression across all 6 slides
+      // 5. Guaranteed single-slide progression across all 7 slides
       if (e.deltaY > 15) {
         if (currentSlide === 0) {
           setCurrentSlide(1);
@@ -301,20 +345,26 @@ export default function HomeHero() {
         } else if (currentSlide === 4) {
           // Slide 5 -> Slide 6 (Phased cyber transition to Principles)
           transitionSlide5To6();
-        } else if (currentSlide === 5 && !isExitingToConnect) {
-          // Slide 6 -> Release downstream to #hero-connect
-          setIsExitingToConnect(true);
+        } else if (currentSlide === 5) {
+          // Slide 6 -> Slide 7 (Phased cyber transition to Connect)
+          transitionSlide6To7();
+        } else if (currentSlide === 6 && !isExitingToFooter) {
+          // Slide 7 -> Release downstream to #site-footer
+          setIsExitingToFooter(true);
           isTransitioning.current = true;
           isScrollCooldown.current = true;
           setTimeout(() => {
             setIsReleased(true);
-            setIsExitingToConnect(false);
+            setIsExitingToFooter(false);
             isTransitioning.current = false;
-            document.getElementById("hero-connect")?.scrollIntoView({ behavior: "smooth" });
+            document.getElementById("site-footer")?.scrollIntoView({ behavior: "smooth" });
           }, 750);
         }
       } else if (e.deltaY < -15) {
-        if (currentSlide === 5) {
+        if (currentSlide === 6) {
+          // Slide 7 -> Slide 6 (Connect -> Principles)
+          transitionSlide7To6();
+        } else if (currentSlide === 5) {
           // Slide 6 -> Slide 5 (Principles -> Telemetry)
           transitionSlide6To5();
         } else if (currentSlide === 4) {
@@ -376,10 +426,10 @@ export default function HomeHero() {
         if (deltaY < -24 && window.scrollY < 80) {
           window.scrollTo(0, 0);
           setIsReleased(false);
-          setIsExitingToConnect(false);
+          setIsExitingToFooter(false);
           setIsBgSlidingUp(true);
           setIsContentsRevealed(true);
-          setCurrentSlide(5); // Re-entry into Slide 6: Principles
+          setCurrentSlide(6); // Re-entry into Slide 7: Connect
           isTransitioning.current = true;
           setTimeout(() => {
             isTransitioning.current = false;
@@ -411,18 +461,22 @@ export default function HomeHero() {
           transitionSlide4To5();
         } else if (currentSlide === 4) {
           transitionSlide5To6();
-        } else if (currentSlide === 5 && !isExitingToConnect) {
-          setIsExitingToConnect(true);
+        } else if (currentSlide === 5) {
+          transitionSlide6To7();
+        } else if (currentSlide === 6 && !isExitingToFooter) {
+          setIsExitingToFooter(true);
           isTransitioning.current = true;
           setTimeout(() => {
             setIsReleased(true);
-            setIsExitingToConnect(false);
+            setIsExitingToFooter(false);
             isTransitioning.current = false;
-            document.getElementById("hero-connect")?.scrollIntoView({ behavior: "smooth" });
+            document.getElementById("site-footer")?.scrollIntoView({ behavior: "smooth" });
           }, 750);
         }
       } else {
-        if (currentSlide === 5) {
+        if (currentSlide === 6) {
+          transitionSlide7To6();
+        } else if (currentSlide === 5) {
           transitionSlide6To5();
         } else if (currentSlide === 4) {
           transitionSlide5To4();
@@ -455,7 +509,7 @@ export default function HomeHero() {
       window.removeEventListener("touchmove", handleTouchMove);
       window.removeEventListener("touchend", handleTouchEnd);
     };
-  }, [currentSlide, isReleased, isExitingToConnect, isExitingSlide2, isExitingSlide4, isExitingSlide5, isExitingSlide6, isBgSlidingUp, isContentsRevealed]);
+  }, [currentSlide, isReleased, isExitingToFooter, isExitingSlide2, isExitingSlide4, isExitingSlide5, isExitingSlide6, isExitingSlide7, isBgSlidingUp, isContentsRevealed]);
 
   // High-Tech Cybernetic Text Intro Variants
   const textContainerVariants: Variants = {
@@ -741,7 +795,26 @@ export default function HomeHero() {
             style={{ zIndex: 4 }}
           >
             <HomePrinciples
-              isExiting={isExitingToConnect || isExitingSlide6}
+              isExiting={isExitingSlide6}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 7. Connect Slide (Slide 7 - Single slide on same static background) */}
+      <AnimatePresence>
+        {currentSlide === 6 && isContentsRevealed && (
+          <motion.div
+            key="connect-slides-wrapper"
+            initial={{ opacity: 0, y: 24, filter: "blur(14px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            exit={{ opacity: 0, y: -20, filter: "blur(10px)", transition: { duration: 0.35, ease: "easeInOut" } }}
+            transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+            className="container position-relative h-100 d-flex flex-column connect-slides-container"
+            style={{ zIndex: 4 }}
+          >
+            <HomeConnect
+              isExiting={isExitingToFooter || isExitingSlide7}
             />
           </motion.div>
         )}

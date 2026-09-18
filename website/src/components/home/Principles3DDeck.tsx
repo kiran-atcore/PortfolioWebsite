@@ -83,6 +83,7 @@ export default function Principles3DDeck({ isExiting = false }: Principles3DDeck
   const [activeIndex, setActiveIndex] = useState(0);
   const [displayIndex, setDisplayIndex] = useState(0);
   const [isGlitching, setIsGlitching] = useState(false);
+  const [isAmbientGlitch, setIsAmbientGlitch] = useState(false);
   const [isDesktop, setIsDesktop] = useState(true);
   const [isMedium, setIsMedium] = useState(false);
   const [isSmall, setIsSmall] = useState(false);
@@ -149,6 +150,33 @@ export default function Principles3DDeck({ isExiting = false }: Principles3DDeck
   const handleNextRef = useRef(handleNext);
   handleNextRef.current = handleNext;
 
+  // Timed random ambient holographic glitch (every 3.5 to 7.5 seconds, lasting ~160-240ms)
+  useEffect(() => {
+    let timerId: ReturnType<typeof setTimeout>;
+    let burstEndId: ReturnType<typeof setTimeout>;
+
+    const scheduleNextGlitch = () => {
+      // Balanced random interval between 3.5 and 7.5 seconds
+      const randomDelay = 3500 + Math.random() * 4000;
+      timerId = setTimeout(() => {
+        setIsAmbientGlitch(true);
+        // Quick subtle burst lasting 160ms - 240ms
+        const burstDuration = 160 + Math.random() * 80;
+        burstEndId = setTimeout(() => {
+          setIsAmbientGlitch(false);
+          scheduleNextGlitch();
+        }, burstDuration);
+      }, randomDelay);
+    };
+
+    scheduleNextGlitch();
+
+    return () => {
+      clearTimeout(timerId);
+      clearTimeout(burstEndId);
+    };
+  }, []);
+
   // Three.js Holographic Projector Scene with Dynamic Screen-to-World Tracking
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -192,9 +220,55 @@ export default function Principles3DDeck({ isExiting = false }: Principles3DDeck
       return camera.position.clone().add(dir.multiplyScalar(dist));
     };
 
+    // Physical Scene Lighting for Industrial PBR Materials
+    const ambientLight = new THREE.AmbientLight(0x202b3a, 1.2);
+    scene.add(ambientLight);
+
+    const rimLight = new THREE.DirectionalLight(0xaad4ff, 1.8);
+    rimLight.position.set(3, 5, 4);
+    scene.add(rimLight);
+
+    const bounceLight = new THREE.DirectionalLight(0x0a1626, 0.8);
+    bounceLight.position.set(-2, -3, 2);
+    scene.add(bounceLight);
+
     // Projector Assembly
     const projectorGroup = new THREE.Group();
     scene.add(projectorGroup);
+
+    // Ground Contact Shadow directly under base pedestal
+    const shadowGeom = new THREE.CircleGeometry(0.72, 24);
+    const shadowMat = new THREE.MeshBasicMaterial({
+      color: 0x010308,
+      transparent: true,
+      opacity: 0.75,
+      depthWrite: false,
+    });
+    const groundShadow = new THREE.Mesh(shadowGeom, shadowMat);
+    groundShadow.rotation.x = -Math.PI / 2;
+    groundShadow.position.y = -0.08;
+    projectorGroup.add(groundShadow);
+
+    // Procedural Optical & Atmospheric Textures
+    const bokehTexture = createBokehTexture();
+    const streakTexture = createAnamorphicStreakTexture();
+    const ringTexture = createDiffractionRingTexture();
+    const radialTexture = createRadialGradient();
+
+    // Dynamic Ground Photonic Pool (radial floor bounce glow)
+    const floorPoolGeom = new THREE.PlaneGeometry(2.4, 2.4);
+    const floorPoolMat = new THREE.MeshBasicMaterial({
+      color: 0x00f2fe,
+      transparent: true,
+      opacity: 0.38,
+      blending: THREE.AdditiveBlending,
+      map: radialTexture,
+      depthWrite: false,
+    });
+    const floorPool = new THREE.Mesh(floorPoolGeom, floorPoolMat);
+    floorPool.rotation.x = -Math.PI / 2;
+    floorPool.position.y = -0.075;
+    projectorGroup.add(floorPool);
 
     // Projector Base Pedestal
     const baseGeom = new THREE.CylinderGeometry(0.55, 0.65, 0.16, 24);
@@ -240,22 +314,73 @@ export default function Principles3DDeck({ isExiting = false }: Principles3DDeck
     lens.scale.set(1, 1, 0.35);
     projectorTurret.add(lens);
 
-    // Lens Flare Aura
+    // Pure White-Hot Diode Core Emitter
+    const diodeGeom = new THREE.SphereGeometry(0.08, 16, 16);
+    const diodeMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    const diode = new THREE.Mesh(diodeGeom, diodeMat);
+    diode.position.copy(lens.position);
+    diode.position.z += 0.04;
+    diode.scale.set(1, 1, 0.4);
+    projectorTurret.add(diode);
+
+    // Dynamic Diode Point Light from Emitter
+    const diodeLight = new THREE.PointLight(0x00f2fe, 2.2, 5.0, 1.6);
+    diodeLight.position.copy(lens.position);
+    projectorTurret.add(diodeLight);
+
+    // Card Ambient Back-Scatter Halo in 3D Scene
+    const backScatterGeom = new THREE.PlaneGeometry(3.6, 2.6);
+    const backScatterMat = new THREE.MeshBasicMaterial({
+      color: 0x00f2fe,
+      transparent: true,
+      opacity: 0.16,
+      blending: THREE.AdditiveBlending,
+      map: radialTexture,
+      depthWrite: false,
+    });
+    const backScatterMesh = new THREE.Mesh(backScatterGeom, backScatterMat);
+    scene.add(backScatterMesh);
+
+    // Primary Lens Flare Aura (Screen-Facing Camera Billboard)
     const auraGeom = new THREE.PlaneGeometry(1.8, 1.8);
     const auraMat = new THREE.MeshBasicMaterial({
       color: 0x00f2fe,
       transparent: true,
       opacity: 0.55,
       blending: THREE.AdditiveBlending,
-      map: createRadialGradient(),
+      map: radialTexture,
       depthWrite: false,
     });
     const aura = new THREE.Mesh(auraGeom, auraMat);
-    aura.position.copy(lens.position);
-    aura.position.z += 0.06;
-    projectorTurret.add(aura);
+    scene.add(aura);
 
-    // Volumetric Frustum (Pyramid of light from lens apex to card's 4 corners)
+    // Anamorphic Horizontal Lens Flare Streak (Cinematic Laser Optic)
+    const streakGeom = new THREE.PlaneGeometry(3.6, 0.16);
+    const streakMat = new THREE.MeshBasicMaterial({
+      color: 0x00f2fe,
+      transparent: true,
+      opacity: 0.85,
+      blending: THREE.AdditiveBlending,
+      map: streakTexture,
+      depthWrite: false,
+    });
+    const streak = new THREE.Mesh(streakGeom, streakMat);
+    scene.add(streak);
+
+    // Secondary Optical Halo / Airy Diffraction Ring
+    const ringFlareGeom = new THREE.PlaneGeometry(1.35, 1.35);
+    const ringFlareMat = new THREE.MeshBasicMaterial({
+      color: 0x00f2fe,
+      transparent: true,
+      opacity: 0.45,
+      blending: THREE.AdditiveBlending,
+      map: ringTexture,
+      depthWrite: false,
+    });
+    const ringFlare = new THREE.Mesh(ringFlareGeom, ringFlareMat);
+    scene.add(ringFlare);
+
+    // Volumetric Frustum (Atmospheric Photonic Projection Field)
     const frustumUvs = new Float32Array([
       // Face 1 (Top): Apex, TL, TR
       0.5, 0.0, 0.0, 1.0, 1.0, 1.0,
@@ -293,30 +418,87 @@ export default function Principles3DDeck({ isExiting = false }: Principles3DDeck
         uniform float uIntensity;
         varying vec2 vUv;
 
-        float random(vec2 st) {
-          return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123);
+        float hash(vec2 p) {
+          return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
+        }
+
+        float noise(vec2 p) {
+          vec2 i = floor(p);
+          vec2 f = fract(p);
+          f = f * f * (3.0 - 2.0 * f);
+          float a = hash(i);
+          float b = hash(i + vec2(1.0, 0.0));
+          float c = hash(i + vec2(0.0, 1.0));
+          float d = hash(i + vec2(1.0, 1.0));
+          return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
         }
 
         void main() {
-          // vUv.y: 0.0 at lens apex, 1.0 at card
-          float beamFade = smoothstep(0.012, 0.2, vUv.y) * (1.0 - smoothstep(0.94, 1.0, vUv.y) * 0.25);
-          
-          // Edge glow on pyramid beam walls
+          // 1. Dispersion & Distance Coordinate
           float edgeDist = abs(vUv.x - 0.5) * 2.0;
-          float wallGlow = pow(edgeDist, 2.8) * 0.75 + pow(1.0 - edgeDist, 2.0) * 0.35;
-          
-          // High-speed scanline waves radiating from projector to card
-          float pulses = sin(vUv.y * 55.0 - uTime * 18.0) * 0.25 + 0.75;
-          
-          // Quantum TV noise
-          float noise = random(vUv * 3.5 + vec2(uTime * 0.12)) * 0.18;
-          
-          float alpha = beamFade * wallGlow * pulses * (0.85 + noise) * uIntensity;
-          
-          // Surge flash on card switch
-          vec3 col = mix(uColor, vec3(1.0), clamp((uIntensity - 1.0) * 0.45, 0.0, 0.9));
-          
-          gl_FragColor = vec4(col, alpha * 0.62);
+
+          // 2. Atmospheric Edge Dissolution & Zero-Border Feathering
+          // Air micro-turbulence along cone edges
+          float airEdgeTurbulence = noise(vec2(vUv.x * 7.0 + uTime * 0.35, vUv.y * 5.0 - uTime * 1.1)) * 0.12;
+          float blurredEdge = clamp(edgeDist + airEdgeTurbulence * (1.0 - vUv.y * 0.3), 0.0, 1.0);
+
+          // Feather smoothly to ABSOLUTE ZERO before the polygon boundary (no hard border or silhouette)
+          float boundaryFeather = smoothstep(0.98, 0.48, blurredEdge);
+
+          // 3. Volumetric Gaussian Penumbra (Intense radiant center, soft diffused hazy bloom)
+          float gaussianCore = exp(-pow(edgeDist * 2.2, 2.0)) * 1.35;
+          float atmosphericMist = pow(clamp(1.0 - edgeDist * 0.78, 0.0, 1.0), 1.7) * 0.75;
+          float volumetricProfile = (gaussianCore + atmosphericMist) * boundaryFeather;
+
+          // 4. Longitudinal Distance Attenuation & Card Clearance
+          float apexBloom = smoothstep(0.008, 0.09, vUv.y);
+          float distAtten = 1.0 / (0.75 + vUv.y * 2.2);
+
+          // Card Clearance: cleanly dissolves the beam before reaching the card side so text remains crisp and unobstructed
+          // Beam is vibrant near projector (vUv.y < 0.28) and smoothly dissipates to zero by vUv.y = 0.72
+          float cardClearance = smoothstep(0.72, 0.25, vUv.y);
+          float scatterEnvelope = apexBloom * distAtten * cardClearance;
+
+          // 5. Soft Prismatic / Chromatic Dispersion in the Mist
+          float chromaticSpread = smoothstep(0.20, 0.80, edgeDist);
+          vec3 spectralFringe = vec3(
+            sin(edgeDist * 2.6 + 0.35) * 0.5 + 0.5,
+            sin(edgeDist * 2.6) * 0.5 + 0.5,
+            sin(edgeDist * 2.6 - 0.35) * 0.5 + 0.5
+          );
+          vec3 beamColor = mix(uColor, spectralFringe, chromaticSpread * 0.28);
+
+          // 6. Coherent Laser Shimmer, Interference Wavefront Ribs & Optical Turbulence
+          float waveCarrier = sin(vUv.y * 50.0 - uTime * 18.0) * 0.10 + 0.90;
+          float harmonicWave = sin(vUv.y * 15.0 - uTime * 6.5 + vUv.x * 5.0) * 0.08 + 0.92;
+
+          // High-frequency coherent laser interference wavefront ribs (optical phase rings)
+          float wavefrontRibs = sin(vUv.y * 120.0 - uTime * 22.0) * 0.10 + 0.90;
+          float fineInterference = sin(vUv.y * 260.0 + vUv.x * 14.0 - uTime * 34.0) * 0.06 + 0.94;
+
+          // Mie forward-scattering phase function approximation (intense luminous forward-propagation)
+          float miePhase = 1.0 / pow(1.0 + 0.40 * edgeDist, 2.0);
+
+          // Subtle laser speckle scintillation
+          vec2 speckleCoord = vUv * vec2(50.0, 180.0) + vec2(uTime * 0.6, -uTime * 2.8);
+          float speckle = hash(speckleCoord);
+          float speckleMod = 0.90 + speckle * 0.20;
+
+          // Soft ambient air turbulence
+          float airTurbulence = noise(vec2(vUv.x * 4.0, vUv.y * 6.0 - uTime * 0.9)) * 0.10;
+
+          // 7. Axial High-Density Core Beam
+          float axialCore = pow(1.0 - edgeDist, 5.0) * (1.0 - vUv.y * 0.55) * 0.55;
+
+          // Composite Volumetric Alpha with Deep Feather, Mie Phase, and Coherent Wavefront Ribs
+          float finalAlpha = scatterEnvelope * (volumetricProfile + axialCore * boundaryFeather) * waveCarrier * harmonicWave * wavefrontRibs * fineInterference * (speckleMod + airTurbulence) * miePhase * uIntensity;
+
+          // 8. Blinding Hot-Spot Core & Surge Flash
+          float apexWhiteBurn = pow(1.0 - clamp(vUv.y / 0.15, 0.0, 1.0), 2.2) * 0.95;
+          float surgeWhite = clamp((uIntensity - 1.0) * 0.55, 0.0, 0.95);
+          vec3 finalRgb = mix(beamColor, vec3(1.0, 1.0, 1.0), clamp(apexWhiteBurn + surgeWhite, 0.0, 1.0));
+
+          gl_FragColor = vec4(finalRgb, finalAlpha * 0.72);
         }
       `,
       transparent: true,
@@ -328,14 +510,14 @@ export default function Principles3DDeck({ isExiting = false }: Principles3DDeck
     const frustumMesh = new THREE.Mesh(frustumGeom, frustumMat);
     scene.add(frustumMesh);
 
-    // 4 Corner Laser Guide Rays + 1 Center Ray
+    // Subtle Ethereal Optical Alignment Filaments (faint tracer paths, zero solid border)
     const createLine = (isCenter = false) => {
       const geom = new THREE.BufferGeometry();
       geom.setAttribute("position", new THREE.BufferAttribute(new Float32Array(6), 3));
       const mat = new THREE.LineBasicMaterial({
         color: isCenter ? 0xffffff : 0x00f2fe,
         transparent: true,
-        opacity: isCenter ? 0.4 : 0.75,
+        opacity: isCenter ? 0.3 : 0.10,
         blending: THREE.AdditiveBlending,
       });
       const line = new THREE.Line(geom, mat);
@@ -349,11 +531,27 @@ export default function Principles3DDeck({ isExiting = false }: Principles3DDeck
     const rayBL = createLine();
     const rayCenter = createLine(true);
 
+    // Laser Guide Corner Impact Hotspots (Photonic ionization where rays strike card)
+    const cornerHotspotGeom = new THREE.BufferGeometry();
+    const cornerPositions = new Float32Array(4 * 3);
+    cornerHotspotGeom.setAttribute("position", new THREE.BufferAttribute(cornerPositions, 3));
+    const cornerHotspotMat = new THREE.PointsMaterial({
+      color: 0x00f2fe,
+      size: 0.14,
+      transparent: true,
+      opacity: 0.55,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      map: bokehTexture,
+    });
+    const cornerHotspots = new THREE.Points(cornerHotspotGeom, cornerHotspotMat);
+    scene.add(cornerHotspots);
+
     // Photonic Data Stream Particles (travel from lens directly to card face)
-    const streamCount = 75;
+    const streamCount = 95;
     const streamData = Array.from({ length: streamCount }, () => ({
       t: Math.random(),
-      speed: 0.35 + Math.random() * 0.5,
+      speed: 0.38 + Math.random() * 0.55,
       u: Math.random(),
       v: Math.random(),
     }));
@@ -362,17 +560,18 @@ export default function Principles3DDeck({ isExiting = false }: Principles3DDeck
     streamGeom.setAttribute("position", new THREE.BufferAttribute(streamPositions, 3));
     const streamMat = new THREE.PointsMaterial({
       color: 0x00f2fe,
-      size: 0.05,
+      size: 0.065,
       transparent: true,
-      opacity: 0.8,
+      opacity: 0.85,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
+      map: bokehTexture,
     });
     const streamPoints = new THREE.Points(streamGeom, streamMat);
     scene.add(streamPoints);
 
-    // Ambient floating dust particles
-    const ambCount = 80;
+    // Ambient floating dust particles (illuminated in ambient atmosphere)
+    const ambCount = 85;
     const ambPositions = new Float32Array(ambCount * 3);
     for (let i = 0; i < ambCount * 3; i += 3) {
       ambPositions[i] = (Math.random() - 0.5) * 12;
@@ -383,10 +582,12 @@ export default function Principles3DDeck({ isExiting = false }: Principles3DDeck
     ambGeom.setAttribute("position", new THREE.BufferAttribute(ambPositions, 3));
     const ambMat = new THREE.PointsMaterial({
       color: 0xffffff,
-      size: 0.03,
+      size: 0.04,
       transparent: true,
-      opacity: 0.2,
+      opacity: 0.3,
       blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      map: bokehTexture,
     });
     const ambPoints = new THREE.Points(ambGeom, ambMat);
     scene.add(ambPoints);
@@ -432,17 +633,18 @@ export default function Principles3DDeck({ isExiting = false }: Principles3DDeck
     window.addEventListener("touchend", handlePointerDown);
 
     let animId: number;
-    const clock = new THREE.Clock();
+    const timer = new THREE.Timer();
     const lastKnownCenter = new THREE.Vector3(1.5, 0.2, 0);
     const lastKnownTL = new THREE.Vector3(0.5, 1.2, 0);
     const lastKnownTR = new THREE.Vector3(2.5, 1.2, 0);
     const lastKnownBR = new THREE.Vector3(2.5, -0.8, 0);
     const lastKnownBL = new THREE.Vector3(0.5, -0.8, 0);
 
-    const animate = () => {
+    const animate = (timestamp?: number) => {
       animId = requestAnimationFrame(animate);
-      const dt = clock.getDelta();
-      const elapsed = clock.getElapsedTime();
+      timer.update(timestamp);
+      const dt = timer.getDelta();
+      const elapsed = timer.getElapsed();
 
       // Read real-time screen bounds of card
       let pCenter = lastKnownCenter;
@@ -509,9 +711,13 @@ export default function Principles3DDeck({ isExiting = false }: Principles3DDeck
       setV(18, lensPos); setV(21, pBR); setV(24, pBL);
       // Face 4 (Left)
       setV(27, lensPos); setV(30, pBL); setV(33, pTL);
-      // Base plane (behind card)
-      setV(36, pTL); setV(39, pTR); setV(42, pBR);
-      setV(45, pTL); setV(48, pBR); setV(51, pBL);
+      // Base plane (behind card) - zeroed out so no glowing geometry sits behind the card text
+      fArr[36] = 0; fArr[37] = 0; fArr[38] = 0;
+      fArr[39] = 0; fArr[40] = 0; fArr[41] = 0;
+      fArr[42] = 0; fArr[43] = 0; fArr[44] = 0;
+      fArr[45] = 0; fArr[46] = 0; fArr[47] = 0;
+      fArr[48] = 0; fArr[49] = 0; fArr[50] = 0;
+      fArr[51] = 0; fArr[52] = 0; fArr[53] = 0;
       frustumGeom.attributes.position.needsUpdate = true;
 
       // 2. Update 4 Laser Guide Lines
@@ -527,12 +733,21 @@ export default function Principles3DDeck({ isExiting = false }: Principles3DDeck
       updateLine(rayBL, lensPos, pBL);
       updateLine(rayCenter, lensPos, pCenter);
 
+      // Update Laser Guide Corner Impact Hotspots
+      const cArr = cornerHotspotGeom.attributes.position.array as Float32Array;
+      cArr[0] = pTL.x; cArr[1] = pTL.y; cArr[2] = pTL.z + 0.01;
+      cArr[3] = pTR.x; cArr[4] = pTR.y; cArr[5] = pTR.z + 0.01;
+      cArr[6] = pBR.x; cArr[7] = pBR.y; cArr[8] = pBR.z + 0.01;
+      cArr[9] = pBL.x; cArr[10] = pBL.y; cArr[11] = pBL.z + 0.01;
+      cornerHotspotGeom.attributes.position.needsUpdate = true;
+
       // 3. Update Photonic Data Stream Particles
       const sArr = streamGeom.attributes.position.array as Float32Array;
       for (let i = 0; i < streamCount; i++) {
         const item = streamData[i];
         item.t += item.speed * dt;
-        if (item.t > 1) {
+        // Dissolve particles before reaching card text
+        if (item.t > 0.72) {
           item.t = 0;
           item.u = Math.random();
           item.v = Math.random();
@@ -548,10 +763,22 @@ export default function Principles3DDeck({ isExiting = false }: Principles3DDeck
       }
       streamGeom.attributes.position.needsUpdate = true;
 
+      // Align Screen-Facing Lens Flare Optics with Camera
+      aura.position.copy(lensPos);
+      aura.quaternion.copy(camera.quaternion);
+
+      streak.position.copy(lensPos);
+      streak.quaternion.copy(camera.quaternion);
+
+      ringFlare.position.copy(lensPos);
+      ringFlare.quaternion.copy(camera.quaternion);
+
       // Lerp colors & energy surge
       currentColorRef.current.lerp(targetColorRef.current, 0.08);
       lensMat.color.copy(currentColorRef.current);
       auraMat.color.copy(currentColorRef.current);
+      streakMat.color.copy(currentColorRef.current);
+      ringFlareMat.color.copy(currentColorRef.current);
       glowRing.material.color.copy(currentColorRef.current);
       frustumMat.uniforms.uColor.value.copy(currentColorRef.current);
       rayTL.mat.color.copy(currentColorRef.current);
@@ -560,11 +787,43 @@ export default function Principles3DDeck({ isExiting = false }: Principles3DDeck
       rayBL.mat.color.copy(currentColorRef.current);
       rayCenter.mat.color.copy(currentColorRef.current);
       streamMat.color.copy(currentColorRef.current);
+      cornerHotspotMat.color.copy(currentColorRef.current);
+
+      // Soft, ethereal laser alignment traces (faint optical filaments, never obscuring card)
+      const rayShimmer = 0.06 + Math.sin(elapsed * 12.0) * 0.02;
+      rayTL.mat.opacity = rayShimmer;
+      rayTR.mat.opacity = rayShimmer;
+      rayBR.mat.opacity = rayShimmer;
+      rayBL.mat.opacity = rayShimmer;
+      rayCenter.mat.opacity = 0.12 + Math.sin(elapsed * 8.0) * 0.03;
 
       intensityRef.current += (1.0 - intensityRef.current) * 0.08;
       frustumMat.uniforms.uIntensity.value = intensityRef.current;
       frustumMat.uniforms.uTime.value = elapsed;
-      aura.scale.setScalar(1.0 + (intensityRef.current - 1.0) * 0.4);
+
+      // Dynamically scale optics based on screen scale and intensity surges
+      aura.scale.setScalar((1.0 + (intensityRef.current - 1.0) * 0.4) * projScale * 1.15);
+      streak.scale.set(
+        (1.0 + (intensityRef.current - 1.0) * 0.75 + Math.sin(elapsed * 8.0) * 0.03) * projScale * 1.1,
+        (1.0 + (intensityRef.current - 1.0) * 0.45) * projScale * 1.1,
+        1.0
+      );
+      streakMat.opacity = (0.75 + (intensityRef.current - 1.0) * 0.22);
+      ringFlare.scale.setScalar((1.0 + (intensityRef.current - 1.0) * 0.3 + Math.sin(elapsed * 4.0) * 0.04) * projScale * 1.05);
+      cornerHotspotMat.size = (0.16 + (intensityRef.current - 1.0) * 0.1) * projScale;
+
+      // Dynamically update diode point light, ground pool bounce, and card backscatter
+      diodeLight.color.copy(currentColorRef.current);
+      diodeLight.intensity = (2.0 + (intensityRef.current - 1.0) * 1.5) * projScale;
+
+      floorPoolMat.color.copy(currentColorRef.current);
+      floorPoolMat.opacity = (0.34 + (intensityRef.current - 1.0) * 0.22) * projScale;
+      floorPool.scale.setScalar((1.0 + (intensityRef.current - 1.0) * 0.35) * projScale);
+
+      backScatterMesh.position.set(pCenter.x, pCenter.y, pCenter.z - 0.25);
+      backScatterMesh.quaternion.copy(camera.quaternion);
+      backScatterMat.color.copy(currentColorRef.current);
+      backScatterMat.opacity = 0.15 + (intensityRef.current - 1.0) * 0.08;
 
       // Ambient particles slow rotation
       ambPoints.rotation.y = elapsed * 0.04;
@@ -576,6 +835,7 @@ export default function Principles3DDeck({ isExiting = false }: Principles3DDeck
 
     return () => {
       cancelAnimationFrame(animId);
+      timer.dispose();
       resizeObserver.disconnect();
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("click", handlePointerDown);
@@ -586,12 +846,25 @@ export default function Principles3DDeck({ isExiting = false }: Principles3DDeck
       baseMat.dispose();
       ringGeom.dispose();
       ringMat.dispose();
+      shadowGeom.dispose();
+      shadowMat.dispose();
+      floorPoolGeom.dispose();
+      floorPoolMat.dispose();
+      diodeLight.dispose();
+      backScatterGeom.dispose();
+      backScatterMat.dispose();
       turretBodyGeom.dispose();
       barrelGeom.dispose();
       lensGeom.dispose();
       lensMat.dispose();
+      diodeGeom.dispose();
+      diodeMat.dispose();
       auraGeom.dispose();
       auraMat.dispose();
+      streakGeom.dispose();
+      streakMat.dispose();
+      ringFlareGeom.dispose();
+      ringFlareMat.dispose();
       frustumGeom.dispose();
       frustumMat.dispose();
       rayTL.geom.dispose(); rayTL.mat.dispose();
@@ -599,10 +872,16 @@ export default function Principles3DDeck({ isExiting = false }: Principles3DDeck
       rayBR.geom.dispose(); rayBR.mat.dispose();
       rayBL.geom.dispose(); rayBL.mat.dispose();
       rayCenter.geom.dispose(); rayCenter.mat.dispose();
+      cornerHotspotGeom.dispose();
+      cornerHotspotMat.dispose();
       streamGeom.dispose();
       streamMat.dispose();
       ambGeom.dispose();
       ambMat.dispose();
+      bokehTexture.dispose();
+      streakTexture.dispose();
+      ringTexture.dispose();
+      radialTexture.dispose();
     };
   }, []);
 
@@ -623,6 +902,7 @@ export default function Principles3DDeck({ isExiting = false }: Principles3DDeck
   const holoRgb = hexToRgb(currentPrinciple.accentColor);
   const isLargeOrMedium = isDesktop || isMedium;
   const isMobile = !isDesktop;
+  const isAnyGlitch = isGlitching || isAmbientGlitch;
 
   return (
     <div
@@ -641,14 +921,49 @@ export default function Principles3DDeck({ isExiting = false }: Principles3DDeck
       <style>{`
         .hologram-card {
           position: relative;
-          background: linear-gradient(135deg, rgba(0, 20, 35, 0.35) 0%, rgba(0, 8, 18, 0.6) 100%);
-          backdrop-filter: blur(10px);
-          -webkit-backdrop-filter: blur(10px);
-          border: 1px dashed rgba(var(--holo-color-rgb), 0.35);
-          box-shadow: 0 0 35px var(--holo-color-alpha), inset 0 0 40px rgba(0, 0, 0, 0.6);
-          border-radius: 6px;
+          transform-style: preserve-3d;
+          background: linear-gradient(135deg, rgba(6, 16, 28, 0.44) 0%, rgba(2, 7, 16, 0.58) 100%);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          border: 1px solid rgba(var(--holo-color-rgb), 0.26);
+          border-radius: 8px;
           overflow: visible;
+          /* Multi-tier blurred optical bloom with subtle chromatic aberration dispersion */
+          box-shadow: 
+            0 0 0 1px rgba(var(--holo-color-rgb), 0.20),
+            -1.5px 0 8px rgba(255, 42, 133, 0.16),
+            1.5px 0 8px rgba(0, 242, 254, 0.20),
+            0 0 18px 2px rgba(var(--holo-color-rgb), 0.22),
+            0 0 42px 8px rgba(var(--holo-color-rgb), 0.10),
+            0 0 70px 16px rgba(var(--holo-color-rgb), 0.04),
+            inset 0 0 24px rgba(var(--holo-color-rgb), 0.09),
+            inset 0 0 45px rgba(0, 0, 0, 0.55);
           transition: border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        /* Optical border blur & perimeter dissipation to blend container seamlessly into projection */
+        .holo-edge-blur {
+          position: absolute;
+          inset: -3px;
+          border-radius: 10px;
+          pointer-events: none;
+          z-index: 2;
+          background: transparent;
+          border: 2px solid rgba(var(--holo-color-rgb), 0.35);
+          filter: blur(4px);
+          opacity: 0.85;
+          transition: border-color 0.4s ease, opacity 0.4s ease;
+        }
+
+        /* Secondary outer diffuse blur ring */
+        .holo-edge-blur::after {
+          content: "";
+          position: absolute;
+          inset: -5px;
+          border-radius: 14px;
+          border: 2px solid rgba(var(--holo-color-rgb), 0.18);
+          filter: blur(8px);
+          pointer-events: none;
         }
 
         /* CRT Scanline effect */
@@ -705,6 +1020,9 @@ export default function Principles3DDeck({ isExiting = false }: Principles3DDeck
           height: 14px;
           pointer-events: none;
           z-index: 25;
+          opacity: 0.85;
+          transform: translateZ(24px);
+          filter: drop-shadow(0 0 6px var(--holo-color));
         }
         .holo-corner::after {
           content: "";
@@ -724,24 +1042,127 @@ export default function Principles3DDeck({ isExiting = false }: Principles3DDeck
         .holo-corner-bl { bottom: -2px; left: -2px; border-bottom: 2px solid var(--holo-color); border-left: 2px solid var(--holo-color); }
         .holo-corner-bl::after { bottom: -2px; left: -2px; }
 
+        /* Randomized Ambient Glitch Burst */
+        .holo-glitch-active-burst {
+          animation: ambient-burst 0.22s steps(2, end) forwards;
+          will-change: transform, filter;
+        }
+
+        @keyframes ambient-burst {
+          0% {
+            transform: translate3d(0, 0, 0) skewX(0deg);
+            filter: none;
+          }
+          25% {
+            transform: translate3d(-3px, 1px, 0) skewX(1.2deg);
+            filter: drop-shadow(-3px 0 rgba(255, 42, 133, 0.8)) drop-shadow(3px 0 rgba(0, 242, 254, 0.8));
+          }
+          50% {
+            transform: translate3d(3px, -1px, 0) skewX(-1.5deg);
+            filter: drop-shadow(3px 0 rgba(255, 42, 133, 0.9)) drop-shadow(-3px 0 rgba(0, 242, 254, 0.9)) brightness(1.15);
+          }
+          75% {
+            transform: translate3d(-1px, 1px, 0) skewX(0.5deg);
+            filter: contrast(1.2) brightness(0.9);
+          }
+          100% {
+            transform: translate3d(0, 0, 0);
+            filter: none;
+          }
+        }
+
+        /* Periodic Hologram Horizontal Glitch Slice / Tear Overlay */
+        .holo-glitch-slice {
+          position: absolute;
+          inset: 0;
+          border-radius: 8px;
+          pointer-events: none;
+          z-index: 18;
+          opacity: 0;
+          background: linear-gradient(
+            180deg,
+            transparent 0%,
+            rgba(var(--holo-color-rgb), 0.20) 25%,
+            rgba(255, 42, 133, 0.25) 50%,
+            rgba(0, 242, 254, 0.30) 75%,
+            transparent 100%
+          );
+          mix-blend-mode: screen;
+        }
+
+        .holo-glitch-slice.active {
+          animation: slice-burst 0.22s steps(1, end) forwards;
+        }
+
+        @keyframes slice-burst {
+          0% {
+            opacity: 0.9;
+            clip-path: inset(25% 0 60% 0);
+            transform: translateX(-5px);
+          }
+          33% {
+            opacity: 0.75;
+            clip-path: inset(50% 0 30% 0);
+            transform: translateX(6px);
+          }
+          66% {
+            opacity: 0.85;
+            clip-path: inset(70% 0 10% 0);
+            transform: translateX(-3px);
+          }
+          100% {
+            opacity: 0;
+            clip-path: inset(0 0 0 0);
+            transform: translateX(0);
+          }
+        }
+
+        /* High-speed scanline sync jitter */
+        .holo-scanline-glitch {
+          position: absolute;
+          inset: 0;
+          border-radius: 8px;
+          pointer-events: none;
+          z-index: 14;
+          background: repeating-linear-gradient(
+            0deg,
+            rgba(0, 0, 0, 0.4) 0px,
+            rgba(0, 0, 0, 0.4) 1px,
+            transparent 1px,
+            transparent 3px
+          );
+          opacity: 0;
+        }
+
+        .holo-scanline-glitch.active {
+          opacity: 0.75;
+          animation: scanline-flicker 0.22s steps(2, end) forwards;
+        }
+
+        @keyframes scanline-flicker {
+          0% { opacity: 0.8; }
+          50% { opacity: 0.3; }
+          100% { opacity: 0; }
+        }
+
         .glitch-anim {
-          animation: rgb-split 0.15s infinite alternate;
+          animation: rgb-split 0.12s infinite alternate;
         }
 
         @keyframes rgb-split {
-          0% { text-shadow: -2px 0 rgba(255,0,0,0.7), 2px 0 rgba(0,255,255,0.7); transform: skewX(1deg); opacity: 0.8; }
-          50% { text-shadow: 2px 0 rgba(255,0,0,0.7), -2px 0 rgba(0,255,255,0.7); transform: skewX(-1deg); opacity: 0.9; }
-          100% { text-shadow: -1px 0 rgba(255,0,0,0.7), 1px 0 rgba(0,255,255,0.7); transform: skewX(0deg); opacity: 0.85; }
+          0% { text-shadow: -3px 0 rgba(255,0,85,0.8), 3px 0 rgba(0,255,255,0.8); transform: skewX(1.5deg); opacity: 0.8; }
+          50% { text-shadow: 3px 0 rgba(255,0,85,0.8), -3px 0 rgba(0,255,255,0.8); transform: skewX(-1.5deg); opacity: 0.95; }
+          100% { text-shadow: -2px 0 rgba(255,0,85,0.8), 2px 0 rgba(0,255,255,0.8); transform: skewX(0.5deg); opacity: 0.85; }
         }
 
         .hologram-glitch-active {
-          animation: flicker 0.12s infinite;
+          animation: flicker 0.10s infinite;
           filter: contrast(1.4) saturate(1.4) hue-rotate(15deg);
         }
 
         @keyframes flicker {
-          0% { opacity: 1; transform: translate(1px, -1px); }
-          50% { opacity: 0.4; transform: translate(-1px, 2px); }
+          0% { opacity: 1; transform: translate(2px, -1px); }
+          50% { opacity: 0.35; transform: translate(-2px, 2px); }
           100% { opacity: 0.9; transform: translate(0, 0); }
         }
 
@@ -802,6 +1223,9 @@ export default function Principles3DDeck({ isExiting = false }: Principles3DDeck
                   '--holo-color-alpha': `${currentPrinciple.accentColor}25`,
                 } as any}
               >
+                {/* Blurred Optical Border Halo to blend into projection */}
+                <div className="holo-edge-blur" />
+
                 {/* 4 Corner Laser Reticles */}
                 <div className="holo-corner holo-corner-tl" />
                 <div className="holo-corner holo-corner-tr" />
@@ -813,22 +1237,42 @@ export default function Principles3DDeck({ isExiting = false }: Principles3DDeck
                   <div className="holo-sweep-line" />
                 </div>
 
+                {/* Ambient Hologram Glitch Slice & Scanline Jitter Overlays (Timed Random & Infrequent) */}
+                <div className={`holo-glitch-slice ${isAnyGlitch ? 'active' : ''}`} />
+                <div className={`holo-scanline-glitch ${isAnyGlitch ? 'active' : ''}`} />
+
                 {/* Hologram Inner Content */}
-                <div className={`position-relative ${isGlitching ? 'glitch-anim' : ''}`} style={{ zIndex: 15 }}>
+                <div
+                  className={`position-relative ${isAmbientGlitch ? 'holo-glitch-active-burst' : ''} ${isGlitching ? 'glitch-anim' : ''}`}
+                  style={{ zIndex: 15, transformStyle: "preserve-3d" }}
+                >
 
                   {/* Telemetry Header Line */}
-                  <div className="d-flex justify-content-between align-items-center mb-1 pb-1 border-bottom" style={{ borderColor: `rgba(${holoRgb}, 0.2)` }}>
-                    <div className="font-mono text-uppercase" style={{ fontSize: isLargeOrMedium ? "0.58rem" : "0.52rem", color: currentPrinciple.accentColor, letterSpacing: "0.15em" }}>
+                  <div
+                    className="d-flex justify-content-between align-items-center mb-1 pb-1 border-bottom"
+                    style={{
+                      borderColor: `rgba(${holoRgb}, 0.2)`,
+                      transform: "translateZ(8px)",
+                      transformStyle: "preserve-3d",
+                    }}
+                  >
+                    <div className="font-space-grotesk text-uppercase" style={{ fontSize: isLargeOrMedium ? "0.58rem" : "0.52rem", color: currentPrinciple.accentColor, letterSpacing: "0.15em" }}>
                       <i className="bi bi-broadcast me-1"></i>
                       HOLO-LINK // BEAM LOCKED
                     </div>
-                    <div className="font-mono text-white-50" style={{ fontSize: isLargeOrMedium ? "0.55rem" : "0.48rem" }}>
+                    <div className="font-space-grotesk text-white-50" style={{ fontSize: isLargeOrMedium ? "0.55rem" : "0.48rem" }}>
                       FREQ: 842.6 THz // 99.9%
                     </div>
                   </div>
 
                   {/* Directive & Tag */}
-                  <div className="d-flex justify-content-between align-items-start align-items-sm-center flex-column flex-sm-row gap-1 gap-sm-2 mb-1 mb-sm-2">
+                  <div
+                    className="d-flex justify-content-between align-items-start align-items-sm-center flex-column flex-sm-row gap-1 gap-sm-2 mb-1 mb-sm-2"
+                    style={{
+                      transform: "translateZ(18px)",
+                      transformStyle: "preserve-3d",
+                    }}
+                  >
                     <div className="d-flex align-items-center gap-2">
                       <div
                         className="d-flex align-items-center justify-content-center rounded-3"
@@ -845,19 +1289,19 @@ export default function Principles3DDeck({ isExiting = false }: Principles3DDeck
                       </div>
                       <div className="d-flex flex-column">
                         <span
-                          className="font-michroma text-uppercase fw-bold"
-                          style={{ fontSize: isLargeOrMedium ? "0.68rem" : "0.58rem", color: currentPrinciple.accentColor, letterSpacing: "0.12em" }}
+                          className="font-space-grotesk text-uppercase fw-bold"
+                          style={{ fontSize: isLargeOrMedium ? "0.88rem" : "0.78rem", color: currentPrinciple.accentColor, letterSpacing: "0.2em" }}
                         >
                           {currentPrinciple.directive}
                         </span>
-                        <span className="font-mono text-white-50" style={{ fontSize: isLargeOrMedium ? "0.58rem" : "0.5rem" }}>
+                        <span className="font-outfit text-white-50" style={{ fontSize: isLargeOrMedium ? "0.58rem" : "0.5rem" }}>
                           {currentPrinciple.codeTag}
                         </span>
                       </div>
                     </div>
 
                     <span
-                      className="badge rounded-pill font-mono px-2 px-sm-3 py-1 align-self-start align-self-sm-auto"
+                      className="badge rounded-pill font-space-grotesk px-2 px-sm-3 py-1 align-self-start align-self-sm-auto"
                       style={{
                         background: "transparent",
                         border: `1px solid ${currentPrinciple.accentColor}40`,
@@ -865,6 +1309,7 @@ export default function Principles3DDeck({ isExiting = false }: Principles3DDeck
                         fontSize: isLargeOrMedium ? "0.62rem" : "0.52rem",
                         letterSpacing: "0.08em",
                         boxShadow: `inset 0 0 10px ${currentPrinciple.accentColor}20`,
+                        transform: "translateZ(16px)",
                       }}
                     >
                       {currentPrinciple.tag}
@@ -876,24 +1321,33 @@ export default function Principles3DDeck({ isExiting = false }: Principles3DDeck
                     className="font-syne h5 text-white text-uppercase tracking-wide mb-1 mt-1"
                     style={{
                       fontSize: isLargeOrMedium ? "1.1rem" : "0.9rem",
-                      textShadow: `0 0 15px ${currentPrinciple.accentColor}60`
+                      textShadow: `0 0 15px ${currentPrinciple.accentColor}60`,
+                      transform: "translateZ(22px)",
                     }}
                   >
                     {currentPrinciple.title}
                   </h3>
                   <p
-                    className="font-oxanium text-light text-opacity-80 mb-2"
+                    className="font-outfit fw-light text-light text-opacity-80 mb-2"
                     style={{
                       fontSize: isLargeOrMedium ? "0.8rem" : "0.7rem",
                       lineHeight: isLargeOrMedium ? "1.4" : "1.3",
-                      letterSpacing: "0.015em"
+                      letterSpacing: "0.018em",
+                      transform: "translateZ(10px)",
                     }}
                   >
                     {currentPrinciple.description}
                   </p>
 
                   {/* Specs Matrix */}
-                  <div className="row g-1 g-sm-2 pt-1 pt-sm-2 mt-1 border-top" style={{ borderColor: `rgba(${holoRgb}, 0.2)` }}>
+                  <div
+                    className="row g-1 g-sm-2 pt-1 pt-sm-2 mt-1 border-top"
+                    style={{
+                      borderColor: `rgba(${holoRgb}, 0.2)`,
+                      transform: "translateZ(16px)",
+                      transformStyle: "preserve-3d",
+                    }}
+                  >
                     {currentPrinciple.stats.map((st, sIdx) => (
                       <div key={sIdx} className="col-4">
                         <div
@@ -904,13 +1358,13 @@ export default function Principles3DDeck({ isExiting = false }: Principles3DDeck
                           }}
                         >
                           <div
-                            className="font-michroma fw-bold mb-0 mb-sm-1"
-                            style={{ fontSize: isLargeOrMedium ? "0.8rem" : "0.68rem", color: currentPrinciple.accentColor }}
+                            className="font-syncopate fw-light mb-0 mb-sm-1"
+                            style={{ fontSize: isLargeOrMedium ? "0.7rem" : "0.58rem", color: currentPrinciple.accentColor }}
                           >
                             {st.val}
                           </div>
                           <div
-                            className="font-oxanium text-white-50 text-uppercase text-truncate"
+                            className="font-outfit text-white-50 text-uppercase text-truncate"
                             style={{ fontSize: isLargeOrMedium ? "0.55rem" : "0.48rem", letterSpacing: "0.04em" }}
                           >
                             {st.label}
@@ -947,11 +1401,97 @@ function createRadialGradient() {
   const ctx = canvas.getContext("2d");
   if (ctx) {
     const gradient = ctx.createRadialGradient(128, 128, 0, 128, 128, 128);
-    gradient.addColorStop(0, "rgba(255,255,255,1)");
-    gradient.addColorStop(0.2, "rgba(255,255,255,0.8)");
-    gradient.addColorStop(1, "rgba(255,255,255,0)");
+    gradient.addColorStop(0, "rgba(255, 255, 255, 1)");
+    gradient.addColorStop(0.08, "rgba(255, 255, 255, 0.9)");
+    gradient.addColorStop(0.24, "rgba(255, 255, 255, 0.45)");
+    gradient.addColorStop(0.55, "rgba(255, 255, 255, 0.12)");
+    gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, 256, 256);
   }
-  return new THREE.CanvasTexture(canvas);
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.needsUpdate = true;
+  return tex;
+}
+
+// Procedural soft radial bokeh texture for particles
+function createBokehTexture() {
+  const canvas = document.createElement("canvas");
+  canvas.width = 64;
+  canvas.height = 64;
+  const ctx = canvas.getContext("2d");
+  if (ctx) {
+    const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+    grad.addColorStop(0, "rgba(255, 255, 255, 1)");
+    grad.addColorStop(0.2, "rgba(255, 255, 255, 0.85)");
+    grad.addColorStop(0.55, "rgba(255, 255, 255, 0.25)");
+    grad.addColorStop(1, "rgba(255, 255, 255, 0)");
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 64, 64);
+  }
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.needsUpdate = true;
+  return tex;
+}
+
+// Procedural anamorphic lens flare horizontal streak
+function createAnamorphicStreakTexture() {
+  const canvas = document.createElement("canvas");
+  canvas.width = 512;
+  canvas.height = 64;
+  const ctx = canvas.getContext("2d");
+  if (ctx) {
+    ctx.clearRect(0, 0, 512, 64);
+    const hGrad = ctx.createLinearGradient(0, 32, 512, 32);
+    hGrad.addColorStop(0, "rgba(255, 255, 255, 0)");
+    hGrad.addColorStop(0.25, "rgba(255, 255, 255, 0.08)");
+    hGrad.addColorStop(0.42, "rgba(255, 255, 255, 0.45)");
+    hGrad.addColorStop(0.49, "rgba(255, 255, 255, 0.95)");
+    hGrad.addColorStop(0.5, "rgba(255, 255, 255, 1.0)");
+    hGrad.addColorStop(0.51, "rgba(255, 255, 255, 0.95)");
+    hGrad.addColorStop(0.58, "rgba(255, 255, 255, 0.45)");
+    hGrad.addColorStop(0.75, "rgba(255, 255, 255, 0.08)");
+    hGrad.addColorStop(1, "rgba(255, 255, 255, 0)");
+
+    const vGrad = ctx.createLinearGradient(256, 0, 256, 64);
+    vGrad.addColorStop(0, "rgba(255, 255, 255, 0)");
+    vGrad.addColorStop(0.38, "rgba(255, 255, 255, 0.7)");
+    vGrad.addColorStop(0.5, "rgba(255, 255, 255, 1.0)");
+    vGrad.addColorStop(0.62, "rgba(255, 255, 255, 0.7)");
+    vGrad.addColorStop(1, "rgba(255, 255, 255, 0)");
+
+    ctx.fillStyle = hGrad;
+    ctx.fillRect(0, 0, 512, 64);
+    ctx.globalCompositeOperation = "destination-in";
+    ctx.fillStyle = vGrad;
+    ctx.fillRect(0, 0, 512, 64);
+  }
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.needsUpdate = true;
+  return tex;
+}
+
+// Procedural concentric optical diffraction rings (Airy disk)
+function createDiffractionRingTexture() {
+  const canvas = document.createElement("canvas");
+  canvas.width = 256;
+  canvas.height = 256;
+  const ctx = canvas.getContext("2d");
+  if (ctx) {
+    ctx.clearRect(0, 0, 256, 256);
+    const grad = ctx.createRadialGradient(128, 128, 0, 128, 128, 128);
+    grad.addColorStop(0, "rgba(255, 255, 255, 0)");
+    grad.addColorStop(0.32, "rgba(255, 255, 255, 0)");
+    grad.addColorStop(0.44, "rgba(255, 255, 255, 0.35)");
+    grad.addColorStop(0.49, "rgba(255, 255, 255, 0.8)");
+    grad.addColorStop(0.52, "rgba(255, 255, 255, 0.4)");
+    grad.addColorStop(0.68, "rgba(255, 255, 255, 0.2)");
+    grad.addColorStop(0.74, "rgba(255, 255, 255, 0)");
+    grad.addColorStop(1, "rgba(255, 255, 255, 0)");
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 256, 256);
+  }
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.needsUpdate = true;
+  return tex;
 }

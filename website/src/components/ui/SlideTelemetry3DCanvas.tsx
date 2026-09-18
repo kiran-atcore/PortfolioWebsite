@@ -10,7 +10,7 @@ interface SlideTelemetry3DCanvasProps {
 
 export default function SlideTelemetry3DCanvas({
   currentSlide,
-  totalSlides = 4,
+  totalSlides = 7,
 }: SlideTelemetry3DCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const slideRef = useRef(currentSlide);

@@ -1,6 +1,5 @@
 import Navbar from "../components/Navbar";
 import HomeHero from "../components/home/HomeHero";
-import HomeConnect from "../components/home/HomeConnect";
 import Footer from "../components/Footer";
 
 export default function Home() {
@@ -9,7 +8,6 @@ export default function Home() {
       <Navbar />
       <main className="flex-grow-1">
         <HomeHero />
-        <HomeConnect />
       </main>
       <Footer />
     </div>
