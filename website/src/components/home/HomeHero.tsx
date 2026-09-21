@@ -17,8 +17,6 @@ import CyberFlickerTitle from "../ui/CyberFlickerTitle";
 export default function HomeHero() {
   const [currentSlide, setCurrentSlide] = useState(0); // 0 = Hero 1, 1 = Hero 2, 2 = Overview 3, 3 = Overview 4, 4 = Telemetry 5, 5 = Principles 6, 6 = Connect 7
   const [selectedHeroCard, setSelectedHeroCard] = useState<HeroCardData | null>(null);
-  const [isReleased, setIsReleased] = useState(false);
-  const [isExitingToFooter, setIsExitingToFooter] = useState(false);
   const [isExitingSlide2, setIsExitingSlide2] = useState(false);
   const [isExitingSlide4, setIsExitingSlide4] = useState(false);
   const [isExitingSlide5, setIsExitingSlide5] = useState(false);
@@ -183,7 +181,7 @@ export default function HomeHero() {
   };
 
   const handleSlideJump = (index: number) => {
-    if (index !== currentSlide && !isExitingToFooter && !isTransitioning.current) {
+    if (index !== currentSlide && !isTransitioning.current) {
       if (currentSlide === 3 && index === 4) {
         transitionSlide4To5();
         return;
@@ -215,7 +213,6 @@ export default function HomeHero() {
           setIsBgSlidingUp(true);
           setIsContentsRevealed(true);
           setCurrentSlide(index);
-          setIsReleased(false);
         }
       } else if (currentSlide >= 2 && index < 2) {
         if (index === 1) {
@@ -224,11 +221,9 @@ export default function HomeHero() {
           setIsBgSlidingUp(false);
           setIsContentsRevealed(false);
           setCurrentSlide(0);
-          setIsReleased(false);
         }
       } else {
         setCurrentSlide(index);
-        setIsReleased(false);
       }
     }
   };
@@ -248,7 +243,7 @@ export default function HomeHero() {
       unsubSelect();
       unsubRequest();
     };
-  }, [currentSlide, isExitingToFooter]);
+  }, [currentSlide]);
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -272,12 +267,12 @@ export default function HomeHero() {
 
       // 1. Filter out horizontal swipes and tiny residual momentum events (trackpad sticking bug)
       if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
-        if (!isReleased) e.preventDefault();
+        e.preventDefault();
         return;
       }
 
       if (Math.abs(e.deltaY) < 8) {
-        if (!isReleased) e.preventDefault();
+        e.preventDefault();
         return;
       }
 
@@ -285,41 +280,22 @@ export default function HomeHero() {
       const timeDiff = now - lastWheelTime.current;
       lastWheelTime.current = now;
 
-      // 2. If released downstream to footer
-      if (isReleased) {
-        if (e.deltaY < -15 && window.scrollY < 80) {
-          e.preventDefault();
-          window.scrollTo(0, 0);
-          setIsReleased(false);
-          setIsExitingToFooter(false);
-          setIsBgSlidingUp(true);
-          setIsContentsRevealed(true);
-          setCurrentSlide(6); // Catch re-entry into Slide 7: Connect
-          isTransitioning.current = true;
-          isScrollCooldown.current = true;
-          setTimeout(() => {
-            isTransitioning.current = false;
-          }, 850);
-        }
-        return;
-      }
-
       e.preventDefault();
       if (window.scrollY > 0) {
         window.scrollTo(0, 0);
       }
 
-      // 3. New gesture detection (pause > 250ms)
+      // 2. New gesture detection (pause > 250ms)
       if (timeDiff > 250) {
         isScrollCooldown.current = false;
       }
 
-      // 4. Lockout during transitions or continuous scroll gesture
+      // 3. Lockout during transitions or continuous scroll gesture
       if (isTransitioning.current || isScrollCooldown.current) {
         return;
       }
 
-      // 5. Guaranteed single-slide progression across all 7 slides
+      // 4. Guaranteed single-slide progression across all 7 slides
       if (e.deltaY > 15) {
         if (currentSlide === 0) {
           setCurrentSlide(1);
@@ -348,17 +324,9 @@ export default function HomeHero() {
         } else if (currentSlide === 5) {
           // Slide 6 -> Slide 7 (Phased cyber transition to Connect)
           transitionSlide6To7();
-        } else if (currentSlide === 6 && !isExitingToFooter) {
-          // Slide 7 -> Release downstream to #site-footer
-          setIsExitingToFooter(true);
-          isTransitioning.current = true;
-          isScrollCooldown.current = true;
-          setTimeout(() => {
-            setIsReleased(true);
-            setIsExitingToFooter(false);
-            isTransitioning.current = false;
-            document.getElementById("site-footer")?.scrollIntoView({ behavior: "smooth" });
-          }, 750);
+        } else if (currentSlide === 6) {
+          // Slide 7 (HomeConnect) is the terminal slide - do not scroll downstream
+          return;
         }
       } else if (e.deltaY < -15) {
         if (currentSlide === 6) {
@@ -408,7 +376,6 @@ export default function HomeHero() {
         }
         return;
       }
-      if (isReleased) return;
       e.preventDefault();
     };
 
@@ -421,27 +388,10 @@ export default function HomeHero() {
       const touchEndY = e.changedTouches[0].clientY;
       const deltaY = touchStartY.current - touchEndY;
 
-      // 1. Re-entering from downstream section
-      if (isReleased) {
-        if (deltaY < -24 && window.scrollY < 80) {
-          window.scrollTo(0, 0);
-          setIsReleased(false);
-          setIsExitingToFooter(false);
-          setIsBgSlidingUp(true);
-          setIsContentsRevealed(true);
-          setCurrentSlide(6); // Re-entry into Slide 7: Connect
-          isTransitioning.current = true;
-          setTimeout(() => {
-            isTransitioning.current = false;
-          }, 850);
-        }
-        return;
-      }
-
-      // 2. Calibrated touch sensitivity threshold (24px)
+      // 1. Calibrated touch sensitivity threshold (24px)
       if (Math.abs(deltaY) < 24) return;
 
-      // 3. Guaranteed single-slide progression
+      // 2. Guaranteed single-slide progression
       if (deltaY > 0) {
         if (currentSlide === 0) {
           setCurrentSlide(1);
@@ -463,15 +413,9 @@ export default function HomeHero() {
           transitionSlide5To6();
         } else if (currentSlide === 5) {
           transitionSlide6To7();
-        } else if (currentSlide === 6 && !isExitingToFooter) {
-          setIsExitingToFooter(true);
-          isTransitioning.current = true;
-          setTimeout(() => {
-            setIsReleased(true);
-            setIsExitingToFooter(false);
-            isTransitioning.current = false;
-            document.getElementById("site-footer")?.scrollIntoView({ behavior: "smooth" });
-          }, 750);
+        } else if (currentSlide === 6) {
+          // Terminal slide - do not scroll downstream
+          return;
         }
       } else {
         if (currentSlide === 6) {
@@ -509,7 +453,7 @@ export default function HomeHero() {
       window.removeEventListener("touchmove", handleTouchMove);
       window.removeEventListener("touchend", handleTouchEnd);
     };
-  }, [currentSlide, isReleased, isExitingToFooter, isExitingSlide2, isExitingSlide4, isExitingSlide5, isExitingSlide6, isExitingSlide7, isBgSlidingUp, isContentsRevealed]);
+  }, [currentSlide, isExitingSlide2, isExitingSlide4, isExitingSlide5, isExitingSlide6, isExitingSlide7, isBgSlidingUp, isContentsRevealed]);
 
   // High-Tech Cybernetic Text Intro Variants
   const textContainerVariants: Variants = {
@@ -814,7 +758,7 @@ export default function HomeHero() {
             style={{ zIndex: 4 }}
           >
             <HomeConnect
-              isExiting={isExitingToFooter || isExitingSlide7}
+              isExiting={isExitingSlide7}
             />
           </motion.div>
         )}

@@ -125,80 +125,77 @@ export default function HomeConnect({ isExiting = false }: HomeConnectProps) {
   return (
     <div
       id="hero-connect"
-      className="w-100 pt-0 connect-offset-wrapper d-flex flex-column h-100"
+      className="w-100 pt-0 connect-offset-wrapper d-flex flex-column justify-content-start"
     >
-      <div className="row justify-content-center m-0 w-100 flex-grow-1 h-100">
-        <div className="col-12 col-md-11 col-lg-11 col-xl-10 p-0 d-flex flex-column justify-content-between h-100">
-          {/* Top Content Block: Header, Carousel, CTA */}
-          <div className="d-flex flex-column align-items-center w-100 flex-shrink-0">
-            {/* Top Header with Cyber Badges and Title */}
+      <div className="row justify-content-center m-0 w-100">
+        <div className="col-12 col-md-11 col-lg-11 col-xl-10 p-0 d-flex flex-column align-items-center">
+          {/* Top Header with Cyber Badges and Title */}
+          <motion.div
+            variants={headerVariants}
+            initial="hidden"
+            animate={isExiting ? "exit" : "visible"}
+            className="text-center mb-1 pb-1 border-bottom w-100"
+            style={{ borderColor: "rgba(0, 242, 254, 0.15)" }}
+          >
             <motion.div
-              variants={headerVariants}
-              initial="hidden"
-              animate={isExiting ? "exit" : "visible"}
-              className="text-center mb-1 pb-1 border-bottom w-100"
-              style={{ borderColor: "rgba(0, 242, 254, 0.15)" }}
+              variants={badgeVariants}
+              className="d-inline-flex align-items-center gap-2 px-2 px-sm-3 py-0 hud-telemetry-chip rounded-pill mb-1"
             >
-              <motion.div
-                variants={badgeVariants}
-                className="d-inline-flex align-items-center gap-2 px-2 px-sm-3 py-0 hud-telemetry-chip rounded-pill mb-1"
+              <span className="pulse-cyan"></span>
+              <span
+                className="text-light fw-medium font-syne tracking-wide py-1 telemetry-badge-text"
+                style={{ letterSpacing: "0.18em" }}
               >
-                <span className="pulse-cyan"></span>
-                <span
-                  className="text-light fw-medium font-syne tracking-wide py-1 telemetry-badge-text"
-                  style={{ letterSpacing: "0.18em" }}
-                >
-                  {"// GET IN TOUCH // COLLABORATE"}
-                </span>
-              </motion.div>
-              <motion.h2
-                variants={titleVariants}
-                className="font-syne connect-section-title text-uppercase text-white cyber-title-glow mb-0"
-              >
-                Let&apos;s Build Something Resilient
-              </motion.h2>
-              <motion.p
-                variants={subtitleVariants}
-                className="font-space-grotesk text-light text-opacity-70 small mx-auto mb-0 connect-section-desc"
-                style={{ maxWidth: "560px", letterSpacing: "0.02em" }}
-              >
-                Available for distributed systems, backend architectures, and applied AI initiatives.
-              </motion.p>
+                {"// GET IN TOUCH // COLLABORATE"}
+              </span>
             </motion.div>
-
-            {/* Option 2: 3D Quantum Pylon & Isometric Fan Deck */}
-            <motion.div
-              variants={carouselVariants}
-              initial="hidden"
-              animate={isExiting ? "exit" : "visible"}
-              className="w-100 mt-4 mt-md-1 position-relative"
+            <motion.h2
+              variants={titleVariants}
+              className="font-syne connect-section-title text-uppercase text-white cyber-title-glow mb-0"
             >
-              <Connect3DCarousel isExiting={isExiting} />
-            </motion.div>
-
-            {/* Action CTA Strip */}
-            <motion.div
-              variants={ctaVariants}
-              initial="hidden"
-              animate={isExiting ? "exit" : "visible"}
-              className="text-center font-syncopate mt-4 mt-md-4 mt-lg-3"
+              Let&apos;s Build Something Resilient
+            </motion.h2>
+            <motion.p
+              variants={subtitleVariants}
+              className="font-space-grotesk text-light text-opacity-70 small mx-auto mb-0 connect-section-desc"
+              style={{ maxWidth: "560px", letterSpacing: "0.02em" }}
             >
-              <Link
-                href="/contact"
-                className="btn btn-neon-cyan px-4 py-2 rounded-pill tracking-wider text-uppercase"
-                style={{ fontSize: "0.5rem" }}
-              >
-                <i className="bi bi-send me-2"></i> Get In Touch &rarr;
-              </Link>
-            </motion.div>
-          </div>
+              Available for distributed systems, backend architectures, and applied AI initiatives.
+            </motion.p>
+          </motion.div>
 
-          {/* Integrated Slide 7 Footer (Visible above dock on >md, close to bottom navbar on <sm) */}
+          {/* Option 2: 3D Quantum Pylon & Isometric Fan Deck */}
+          <motion.div
+            variants={carouselVariants}
+            initial="hidden"
+            animate={isExiting ? "exit" : "visible"}
+            className="w-100 mt-4 mt-md-1 position-relative"
+          >
+            <Connect3DCarousel isExiting={isExiting} />
+          </motion.div>
+
+          {/* Action CTA Strip */}
+          <motion.div
+            variants={ctaVariants}
+            initial="hidden"
+            animate={isExiting ? "exit" : "visible"}
+            className="text-center font-syncopate mt-4 mt-md-4 mt-lg-3"
+          >
+            <Link
+              href="/contact"
+              className="btn btn-neon-cyan px-4 py-2 rounded-pill tracking-wider text-uppercase"
+              style={{ fontSize: "0.5rem" }}
+            >
+              <i className="bi bi-send me-2"></i> Get In Touch &rarr;
+            </Link>
+          </motion.div>
+
+          {/* Integrated Slide 7 Footer */}
           <motion.div
             variants={footerVariants}
             initial="hidden"
             animate={isExiting ? "exit" : "visible"}
-            className="w-100 mt-auto pt-1 pb-3 pb-sm-0 pt-sm-2 border-top d-flex flex-column flex-sm-row justify-content-between align-items-center gap-1 connect-slide-footer"
+            className="w-100 mt-3 mt-md-3 pt-2 pb-2 border-top d-flex flex-column flex-sm-row justify-content-between align-items-center gap-1 connect-slide-footer"
             style={{ borderColor: "rgba(0, 242, 254, 0.12)" }}
           >
             <div className="text-light text-opacity-65 font-bruno text-center text-sm-start" style={{ fontSize: "0.58rem" }}>

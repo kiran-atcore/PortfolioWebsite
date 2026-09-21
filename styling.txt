@@ -44,79 +44,132 @@ Glows & Shadows:
 
 3. TYPOGRAPHY SYSTEM (Google Fonts)
 --------------------------------------------------------------------------------
-Imported fonts:
-- 'Bruno Ace', sans-serif         (.font-bruno)    -> Hero Main Title / Identity H1
-- 'Michroma', sans-serif          (.font-michroma) -> Sci-fi Role, Subtitle, HUD tags
-- 'Orbitron', sans-serif          (.font-orbitron) -> Secondary Headings / Section titles
-- 'Oxanium', sans-serif           (.font-oxanium)  -> Body copy, technical descriptions
-- 'Zen Dots', sans-serif          (.font-zendots)  -> Buttons, CTAs, interactive triggers
-- 'JetBrains Mono', monospace     (.font-mono)     -> HUD Telemetry, chips, codes
-- 'Plus Jakarta Sans', sans-serif                  -> Default fallback UI font
+Active Font Stack in HomeHero.tsx (Neo-SciFi Aesthetic):
+- 'Syne', sans-serif              (.font-syne)          -> Status Chip, Role Subheading, Card Tags
+- 'Bruno Ace', sans-serif         (.font-bruno)         -> Hero Identity / Main Name Title (CyberFlickerTitle)
+- 'Space Grotesk', sans-serif     (.font-space-grotesk) -> Hero Tagline H2
+- 'Outfit', sans-serif            (.font-outfit)        -> Hero Description Paragraph
+- 'Syncopate', sans-serif         (.font-syncopate)     -> Button Group & Interactive Action Triggers
+- 'JetBrains Mono', monospace     (.font-mono)          -> HUD Telemetry, chips, code chips
+- 'Plus Jakarta Sans', sans-serif                       -> Base fallback UI font
 
-Tracking (Letter-Spacing) Classes:
+Alternative / Classic Sci-Fi Fonts in Design System:
+- 'Michroma', sans-serif          (.font-michroma)
+- 'Orbitron', sans-serif          (.font-orbitron)
+- 'Oxanium', sans-serif           (.font-oxanium)
+- 'Zen Dots', sans-serif          (.font-zendots)
+
+Role-Based Semantic Preset Classes:
+- .neo-title / .font-neo-title:       Syne, 700, letter-spacing: 0.04em
+- .neo-subtitle / .font-neo-subtitle: Space Grotesk, 500, letter-spacing: 0.06em
+- .neo-desc / .font-neo-desc:         Outfit, 400, letter-spacing: 0.02em, line-height: 1.65
+- .neo-btn / .font-neo-btn:           Syncopate, 700, uppercase, letter-spacing: 0.12em
+
+Tracking (Letter-Spacing) Utility Classes:
+- .tracking-tighter               letter-spacing: -0.05em;
 - .tracking-tight                 letter-spacing: -0.025em;
 - .tracking-normal                letter-spacing: 0em;
 - .tracking-wide                  letter-spacing: 0.05em;
 - .tracking-wider                 letter-spacing: 0.1em;
 - .tracking-widest                letter-spacing: 0.15em;
-- .tracking-scifi                 letter-spacing: 0.22em;  (Used on titles & roles)
+- .tracking-scifi                 letter-spacing: 0.22em;  (Titles, roles, badges)
 - .tracking-ultra                 letter-spacing: 0.32em;
 - .tracking-cinema                letter-spacing: 0.45em;
 
 Text Hierarchy Pattern in HomeHero:
 1. Status Chip:
-   <div className="hud-telemetry-chip rounded-pill">
-     <span className="pulse-cyan" />
-     <span className="font-michroma tracking-wide" style={{ fontSize: "0.6rem" }}>
-       // STATUS: OPEN TO SWE & AI ROLES
+   <motion.div variants={chipVariants}
+     className="d-inline-flex align-items-center text-nowrap gap-2 px-3 py-1 hud-telemetry-chip rounded-pill mb-2 mb-lg-2"
+     style={{ flexShrink: 0, willChange: "transform, opacity" }}>
+     <span className="pulse-cyan" aria-hidden="true" />
+     <span className="text-light fw-medium font-syne tracking-wide py-2"
+       style={{ fontSize: "0.65rem", letterSpacing: "0.22em", lineHeight: 1, whiteSpace: "nowrap" }}>
+       {"// STATUS: OPEN TO SWE & AI ROLES"}
      </span>
-   </div>
+   </motion.div>
 
-2. Role Subheading:
-   <div className="font-michroma text-uppercase fw-semibold tracking-scifi mb-2"
-        style={{ fontSize: "0.6rem", color: "#00f2fe" }}>
+2. Role Subheading (.hero-role-text):
+   <motion.div variants={roleVariants}
+     className="font-syne text-uppercase fw-semibold tracking-scifi hero-role-text mb-2">
      Full Stack Engineer &bull; Applied AI Architect
-   </div>
+   </motion.div>
+   * CSS: font-size: 0.65rem; color: #00f2fe; white-space: nowrap;
+     @media (min-width: 576px): font-size: clamp(0.72rem, 1.8vw, 0.8rem);
 
-3. Display Title (H1):
-   <h1 className="font-bruno display-4 text-uppercase text-white tracking-scifi cyber-title-glow">
-     KIRAN CHAND S
-   </h1>
+3. Display Title (H1 / CyberFlickerTitle):
+   <CyberFlickerTitle
+     text={PERSONAL_INFO.name}
+     variants={titleVariants}
+     className="font-bruno display-4 text-uppercase text-white tracking-scifi cyber-title-glow my-2 my-sm-2 mb-lg-2 px-5 px-md-0 py-md-4 py-lg-2"
+   />
+   * Uses non-linear deterministic coprime letter scrambling with slow neon flicker:
+     @keyframes cyberLetterSlowFlicker (1.15s cubic-bezier(0.22, 1, 0.36, 1))
 
 4. Tagline (H2):
-   <h2 className="font-orbitron h6 text-light text-opacity-90 fw-normal tracking-wide lh-base">
-     Architecting Scalable Web Ecosystems & Real-Time Intelligence
-   </h2>
+   <motion.h2 variants={taglineVariants}
+     className="font-space-grotesk h6 text-light text-opacity-90 fw-normal tracking-wide lh-base mb-2 mb-lg-3 pe-lg-3">
+     Architecting Scalable Web Ecosystems &amp; Real-Time Intelligence
+   </motion.h2>
 
 5. Description Paragraph:
-   <p className="font-oxanium text-light text-opacity-50"
-      style={{ fontSize: "0.6rem", lineHeight: "1.75", letterSpacing: "0.035em" }}>
-     Description text with highlighted keywords in <span style={{ color: "#00f2fe" }}>...</span>
-   </p>
+   <motion.p variants={descVariants}
+     className="mt-2 mt-lg-4 font-outfit text-light text-opacity-50 mb-3 pe-lg-4"
+     style={{ fontSize: "0.6rem", lineHeight: "1.75", letterSpacing: "0.035em", maxWidth: isCentered ? "680px" : "100%" }}>
+     Engineering high-throughput backends (<span style={{ color: "#00f2fe" }}>Django REST, WebSockets, AWS</span>) paired with reactive user interfaces and sub-second applied AI inference pipelines.
+   </motion.p>
+
+6. Action Buttons Group:
+   <motion.div variants={buttonsVariants}
+     className={`font-syncopate d-flex flex-wrap gap-3 mt-2 mt-lg-3 mb-1 ${isCentered ? "justify-content-center" : "justify-content-start"}`}>
+     <Link href="/projects" className="btn btn-neon-cyan px-4 py-2 rounded-pill tracking-wider text-uppercase" style={{ fontSize: "0.5rem" }}>
+       <i className="bi bi-cpu-fill me-2"></i> Explore Projects &rarr;
+     </Link>
+     <Link href="/contact" className="btn btn-cyber-glass px-4 py-2 rounded-pill tracking-wider text-uppercase" style={{ fontSize: "0.5rem" }}>
+       Let&apos;s Connect
+     </Link>
+   </motion.div>
 
 4. BUTTON STYLES & INTERACTION
 --------------------------------------------------------------------------------
-Primary Button (Neon Glow):
-- Class: btn btn-neon-cyan px-4 py-2 rounded-pill tracking-wider text-uppercase font-zendots
-- Inline Style: style={{ fontSize: "0.5rem" }} or "0.6rem"
-- Visual: Cyan-to-blue gradient, bold dark text, glowing shadow, translateY(-2px) hover
+Button Typography Wrapper:
+- Container class: .font-syncopate
 
-Secondary Button (Glassmorphic):
-- Class: btn btn-cyber-glass px-4 py-2 rounded-pill tracking-wider text-uppercase font-zendots
-- Inline Style: style={{ fontSize: "0.5rem" }} or "0.6rem"
-- Visual: Dark translucent glass, 1px cyan border, blur(16px), cyan border/glow on hover
+Primary Button (Neon Cyan):
+- Classes: btn btn-neon-cyan px-4 py-2 rounded-pill tracking-wider text-uppercase
+- Inline Style: style={{ fontSize: "0.5rem" }}
+- Base: background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+  color: #02040a; font-weight: 700; border: none;
+  box-shadow: 0 0 25px rgba(0, 242, 254, 0.45), 0 4px 15px rgba(0, 0, 0, 0.5);
+- Hover: background: linear-gradient(135deg, #38f9d7 0%, #00f2fe 100%);
+  color: #000; box-shadow: 0 0 35px rgba(0, 242, 254, 0.75), 0 6px 20px rgba(0, 0, 0, 0.6);
+  transform: translateY(-2px);
+
+Secondary Button (Cyber Glass):
+- Classes: btn btn-cyber-glass px-4 py-2 rounded-pill tracking-wider text-uppercase
+- Inline Style: style={{ fontSize: "0.5rem" }}
+- Base: background: rgba(8, 15, 30, 0.65); backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 242, 254, 0.3); color: #f8fafc;
+  box-shadow: 0 0 15px rgba(0, 242, 254, 0.1);
+- Hover: background: rgba(0, 242, 254, 0.15); border-color: rgba(0, 242, 254, 0.7);
+  color: #00f2fe; box-shadow: 0 0 25px rgba(0, 242, 254, 0.4);
+  transform: translateY(-2px);
 
 5. HUD & TELEMETRY INDICATORS
 --------------------------------------------------------------------------------
 Pulsing Cyan Status Dot:
 - Class: .pulse-cyan
 - CSS:
+  display: inline-block;
   width: 8px;
   height: 8px;
+  flex-shrink: 0;
+  contain: layout paint;
   background-color: #00f2fe;
   border-radius: 50%;
   box-shadow: 0 0 10px #00f2fe;
   animation: pulseCyan 2s infinite;
+  transform-origin: center center;
+  will-change: transform, box-shadow;
 
 Telemetry Chip:
 - Class: .hud-telemetry-chip
@@ -124,10 +177,18 @@ Telemetry Chip:
   background: rgba(3, 7, 18, 0.75);
   border: 1px solid rgba(0, 242, 254, 0.25);
   backdrop-filter: blur(12px);
-  font-family: 'JetBrains Mono', monospace;
+  -webkit-backdrop-filter: blur(12px);
+  font-size: 0.75rem;
   color: #94a3b8;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 
-6. CARD & MEDIA PATTERNS (HeroCardGrid)
+6. CARD & MEDIA PATTERNS (HeroCardGrid & Modal)
 --------------------------------------------------------------------------------
 - Container:
   background: rgba(3, 7, 18, 0.85);
@@ -137,34 +198,43 @@ Telemetry Chip:
   overflow: hidden;
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 242, 254, 0.12);
 
-- Card Image Zoom on Hover:
-  Image inside wrapper has transition: transform 0.4s ease;
-  Hover scales image: transform: scale(1.06);
-
-- Bottom Shadow Overlay:
-  background: linear-gradient(to top, rgba(2, 4, 10, 0.85) 0%, rgba(2, 4, 10, 0.1) 45%, transparent 100%);
+- Hero Grid Wrapper (.hero-grid-container):
+  Desktop: max-width: 440px; margin: 0 auto; perspective: 1000px; transform: translateY(-28px);
+  Tablet (< 992px): max-width: 360px; transform: translateY(-36px);
+  Mobile (< 480px): max-width: 335px; transform: translateY(-24px);
 
 - Floating Card Tag:
+  className: "hero-card-tag font-syne small"
   position: absolute, bottom: 0.65rem, left: 0.75rem, right: 0.75rem
   color: #00f2fe, font-size: 0.7rem, letter-spacing: 0.08em
   text-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
 
-- Asymmetrical Layout Offsets (Sci-Fi Cyber Grid):
+- Asymmetrical Layout Offsets:
   .card-offset-1 { transform: translate(-6px, -12px) rotate(-2.8deg); }
   .card-offset-2 { transform: translate(8px, 16px) rotate(3.2deg); }
   .card-offset-3 { transform: translate(-2px, 8px) rotate(2.2deg); }
   .card-offset-4 { transform: translate(6px, 32px) rotate(-3.5deg); }
-  Hover on cards adds scale(1.02) and subtle translation.
 
-7. SECTION BACKGROUND & OVERLAY FADES
+- Interactive Hoisted Modal:
+  Integrated with <CardDetailModal /> to open 3D interactive detail views
+  without unmounting on viewport resize.
+
+7. SECTION BACKGROUND & OVERLAY ARCHITECTURE
 --------------------------------------------------------------------------------
 - Hero Section Container (.hero-fusion-section):
+  position: relative;
   background-color: #02040a;
   min-height: 100dvh;
-  position: relative;
+  height: 100dvh;
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: 1fr;
   overflow: hidden;
+  Mobile:  background-image: url('/hero-bg-mobile.jpg'); background-position: center bottom; padding-top: 5.5rem; padding-bottom: 3.5rem;
+  Desktop: background-image: url('/hero-bg-desktop.jpg'); background-position: center right; padding-top: 4.5rem; padding-bottom: 1rem;
 
-- Responsive Overlays (.hero-fusion-overlay):
+- Static Hero Overlay (.hero-fusion-overlay):
+  position: absolute; inset: 0; pointer-events: none; z-index: 1;
   Desktop (>= 992px):
     background:
       linear-gradient(to right, rgba(2, 4, 10, 0.94) 0%, rgba(2, 4, 10, 0.7) 45%, rgba(2, 4, 10, 0.12) 75%, transparent 100%),
@@ -173,27 +243,56 @@ Telemetry Chip:
     background:
       linear-gradient(to bottom, rgba(2, 4, 10, 0.7) 0%, rgba(2, 4, 10, 0.4) 40%, rgba(2, 4, 10, 0.85) 100%);
 
-8. FRAMER-MOTION ANIMATION GUIDELINES
+- Dynamic Overview Layer (.overview-bg-layer):
+  Sweeps up from y: "100%" to "0%" with duration: 0.55s, ease: "linear" during Slide 2 -> 3 transition.
+
+- Text Vertical Alignment Offset (md+ screens):
+  .hero-slide-1-text, .hero-slide-2-text { position: relative; top: -20px; }
+
+8. FRAMER-MOTION ANIMATION VARIANTS (HomeHero.tsx)
 --------------------------------------------------------------------------------
-- Sci-Fi Deceleration Curve (Ease Out Expo):
-  ease: [0.16, 1, 0.3, 1]
+- textContainerVariants:
+  initial: { opacity: 0 }
+  animate: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.08 } }
+  exit:    { opacity: 0, y: -28, filter: "blur(8px)", transition: { duration: 0.45, ease: "easeIn" } }
 
-- Spring Physics (Cards / Grid):
-  { type: "spring", stiffness: 150, damping: 20, mass: 1 }
+- chipVariants:
+  initial: { opacity: 0, y: -8, scale: 0.95 }
+  animate: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } }
 
-- Blur-In Transitions (Elements de-cloaking into view):
+- roleVariants:
+  initial: { opacity: 0, y: 14, filter: "blur(6px)" }
+  animate: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.75, ease: [0.16, 1, 0.3, 1] } }
+
+- titleVariants:
   initial: { opacity: 0, y: 24, scale: 0.94, filter: "blur(14px)" }
   animate: { opacity: 1, y: 0, scale: 1, filter: "blur(0px)", transition: { duration: 0.85, ease: [0.16, 1, 0.3, 1] } }
 
-- Container Staggering:
-  transition: { staggerChildren: 0.1, delayChildren: 0.08 }
+- taglineVariants:
+  initial: { opacity: 0, y: 16, filter: "blur(4px)" }
+  animate: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] } }
+
+- descVariants:
+  initial: { opacity: 0, y: 14 }
+  animate: { opacity: 1, y: 0, transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] } }
+
+- buttonsVariants:
+  initial: { opacity: 0, y: 16, scale: 0.94 }
+  animate: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } }
+
+- Slide Transitions:
+  Enter: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] } }
+  Exit:  { opacity: 0, y: -20, filter: "blur(10px)", transition: { duration: 0.35, ease: "easeInOut" } }
 
 ================================================================================
 REUSABLE CHEAT-SHEET FOR OTHER SECTIONS:
-- Section Headers: Use .font-orbitron or .font-bruno with .tracking-scifi or .tracking-wider
-- Category/Status Chips: Use .hud-telemetry-chip .rounded-pill + .pulse-cyan + .font-michroma
-- Primary Action: .btn .btn-neon-cyan .rounded-pill .font-zendots
-- Secondary Action: .btn .btn-cyber-glass .rounded-pill .font-zendots
-- Cards: .hero-card-inner (or .glass-panel) + 1px solid rgba(0,242,254,0.25) + blur(16px)
+- Section Headers: Use .font-syne or .font-bruno with .tracking-scifi or .tracking-wider
+- Category/Status Chips: Use .hud-telemetry-chip .rounded-pill + .pulse-cyan + .font-syne
+- Role/Subheadings: Use .font-syne .fw-semibold .tracking-scifi + color: #00f2fe
+- Body/Narrative Copy: Use .font-outfit text-light text-opacity-50
+- Secondary Headings: Use .font-space-grotesk
+- Primary Action: .btn .btn-neon-cyan .rounded-pill inside .font-syncopate wrapper
+- Secondary Action: .btn .btn-cyber-glass .rounded-pill inside .font-syncopate wrapper
+- Cards: .glass-panel (or .hero-card-inner) + 1px solid rgba(0,242,254,0.25) + blur(16px)
 - Text Accents: Inline <span style={{ color: "#00f2fe" }}> or .cyber-title-glow
 ================================================================================

@@ -45,7 +45,7 @@ export const PERSONAL_INFO = {
   phone: "+91 8848314304",
   linkedin: "https://linkedin.com/in/kiranchand-s",
   github: "https://github.com/kiran-atcore",
-  resumeUrl: "/resume.pdf",
+  resumeUrl: "/Kiran_Chand_S_CV.pdf",
   bio: "Computer Science graduate and full-stack engineer experienced in architecting scalable web and mobile applications using Next.js, React Native, Python, and Django REST. Passionate about real-time systems, cron workflows, cloud infrastructure (AWS), and integrating cutting-edge AI models into practical business solutions.",
   stats: [
     { label: "Production & AI Projects", value: "4+" },

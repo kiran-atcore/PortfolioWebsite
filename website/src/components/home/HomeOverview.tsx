@@ -221,16 +221,32 @@ export default function HomeOverview({
                     </div>
                   </div>
 
-                  <div className="d-flex justify-content-end align-items-center mt-3 pt-2 border-top" style={{ borderColor: "rgba(0, 242, 254, 0.12)" }}>
-                    <a
-                      href={PERSONAL_INFO.resumeUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn btn-cyber-glass rounded-pill px-3 py-2 font-syncopate text-uppercase tracking-wider"
-                      style={{ fontSize: "0.58rem" }}
-                    >
-                      <i className="bi bi-file-earmark-arrow-down me-1" style={{ color: "#00f2fe" }}></i> Download Curriculum Vitae &rarr;
-                    </a>
+                  <div className="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2 mt-3 pt-2 border-top" style={{ borderColor: "rgba(0, 242, 254, 0.12)" }}>
+                    <div className="d-flex align-items-center gap-2 font-space-grotesk text-light text-opacity-50" style={{ fontSize: "0.6rem", letterSpacing: "0.1em" }}>
+                      <span className="pulse-cyan" style={{ width: "6px", height: "6px" }} aria-hidden="true"></span>
+                      <span>{"// ARCHIVE: KIRAN_CHAND_S_CV.PDF"}</span>
+                    </div>
+                    <div className="d-flex align-items-center gap-2">
+                      <a
+                        href={PERSONAL_INFO.resumeUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn btn-cyber-glass rounded-pill px-3 py-2 font-syncopate text-uppercase tracking-wider d-inline-flex align-items-center gap-1"
+                        style={{ fontSize: "0.56rem" }}
+                        title="View CV in browser"
+                      >
+                        <i className="bi bi-eye" style={{ color: "#38f9d7" }}></i> View CV
+                      </a>
+                      <a
+                        href={PERSONAL_INFO.resumeUrl}
+                        download="Kiran_Chand_S_CV.pdf"
+                        className="btn btn-neon-cyan rounded-pill px-3 py-2 font-syncopate text-uppercase tracking-wider d-inline-flex align-items-center gap-1"
+                        style={{ fontSize: "0.56rem" }}
+                        title="Download CV file"
+                      >
+                        <i className="bi bi-file-earmark-arrow-down"></i> Download CV &rarr;
+                      </a>
+                    </div>
                   </div>
                 </motion.div>
               )}

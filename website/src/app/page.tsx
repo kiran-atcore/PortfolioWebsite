@@ -1,6 +1,5 @@
 import Navbar from "../components/Navbar";
 import HomeHero from "../components/home/HomeHero";
-import Footer from "../components/Footer";
 
 export default function Home() {
   return (
@@ -9,7 +8,6 @@ export default function Home() {
       <main className="flex-grow-1">
         <HomeHero />
       </main>
-      <Footer />
     </div>
   );
 }

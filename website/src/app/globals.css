@@ -167,6 +167,550 @@ body::after {
   border-color: rgba(255, 255, 255, 0.25);
 }
 
+/* About Slide Typography Responsive Hierarchy (<sm, sm & md, md & lg, >lg) */
+.about-telemetry-badge-text {
+  font-size: 0.54rem;
+  letter-spacing: 0.16em;
+}
+
+.about-slide-title {
+  font-size: 1.25rem;
+  line-height: 1.2;
+}
+
+.about-slide-subtitle {
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+}
+
+/* sm & md: 576px to 767.98px */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .about-telemetry-badge-text {
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+  }
+
+  .about-slide-title {
+    font-size: 1.55rem;
+  }
+
+  .about-slide-subtitle {
+    font-size: 0.76rem;
+    letter-spacing: 0.12em;
+  }
+}
+
+/* md & lg: 768px to 991.98px */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .about-telemetry-badge-text {
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+  }
+
+  .about-slide-title {
+    font-size: 1.9rem;
+  }
+
+  .about-slide-subtitle {
+    font-size: 0.86rem;
+    letter-spacing: 0.14em;
+  }
+}
+
+/* > lg: >= 992px */
+@media (min-width: 992px) {
+  .about-telemetry-badge-text {
+    font-size: 0.74rem;
+    letter-spacing: 0.22em;
+  }
+
+  .about-slide-title {
+    font-size: 2.25rem;
+  }
+
+  .about-slide-subtitle {
+    font-size: 0.98rem;
+    letter-spacing: 0.16em;
+  }
+}
+
+/* About Philosophy Narrative Card (<sm, sm & md, md & lg, >lg) */
+.about-philosophy-card {
+  width: 100%;
+  max-width: 94vw;
+  margin-top: 1rem;
+  padding: 1.2rem 1.2rem;
+  border-radius: 1rem;
+  background: rgba(4, 9, 22, 0.82);
+  border: 1px solid rgba(0, 242, 254, 0.22);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.65), 0 0 20px rgba(0, 242, 254, 0.08), inset 0 1px 1px rgba(0, 242, 254, 0.35);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.about-philosophy-status {
+  font-size: 0.52rem;
+  letter-spacing: 0.14em;
+}
+
+.about-philosophy-bio {
+  font-size: 0.74rem;
+  line-height: 1.45;
+}
+
+.about-philosophy-quote {
+  font-size: 0.70rem;
+  line-height: 1.4;
+}
+
+.about-philosophy-btn {
+  font-size: 0.52rem;
+  padding: 4px 10px;
+}
+
+/* sm & md: 576px to 767.98px */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .about-philosophy-card {
+    max-width: 540px;
+    margin-top: 1rem;
+    padding: 1.1rem 1.25rem;
+    border-radius: 1.15rem;
+  }
+
+  .about-philosophy-status {
+    font-size: 0.56rem;
+    letter-spacing: 0.16em;
+  }
+
+  .about-philosophy-bio {
+    font-size: 0.80rem;
+    line-height: 1.5;
+  }
+
+  .about-philosophy-quote {
+    font-size: 0.75rem;
+    line-height: 1.45;
+  }
+
+  .about-philosophy-btn {
+    font-size: 0.58rem;
+    padding: 6px 14px;
+  }
+}
+
+/* md & lg: 768px to 991.98px */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .about-philosophy-card {
+    max-width: 660px;
+    margin-top: 1.25rem;
+    padding: 1.35rem 1.5rem;
+    border-radius: 1.25rem;
+  }
+
+  .about-philosophy-status {
+    font-size: 0.60rem;
+    letter-spacing: 0.18em;
+  }
+
+  .about-philosophy-bio {
+    font-size: 0.86rem;
+    line-height: 1.55;
+  }
+
+  .about-philosophy-quote {
+    font-size: 0.80rem;
+    line-height: 1.5;
+  }
+
+  .about-philosophy-btn {
+    font-size: 0.62rem;
+    padding: 7px 16px;
+  }
+}
+
+/* > lg: >= 992px */
+@media (min-width: 992px) {
+  .about-philosophy-card {
+    max-width: 740px;
+    margin-top: 1.5rem;
+    padding: 1.6rem 1.85rem;
+    border-radius: 1.35rem;
+  }
+
+  .about-philosophy-status {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+  }
+
+  .about-philosophy-bio {
+    font-size: 0.92rem;
+    line-height: 1.6;
+  }
+
+  .about-philosophy-quote {
+    font-size: 0.85rem;
+    line-height: 1.55;
+  }
+
+  .about-philosophy-btn {
+    font-size: 0.68rem;
+    padding: 8px 18px;
+  }
+}
+
+/* About Architecture Slide Responsive Cards (<sm, sm & md, md & lg, >lg) */
+.about-arch-grid {
+  max-width: 94vw;
+  margin-top: 0.1rem;
+}
+
+.about-arch-card {
+  height: 100%;
+  padding: 0.6rem 0.95rem;
+  border-radius: 0.9rem;
+  background: rgba(4, 9, 22, 0.82);
+  border: 1px solid rgba(0, 242, 254, 0.22);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55), 0 0 14px rgba(0, 242, 254, 0.08), inset 0 1px 1px rgba(0, 242, 254, 0.25);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+  overflow: hidden;
+}
+
+.about-arch-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(0, 242, 254, 0.45);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.65), 0 0 18px rgba(0, 242, 254, 0.16);
+}
+
+.about-arch-icon {
+  font-size: 0.8rem;
+}
+
+.about-arch-badge {
+  font-size: 0.45rem;
+  letter-spacing: 0.12em;
+  padding: 2px 7px;
+  background: rgba(0, 242, 254, 0.08);
+  color: #00f2fe;
+  border: 1px solid rgba(0, 242, 254, 0.25);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.about-arch-card-title {
+  font-size: 0.74rem;
+  letter-spacing: 0.03em;
+  margin-bottom: 0.25rem;
+  line-height: 1.25;
+}
+
+.about-arch-card-desc {
+  font-size: 0.64rem;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+}
+
+.about-arch-btn {
+  font-size: 0.52rem;
+  padding: 5px 12px;
+}
+
+/* sm & md: 576px to 767.98px */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .about-arch-grid {
+    max-width: 600px;
+    margin-top: 1.5rem;
+  }
+
+  .about-arch-card {
+    padding: 0.85rem 0.85rem;
+    border-radius: 1rem;
+  }
+
+  .about-arch-icon {
+    font-size: 1.5rem;
+  }
+
+  .about-arch-badge {
+    font-size: 0.50rem;
+    letter-spacing: 0.12em;
+    padding: 2px 6px;
+  }
+
+  .about-arch-card-title {
+    font-size: 0.85rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .about-arch-card-desc {
+    font-size: 0.65rem;
+    line-height: 1.38;
+  }
+
+  .about-arch-btn {
+    font-size: 0.56rem;
+    padding: 6px 14px;
+  }
+}
+
+/* md & lg: 768px to 991.98px */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .about-arch-grid {
+    max-width: 740px;
+    margin-top: 0.3rem;
+  }
+
+  .about-arch-card {
+    padding: 1.1rem 1.15rem;
+    border-radius: 1.15rem;
+  }
+
+  .about-arch-icon {
+    font-size: 1.8rem;
+  }
+
+  .about-arch-badge {
+    font-size: 0.54rem;
+    letter-spacing: 0.14em;
+    padding: 3px 8px;
+  }
+
+  .about-arch-card-title {
+    font-size: 1rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .about-arch-card-desc {
+    font-size: 0.70rem;
+    line-height: 1.42;
+  }
+
+  .about-arch-btn {
+    font-size: 0.60rem;
+    padding: 7px 16px;
+  }
+}
+
+/* > lg: >= 992px */
+@media (min-width: 992px) {
+  .about-arch-grid {
+    max-width: 900px;
+    margin-top: 1.35rem;
+  }
+
+  .about-arch-card {
+    padding: 1.35rem 1.9rem;
+    border-radius: 1.25rem;
+  }
+
+  .about-arch-icon {
+    font-size: 1.35rem;
+  }
+
+  .about-arch-badge {
+    font-size: 0.58rem;
+    letter-spacing: 0.16em;
+    padding: 3px 10px;
+  }
+
+  .about-arch-card-title {
+    font-size: 0.90rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .about-arch-card-desc {
+    font-size: 0.76rem;
+    line-height: 1.48;
+  }
+
+  .about-arch-btn {
+    font-size: 0.65rem;
+    padding: 8px 18px;
+  }
+}
+
+/* About Telemetry & Facts Responsive Cards (<sm, sm & md, md & lg, >lg) */
+.about-telemetry-grid {
+  max-width: 94vw;
+  margin-top: 0.2rem;
+}
+
+.about-telemetry-card {
+  padding: 0.55rem 0.75rem;
+  border-radius: 0.85rem;
+  background: rgba(4, 9, 22, 0.82);
+  border: 1px solid rgba(0, 242, 254, 0.22);
+  border-left: 2.5px solid rgba(0, 242, 254, 0.5);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55), 0 0 14px rgba(0, 242, 254, 0.08), inset 0 1px 1px rgba(0, 242, 254, 0.25);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease, border-color 0.28s ease;
+  overflow: hidden;
+}
+
+.about-telemetry-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(0, 242, 254, 0.45);
+  border-left-color: #00f2fe;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.65), 0 0 18px rgba(0, 242, 254, 0.18);
+}
+
+.about-telemetry-icon-box {
+  width: 32px;
+  height: 32px;
+  border-radius: 0.55rem;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  background: rgba(0, 242, 254, 0.08);
+  border: 1px solid rgba(0, 242, 254, 0.3);
+  color: #00f2fe;
+  box-shadow: 0 0 10px rgba(0, 242, 254, 0.12);
+}
+
+.about-telemetry-label {
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
+}
+
+.about-telemetry-badge {
+  font-size: 0.45rem;
+  letter-spacing: 0.1em;
+  padding: 2px 6px;
+  background: rgba(0, 242, 254, 0.08);
+  color: #00f2fe;
+  border: 1px solid rgba(0, 242, 254, 0.25);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.about-telemetry-val {
+  font-size: 0.65rem;
+  line-height: 1.3;
+  word-break: break-word;
+  overflow: hidden;
+}
+
+.about-telemetry-btn {
+  font-size: 0.52rem;
+  padding: 5px 12px;
+}
+
+/* sm & md: 576px to 767.98px */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .about-telemetry-grid {
+    max-width: 600px;
+    margin-top: 0.85rem;
+  }
+
+  .about-telemetry-card {
+    padding: 0.70rem 0.85rem;
+    border-radius: 0.95rem;
+  }
+
+  .about-telemetry-icon-box {
+    width: 36px;
+    height: 36px;
+    font-size: 0.95rem;
+  }
+
+  .about-telemetry-label {
+    font-size: 0.70rem;
+  }
+
+  .about-telemetry-badge {
+    font-size: 0.48rem;
+    padding: 2px 6px;
+  }
+
+  .about-telemetry-val {
+    font-size: 0.68rem;
+    line-height: 1.32;
+  }
+
+  .about-telemetry-btn {
+    font-size: 0.56rem;
+    padding: 6px 14px;
+  }
+}
+
+/* md & lg: 768px to 991.98px */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .about-telemetry-grid {
+    max-width: 740px;
+    margin-top: 0.65rem;
+  }
+
+  .about-telemetry-card {
+    padding: 0.85rem 1rem;
+    border-radius: 1.05rem;
+  }
+
+  .about-telemetry-icon-box {
+    width: 42px;
+    height: 42px;
+    font-size: 1.1rem;
+  }
+
+  .about-telemetry-label {
+    font-size: 0.75rem;
+  }
+
+  .about-telemetry-badge {
+    font-size: 0.52rem;
+    padding: 2px 7px;
+  }
+
+  .about-telemetry-val {
+    font-size: 0.72rem;
+    line-height: 1.35;
+  }
+
+  .about-telemetry-btn {
+    font-size: 0.60rem;
+    padding: 7px 16px;
+  }
+}
+
+/* > lg: >= 992px */
+@media (min-width: 992px) {
+  .about-telemetry-grid {
+    max-width: 860px;
+    margin-top: 1.15rem;
+  }
+
+  .about-telemetry-card {
+    padding: 1.05rem 1.25rem;
+    border-radius: 1.2rem;
+  }
+
+  .about-telemetry-icon-box {
+    width: 46px;
+    height: 46px;
+    font-size: 1.25rem;
+  }
+
+  .about-telemetry-label {
+    font-size: 0.80rem;
+  }
+
+  .about-telemetry-badge {
+    font-size: 0.55rem;
+    padding: 3px 8px;
+  }
+
+  .about-telemetry-val {
+    font-size: 0.78rem;
+    line-height: 1.4;
+  }
+
+  .about-telemetry-btn {
+    font-size: 0.65rem;
+    padding: 8px 18px;
+  }
+}
+
 /* Bottom Floating Dock - Prismatic Obsidian Glass (HomeHero Cyber Cyan Theme) */
 .floating-dock-container {
   position: fixed;
@@ -951,7 +1495,6 @@ body {
   }
 
   .connect-slide-footer {
-    margin-top: auto !important;
     padding-top: 0.35rem !important;
   }
 }
@@ -970,10 +1513,6 @@ body {
   .connect-section-desc {
     font-size: 0.68rem;
   }
-
-  .connect-slide-footer {
-    margin-top: auto !important;
-  }
 }
 
 /* Tier 3: Medium to Large (768px - 991px) */
@@ -990,10 +1529,6 @@ body {
   .connect-section-desc {
     font-size: 0.74rem;
   }
-
-  .connect-slide-footer {
-    margin-top: auto !important;
-  }
 }
 
 /* Tier 4: Large Desktop (>= 992px) */
@@ -1009,10 +1544,6 @@ body {
 
   .connect-section-desc {
     font-size: 0.78rem;
-  }
-
-  .connect-slide-footer {
-    margin-top: auto !important;
   }
 }
 

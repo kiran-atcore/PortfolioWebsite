@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { PERSONAL_INFO } from "../data/portfolioData";
 import SlideTelemetryHUD from "./ui/SlideTelemetryHUD";
+import AboutControls from "./about/AboutControls";
 import { subscribeSlideState, SlideStatePayload } from "@/lib/slideEvents";
 
 export default function Navbar() {
@@ -95,7 +96,8 @@ export default function Navbar() {
               />
             </div>
           </Link>
-          <SlideTelemetryHUD />
+          {pathname === "/" && <SlideTelemetryHUD />}
+          {(pathname === "/about" || pathname.startsWith("/about")) && <AboutControls />}
         </div>
       </header>
 
