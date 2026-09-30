@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { PERSONAL_INFO } from "../../data/portfolioData";
 import HeroCardGrid from "./HeroCardGrid";
@@ -31,6 +32,8 @@ export default function HomeHero() {
   const touchStartY = useRef(0);
 
   const isDesktop = windowWidth >= 992;
+
+  const isNarrow = useMediaQuery("(max-width: 400px)");
 
   // Phase-by-phase transition: Slide 2 -> Slide 3
   // 1) outro animation of slide 2 (~500ms)
@@ -534,41 +537,82 @@ export default function HomeHero() {
   };
 
   const renderHeroTextContent = (isCentered = false) => (
-    <div className={`w-100 d-flex flex-column ${isCentered ? "align-items-center text-center" : "align-items-start text-start"}`}>
+    <div
+      className={`w-100 d-flex flex-column ${isCentered ? "align-items-center text-center" : "align-items-start text-start"}`}
+      style={{ minWidth: 0, maxWidth: "100%" }}
+    >
       <motion.div
         variants={chipVariants}
-        className="d-inline-flex align-items-center text-nowrap gap-2 px-3 py-1 hud-telemetry-chip rounded-pill mb-2 mb-lg-2"
-        style={{ flexShrink: 0, willChange: "transform, opacity" }}
+        className={`d-inline-flex align-items-center text-nowrap gap-2 ${isNarrow ? "px-2 py-0 mb-1" : "px-3 py-1 mb-2 mb-lg-2"} hud-telemetry-chip rounded-pill`}
+        style={{ flexShrink: 0, willChange: "transform, opacity", maxWidth: "100%" }}
       >
         <span className="pulse-cyan" aria-hidden="true"></span>
-        <span className="text-light fw-medium font-syne tracking-wide py-2" style={{ fontSize: "0.65rem", letterSpacing: "0.22em", lineHeight: 1, whiteSpace: "nowrap" }}>
+        <span
+          className="text-light fw-medium font-syne tracking-wide py-1 py-sm-2"
+          style={{
+            fontSize: isNarrow ? "0.6rem" : "0.65rem",
+            letterSpacing: isNarrow ? "0.2em" : "0.22em",
+            lineHeight: 1,
+            whiteSpace: "nowrap",
+          }}
+        >
           {"// STATUS: OPEN TO SWE & AI ROLES"}
         </span>
       </motion.div>
 
-      <motion.div variants={roleVariants} className="font-syne text-uppercase fw-semibold tracking-scifi hero-role-text mb-2">
+      <motion.div
+        variants={roleVariants}
+        className="font-syne text-uppercase fw-semibold tracking-scifi hero-role-text mb-2"
+        style={isNarrow ? { fontSize: "0.75rem", letterSpacing: "0.19em", whiteSpace: "normal", textAlign: "center" } : undefined}
+      >
         Full Stack Engineer &bull; Applied AI Architect
       </motion.div>
 
       <CyberFlickerTitle
         text={PERSONAL_INFO.name}
         variants={titleVariants}
-        className="font-bruno display-4 text-uppercase text-white tracking-scifi cyber-title-glow my-2 my-sm-2 mb-lg-2 px-5 px-md-0 py-md-4 py-lg-2"
+        style={isNarrow ? { fontSize: "2rem", lineHeight: "1.3" } : undefined}
+        className={`font-bruno ${isNarrow ? "px-1 my-3 mb-4" : "display-4 px-3 px-sm-5 my-2 my-sm-2"} text-uppercase text-white tracking-scifi cyber-title-glow mb-lg-2 px-md-0 py-md-4 py-lg-2`}
       />
 
-      <motion.h2 variants={taglineVariants} className="font-space-grotesk h6 text-light text-opacity-90 fw-normal tracking-wide lh-base mb-2 mb-lg-3 pe-lg-3">
+      <motion.h2
+        variants={taglineVariants}
+        className={`font-space-grotesk ${isNarrow ? "h6 mb-1" : "h6 mb-2 mb-lg-3"} text-light text-opacity-90 fw-normal tracking-wide lh-base pe-lg-3`}
+        style={isNarrow ? { fontSize: "0.88rem", lineHeight: "1.3" } : undefined}
+      >
         Architecting Scalable Web Ecosystems &amp; Real-Time Intelligence
       </motion.h2>
 
-      <motion.p variants={descVariants} className="mt-2 mt-lg-4 font-outfit text-light text-opacity-50 mb-3 pe-lg-4" style={{ fontSize: "0.6rem", lineHeight: "1.75", letterSpacing: "0.035em", maxWidth: isCentered ? "680px" : "100%" }}>
+      <motion.p
+        variants={descVariants}
+        className={`${isNarrow ? "mt-1 mb-5 px-2" : "mt-2 mt-lg-4 mb-3"} font-outfit text-light text-opacity-50 pe-lg-4`}
+        style={{
+          fontSize: isNarrow ? "0.55rem" : "0.6rem",
+          lineHeight: isNarrow ? "1.55" : "1.75",
+          letterSpacing: "0.035em",
+          maxWidth: isCentered ? "680px" : "100%",
+        }}
+      >
         Engineering high-throughput backends (<span style={{ color: "#00f2fe" }}>Django REST, WebSockets, AWS</span>) paired with reactive user interfaces and sub-second applied AI inference pipelines.
       </motion.p>
 
-      <motion.div variants={buttonsVariants} className={`font-syncopate d-flex flex-wrap gap-3 mt-2 mt-lg-3 mb-1 ${isCentered ? "justify-content-center" : "justify-content-start"}`}>
-        <Link href="/projects" className="btn btn-neon-cyan px-4 py-2 rounded-pill tracking-wider text-uppercase" style={{ fontSize: "0.5rem" }}>
-          <i className="bi bi-cpu-fill me-2"></i> Explore Projects &rarr;
+      <motion.div
+        variants={buttonsVariants}
+        className={`font-syncopate d-flex flex-wrap ${isNarrow ? "gap-2 mt-1" : "gap-3 mt-2 mt-lg-3"} mb-1 ${isCentered ? "justify-content-center" : "justify-content-start"} w-100`}
+        style={{ minWidth: 0 }}
+      >
+        <Link
+          href="/projects"
+          className={`btn btn-neon-cyan ${isNarrow ? "px-3 py-1.5" : "px-4 py-2"} rounded-pill tracking-wider text-uppercase`}
+          style={{ fontSize: isNarrow ? "0.48rem" : "0.5rem" }}
+        >
+          <i className="bi bi-cpu-fill me-1.5 me-sm-2"></i> Explore Projects &rarr;
         </Link>
-        <Link href="/contact" className="btn btn-cyber-glass px-4 py-2 rounded-pill tracking-wider text-uppercase" style={{ fontSize: "0.5rem" }}>
+        <Link
+          href="/contact"
+          className={`btn btn-cyber-glass ${isNarrow ? "px-3 py-1.5" : "px-4 py-2"} rounded-pill tracking-wider text-uppercase`}
+          style={{ fontSize: isNarrow ? "0.48rem" : "0.5rem" }}
+        >
           Let&apos;s Connect
         </Link>
       </motion.div>
@@ -597,8 +641,8 @@ export default function HomeHero() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0, transition: { duration: 0.1 } }}
-            className="container position-relative h-100 d-flex flex-column justify-content-center hero-slides-container"
-            style={{ zIndex: 2 }}
+            className={`container-fluid container-sm position-relative h-100 d-flex flex-column justify-content-center align-items-center hero-slides-container ${isNarrow ? "px-2" : "px-3 px-sm-4"}`}
+            style={{ zIndex: 2, minWidth: 0, maxWidth: "100%", width: "100%" }}
           >
             {isDesktop ? (
               <div className="row w-100 align-items-center m-0 position-relative">

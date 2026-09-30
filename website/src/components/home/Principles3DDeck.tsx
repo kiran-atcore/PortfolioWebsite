@@ -1170,7 +1170,7 @@ export default function Principles3DDeck({ isExiting = false }: Principles3DDeck
 
       {/* Three.js Canvas Background Layer */}
       <div className="position-absolute top-0 start-0 w-100 h-100" style={{ zIndex: 0 }}>
-        <canvas ref={canvasRef} className="w-100 h-100" />
+        <canvas ref={canvasRef} className="w-100 h-100 projector" />
       </div>
 
       {/* Interactive UI Layer */}
@@ -1181,7 +1181,7 @@ export default function Principles3DDeck({ isExiting = false }: Principles3DDeck
           className="flex-grow-1 d-flex align-items-center justify-content-end px-2 px-sm-3 px-lg-5 w-100"
           style={{ perspective: "1200px" }}
         >
-          <div className="w-100 d-flex flex-column align-items-end" style={{ maxWidth: "1200px" }}>
+          <div className="w-100 projector d-flex flex-column align-items-end" style={{ maxWidth: "1200px" }}>
 
             <AnimatePresence mode="wait">
               <motion.div

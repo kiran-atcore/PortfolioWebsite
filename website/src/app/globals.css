@@ -229,7 +229,7 @@ body::after {
   }
 
   .about-slide-subtitle {
-    font-size: 0.98rem;
+    font-size: 0.89rem;
     letter-spacing: 0.16em;
   }
 }
@@ -1069,7 +1069,10 @@ body {
   grid-row: 1;
   grid-column: 1;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   height: 100%;
+  box-sizing: border-box;
 }
 
 .overview-slides-container,
@@ -1765,10 +1768,17 @@ body {
   height: 100dvh;
   display: grid;
   grid-template-rows: 1fr;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   padding-top: 5.5rem;
   padding-bottom: 3.5rem;
   overflow: hidden;
+}
+
+@media (max-width: 400px) {
+  .hero-fusion-section {
+    padding-top: 4.2rem;
+    padding-bottom: 4.5rem;
+  }
 }
 
 @media (min-width: 992px) {
@@ -2206,9 +2216,16 @@ body {
 }
 
 .hero-cyber-card {
+  transform: scale(0.9) !important;
   position: relative;
   z-index: 1;
   transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+
+@media (min-width: 400px) {
+  .hero-cyber-card {
+    transform: scale(1) !important;
+  }
 }
 
 .hero-card-offset-wrapper {
@@ -2451,8 +2468,14 @@ body {
 }
 
 .home-overview-desc {
-  font-size: 0.75rem;
-  letter-spacing: 0.03em;
+  font-size: 0.65rem;
+  letter-spacing: 0.04em;
+}
+
+@media (min-width: 400px) {
+  .home-overview-desc {
+    font-size: 0.75rem;
+  }
 }
 
 @media (min-width: 768px) {
@@ -2761,4 +2784,835 @@ body.modal-open {
 .principles-card-stack.background-card:hover {
   border-color: rgba(0, 242, 254, 0.4) !important;
   opacity: 0.8 !important;
+}
+
+/* ==========================================================================
+   Experience Page Cybernetic Glass Cards & Custom Scrollbar
+   ========================================================================== */
+.cyber-experience-card {
+  background: rgba(4, 9, 22, 0.84);
+  border: 1px solid rgba(0, 242, 254, 0.22);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.65), 0 0 22px rgba(0, 242, 254, 0.08), inset 0 1px 1px rgba(0, 242, 254, 0.35);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cyber-experience-card:hover {
+  border-color: rgba(0, 242, 254, 0.48);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.75), 0 0 32px rgba(0, 242, 254, 0.16), inset 0 1px 1px rgba(0, 242, 254, 0.45);
+}
+
+.cyber-scroll-container {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-behavior: smooth;
+  scrollbar-gutter: stable;
+}
+
+.cyber-scroll-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.cyber-scroll-container::-webkit-scrollbar-track {
+  background: rgba(2, 6, 16, 0.45);
+  border-radius: 9999px;
+  margin: 4px 0;
+}
+
+.cyber-scroll-container::-webkit-scrollbar-thumb {
+  background: rgba(0, 242, 254, 0.3);
+  border-radius: 9999px;
+  border: 1px solid rgba(0, 242, 254, 0.45);
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cyber-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 242, 254, 0.65);
+  box-shadow: 0 0 10px rgba(0, 242, 254, 0.8);
+}
+
+/* Responsive Experience Stage Container (<sm, sm & md, md & lg, >lg) */
+.experience-stage-container {
+  height: 320px;
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .experience-stage-container {
+    height: 300px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .experience-stage-container {
+    height: 320px;
+  }
+}
+
+@media (min-width: 992px) {
+  .experience-stage-container {
+    height: 320px;
+  }
+}
+
+/* Experience Card Typography Hierarchy */
+/* Base: < 576px */
+.exp-card-title {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.exp-card-company {
+  font-size: 0.70rem;
+}
+
+.exp-card-period {
+  font-size: 0.56rem;
+  padding: 2px 8px;
+}
+
+.exp-card-badge {
+  font-size: 0.50rem;
+  padding: 2px 6px;
+}
+
+.exp-card-project-title {
+  font-size: 0.8rem;
+}
+
+.exp-card-section-label {
+  font-size: 0.60rem;
+  letter-spacing: 0.1em;
+  margin-bottom: 2px;
+}
+
+.exp-card-bullet {
+  font-size: 0.66rem;
+  line-height: 1.25;
+}
+
+.exp-card-btn {
+  font-size: 0.50rem;
+  padding: 3px 8px;
+}
+
+.exp-subject-chip {
+  font-size: 0.54rem;
+  padding: 2px 6px;
+}
+
+.principles-deck-wrapper {
+  height: 20px !important;
+}
+
+.principles-offset-wrapper {
+  margin-top: -20px !important;
+}
+
+.principle-desc {
+  font-size: 0.7rem !important;
+}
+
+/* sm & md: 576px to 767.98px */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .exp-card-title {
+    font-size: 1.05rem;
+  }
+
+  .back {
+    font-size: 0.45rem !important;
+  }
+
+  .showcase {
+    font-size: 0.45rem !important;
+  }
+
+  .dom-name {
+    font-size: 0.5rem !important;
+  }
+
+  .exp-card-company {
+    font-size: 0.76rem;
+  }
+
+  .exp-card-period {
+    font-size: 0.62rem;
+    padding: 2px 10px;
+  }
+
+  .exp-card-badge {
+    font-size: 0.54rem;
+    padding: 2px 8px;
+  }
+
+  .exp-card-project-title {
+    font-size: 0.74rem;
+  }
+
+  .exp-card-section-label {
+    font-size: 0.64rem;
+    margin-bottom: 3px;
+  }
+
+  .exp-card-bullet {
+    font-size: 0.72rem;
+    line-height: 1.3;
+  }
+
+  .exp-card-btn {
+    font-size: 0.54rem;
+    padding: 4px 10px;
+  }
+
+  .exp-subject-chip {
+    font-size: 0.58rem;
+    padding: 2px 8px;
+  }
+
+  .projects-filter-btn {
+    font-size: 0.5rem !important;
+  }
+
+  .tree-box {
+    height: 320px !important;
+  }
+}
+
+/* md & lg: 768px to 991.98px */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .exp-card-title {
+    font-size: 1.15rem;
+  }
+
+  .tree-box {
+    height: 300px !important;
+  }
+
+  .dom-name {
+    font-size: 0.5rem !important;
+  }
+
+  .back {
+    font-size: 0.5rem !important;
+  }
+
+  .showcase {
+    font-size: 0.5rem !important;
+  }
+
+  .principles-offset-wrapper {
+    margin-top: -40px !important;
+  }
+
+  .exp-card-company {
+    font-size: 0.80rem;
+  }
+
+  .exp-card-period {
+    font-size: 0.66rem;
+    padding: 3px 12px;
+  }
+
+  .exp-card-badge {
+    font-size: 0.58rem;
+    padding: 2.5px 9px;
+  }
+
+  .exp-card-project-title {
+    font-size: 0.78rem;
+  }
+
+  .exp-card-section-label {
+    font-size: 0.68rem;
+    margin-bottom: 4px;
+  }
+
+  .exp-card-bullet {
+    font-size: 0.76rem;
+    line-height: 1.35;
+  }
+
+  .exp-card-btn {
+    font-size: 0.58rem;
+    padding: 4px 12px;
+  }
+
+  .exp-subject-chip {
+    font-size: 0.62rem;
+    padding: 3px 9px;
+  }
+
+  .phil-btn {
+    flex-direction: row !important;
+  }
+
+  .projects-filter-btn {
+    font-size: 0.55rem !important;
+    letter-spacing: 2px !important;
+  }
+}
+
+/* > lg: >= 992px */
+@media (min-width: 992px) {
+  .exp-card-title {
+    font-size: 1.25rem;
+  }
+
+  .tree-box {
+    height: 300px !important;
+  }
+
+  .back {
+    font-size: 0.55rem !important;
+  }
+
+  .showcase {
+    font-size: 0.55rem !important;
+  }
+
+  .dom-name {
+    font-size: 0.5rem !important;
+  }
+
+  .exp-card-company {
+    font-size: 0.84rem;
+  }
+
+  .exp-card-period {
+    font-size: 0.70rem;
+    padding: 3px 14px;
+  }
+
+  .exp-card-badge {
+    font-size: 0.62rem;
+    padding: 3px 10px;
+  }
+
+  .exp-card-project-title {
+    font-size: 0.82rem;
+  }
+
+  .exp-card-section-label {
+    font-size: 0.72rem;
+    margin-bottom: 5px;
+  }
+
+  .exp-card-bullet {
+    font-size: 0.80rem;
+    line-height: 1.4;
+  }
+
+  .exp-card-btn {
+    font-size: 0.62rem;
+    padding: 5px 14px;
+  }
+
+  .exp-subject-chip {
+    font-size: 0.66rem;
+    padding: 3px 11px;
+  }
+
+  .phil-btn {
+    flex-direction: row !important;
+  }
+
+  .projects-filter-btn {
+    font-size: 0.6rem !important;
+    letter-spacing: 3px !important;
+  }
+}
+
+@media (max-width: 400px) {
+
+  .overview-section-title {
+    font-size: 1rem !important;
+  }
+
+  .telemetry-badge-text {
+    font-size: 0.4rem;
+  }
+
+  .core-toolkit-header {
+    font-size: 0.65rem !important;
+  }
+
+  .principles-section-title {
+    font-size: 0.95rem !important;
+    margin: 10px 0px;
+    padding-bottom: 10px;
+  }
+
+  .principles-deck-wrapper {
+    height: 20px !important;
+  }
+
+  .principle-desc {
+    font-size: 0.6rem !important;
+  }
+
+  .instruction {
+    font-size: 0.35rem !important;
+  }
+
+  .principles-offset-wrapper {
+    margin-top: 0px !important;
+  }
+
+  .about-slide-title {
+    font-size: 1.15rem !important;
+  }
+
+  .about-slide-subtitle {
+    margin-bottom: -5px !important;
+  }
+
+  .philosophy-container {
+    margin-top: 0 !important;
+  }
+
+  .core {
+    font-size: 0.4rem !important;
+  }
+
+  .mindset {
+    font-size: 0.45rem !important;
+    letter-spacing: 0.5 !important;
+  }
+
+  .phil-btn {
+    flex-direction: row !important;
+  }
+
+  .about-telemetry-grid {
+    gap: 5px !important;
+    margin-top: 20px !important;
+  }
+
+  .initialize-contact-btn {
+    margin-top: 15px !important;
+  }
+
+  .experience-stage-container {
+    height: 340px;
+  }
+
+  .exp-card-project-title {
+    font-size: 0.7rem;
+  }
+
+}
+
+/* ==========================================================================
+   Hyper-Bento Cyber-Terminal Projects Theme
+   ========================================================================== */
+.projects-page-wrapper {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  background-color: #030712;
+}
+
+.projects-bg-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.projects-bg-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(circle at 50% 25%, rgba(0, 242, 254, 0.12) 0%, transparent 60%),
+    radial-gradient(circle at 85% 75%, rgba(245, 158, 11, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at center, rgba(2, 4, 10, 0.15) 0%, rgba(2, 4, 10, 0.55) 75%, rgba(2, 4, 10, 0.88) 100%),
+    linear-gradient(to bottom, rgba(4, 9, 20, 0.4) 0%, rgba(2, 4, 10, 0.18) 50%, rgba(2, 4, 10, 0.85) 100%);
+}
+
+.projects-bento-card {
+  position: relative;
+  background: rgba(4, 9, 22, 0.85);
+  border: 1px solid rgba(0, 242, 254, 0.22);
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6), 0 0 16px rgba(0, 242, 254, 0.08), inset 0 1px 1px rgba(0, 242, 254, 0.2);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+}
+
+.projects-bento-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(0, 242, 254, 0.65);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.75), 0 0 28px rgba(0, 242, 254, 0.25), inset 0 1px 2px rgba(0, 242, 254, 0.4);
+}
+
+/* Domain Deck Cards: Avoid transform:translateY to prevent parallax jitter */
+.domain-deck-card {
+  transform: none !important;
+}
+
+.domain-deck-card:hover {
+  transform: none !important;
+}
+
+/* Staged Expansion: First expand card width (0.28s delay), then display content */
+.domain-card-expanded {
+  animation: domainExpandedFadeIn 0.26s cubic-bezier(0.16, 1, 0.3, 1) 0.28s both;
+}
+
+@keyframes domainExpandedFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+    filter: blur(3px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0px);
+  }
+}
+
+/* Staged Collapse: Wait for card to narrow (0.22s delay), then display sideways title */
+.domain-card-collapsed {
+  animation: domainCollapsedFadeIn 0.22s ease 0.22s both;
+}
+
+@keyframes domainCollapsedFadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.projects-bento-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 242, 254, 0.6), transparent);
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+}
+
+.projects-bento-card:hover::before {
+  opacity: 1;
+}
+
+.projects-filter-btn {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 0.45rem 1rem;
+  border-radius: 9999px;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(0, 242, 254, 0.25);
+  background: rgba(8, 15, 30, 0.7);
+  color: #94a3b8;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.projects-filter-btn:hover {
+  border-color: rgba(0, 242, 254, 0.6);
+  color: #00f2fe;
+  background: rgba(0, 242, 254, 0.1);
+  box-shadow: 0 0 15px rgba(0, 242, 254, 0.25);
+  transform: translateY(-1px);
+}
+
+.projects-filter-btn.active {
+  background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+  color: #02040a;
+  border-color: transparent;
+  font-weight: 700;
+  box-shadow: 0 0 20px rgba(0, 242, 254, 0.5), 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.telemetry-metric-chip {
+  background: rgba(0, 242, 254, 0.07);
+  border: 1px solid rgba(0, 242, 254, 0.25);
+  color: #00f2fe;
+  border-radius: 9999px;
+  padding: 0.28rem 0.65rem;
+  font-size: 0.72rem;
+  display: inline-flex;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.telemetry-metric-chip:hover {
+  background: rgba(0, 242, 254, 0.15);
+  border-color: rgba(0, 242, 254, 0.5);
+  box-shadow: 0 0 10px rgba(0, 242, 254, 0.2);
+}
+
+.pulse-amber {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  background-color: #f59e0b;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #f59e0b;
+  animation: pulseAmber 2s infinite;
+}
+
+@keyframes pulseAmber {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+  }
+
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 8px rgba(245, 158, 11, 0);
+  }
+
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0);
+  }
+}
+
+.pulse-emerald {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  background-color: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #10b981;
+  animation: pulseEmerald 2s infinite;
+}
+
+@keyframes pulseEmerald {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
+  }
+
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+/* Extra small screen optimization (down to 350px) */
+@media (max-width: 400px) {
+
+  .project-hero-telemetry-chip {
+    font-size: 0.5rem !important;
+  }
+
+  .domain-desc {
+    font-size: 0.63rem !important;
+    text-align: center !important;
+  }
+
+  .project-main-title {
+    font-size: 1.2rem !important;
+  }
+
+  .projects-filter-btn {
+    font-size: 0.68rem;
+    padding: 0.3rem 0.6rem;
+  }
+
+  .projects-bento-card {
+    border-radius: 14px !important;
+  }
+
+  .telemetry-metric-chip {
+    font-size: 0.64rem;
+    padding: 0.22rem 0.5rem;
+  }
+
+  .dom-name {
+    font-size: 0.55rem !important;
+  }
+}
+
+@media (min-width: 400px) and (max-width: 576px) {
+  .dom-name {
+    font-size: 0.6rem !important;
+  }
+
+  .project-hero-telemetry-chip {
+    font-size: 0.6rem !important;
+  }
+}
+
+/* Skills & Certifications Cybernetic Styling */
+.skill-category-card {
+  position: relative;
+  background: rgba(4, 9, 22, 0.85);
+  border: 1px solid rgba(0, 242, 254, 0.22);
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6), 0 0 16px rgba(0, 242, 254, 0.08), inset 0 1px 1px rgba(0, 242, 254, 0.15);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.skill-category-card:hover {
+  border-color: rgba(0, 242, 254, 0.65);
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.8), 0 0 25px rgba(0, 242, 254, 0.25), inset 0 1px 1px rgba(0, 242, 254, 0.3);
+}
+
+.skill-tech-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(8, 15, 30, 0.75);
+  border: 1px solid rgba(0, 242, 254, 0.18);
+  color: #cbd5e1;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 8px;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.skill-tech-chip:hover {
+  color: #00f2fe;
+  background: rgba(0, 242, 254, 0.12);
+  border-color: rgba(0, 242, 254, 0.6);
+  box-shadow: 0 0 12px rgba(0, 242, 254, 0.35);
+  transform: translateY(-1px);
+}
+
+.cert-card {
+  position: relative;
+  background: rgba(4, 9, 22, 0.85);
+  border: 1px solid rgba(0, 242, 254, 0.22);
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6), 0 0 16px rgba(0, 242, 254, 0.08), inset 0 1px 1px rgba(0, 242, 254, 0.15);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cert-card:hover {
+  border-color: rgba(0, 242, 254, 0.65);
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.8), 0 0 25px rgba(0, 242, 254, 0.25), inset 0 1px 1px rgba(0, 242, 254, 0.3);
+}
+
+.cert-icon-box {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+/* Skills Section Dynamic Heading Responsive Typography */
+.skills-section-viewport-title {
+  font-size: 2.15rem;
+  line-height: 1.2;
+}
+
+.skills-section-viewport-subtitle {
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.skill-canvas {
+  height: 310px !important;
+}
+
+/* md to lg (768px - 991.98px) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .skills-section-viewport-title {
+    font-size: 1.8rem;
+  }
+
+  .skills-section-viewport-subtitle {
+    font-size: 0.84rem;
+  }
+
+  .skill-canvas {
+    height: 330px !important;
+  }
+}
+
+/* sm to md (576px - 767.98px) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .skills-section-viewport-title {
+    font-size: 1.55rem;
+  }
+
+  .skills-section-viewport-subtitle {
+    font-size: 0.78rem;
+  }
+
+  .skill-canvas {
+    height: 350px !important;
+  }
+}
+
+/* 400px to sm (400px - 575.98px) */
+@media (min-width: 400px) and (max-width: 575.98px) {
+  .skills-section-viewport-title {
+    font-size: 1.3rem;
+  }
+
+  .skills-section-viewport-subtitle {
+    font-size: 0.72rem;
+  }
+
+  .skill-canvas {
+    height: 350px !important;
+  }
+}
+
+/* < 400px */
+@media (max-width: 399.98px) {
+  .skills-section-viewport-title {
+    font-size: 1.1rem;
+    letter-spacing: 0.04em !important;
+  }
+
+  .skills-section-viewport-subtitle {
+    font-size: 0.65rem;
+    line-height: 1.4;
+  }
+
+  .skill-canvas {
+    height: 350px !important;
+  }
+}
+
+.min-w-0 {
+  min-width: 0 !important;
 }

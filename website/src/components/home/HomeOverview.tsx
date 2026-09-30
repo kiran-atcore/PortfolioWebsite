@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useMediaQuery } from "usehooks-ts";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { PERSONAL_INFO } from "../../data/portfolioData";
 
@@ -104,6 +105,8 @@ export default function HomeOverview({
 }: HomeOverviewProps) {
   const isSlide4 = overviewSlide === 1;
 
+  const isNarrow = useMediaQuery("(max-width: 400px)");
+
   return (
     <div id="hero-overview" className="w-100 py-1 py-md-2 overview-offset-wrapper">
       <div className="row justify-content-center m-0 pt-lg-4">
@@ -117,10 +120,10 @@ export default function HomeOverview({
           >
             <motion.div
               variants={badgeVariants}
-              className="d-inline-flex align-items-center gap-2 px-3 py-1 hud-telemetry-chip rounded-pill mb-2"
+              className="d-inline-flex align-items-center gap-2 px-3 py-1 hud-telemetry-chip rounded-pill mb-2 mt-2 mt-sm-5 mt-md-3"
             >
               <span className="pulse-cyan"></span>
-              <span className="text-light fw-medium font-syne tracking-wide py-1" style={{ fontSize: "0.65rem", letterSpacing: "0.22em" }}>
+              <span className="text-light fw-medium font-syne tracking-wide py-1" style={isNarrow ? { fontSize: "0.5rem", letterSpacing: "0.22em" } : { fontSize: "0.65rem", letterSpacing: "0.22em" }}>
                 {"// PROFILE // CORE TOOLKIT"}
               </span>
             </motion.div>
@@ -136,7 +139,7 @@ export default function HomeOverview({
             {/* Technical HUD Telemetry Chips (Staggered Cyber Intro with Slide 4 Glow) */}
             <motion.div
               variants={chipsContainerVariants}
-              className="d-flex flex-wrap justify-content-center gap-2 "
+              className="d-flex chip flex-wrap justify-content-center gap-2"
             >
               <motion.span
                 variants={chipItemVariants}
@@ -200,7 +203,7 @@ export default function HomeOverview({
                   transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
                 >
                   <div>
-                    <div className="font-syne text-light text-opacity-60 text-uppercase mb-2 tracking-wider" style={{ fontSize: "0.8rem", letterSpacing: 2 }}>
+                    <div className="font-syne core-toolkit-header text-light text-opacity-60 text-uppercase mb-2 tracking-wider" style={{ fontSize: "0.8rem", letterSpacing: 2 }}>
                       {"// Core Technical Toolkit"}
                     </div>
                     <div className="d-flex flex-wrap gap-1 gap-sm-2">
@@ -222,17 +225,14 @@ export default function HomeOverview({
                   </div>
 
                   <div className="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2 mt-3 pt-2 border-top" style={{ borderColor: "rgba(0, 242, 254, 0.12)" }}>
-                    <div className="d-flex align-items-center gap-2 font-space-grotesk text-light text-opacity-50" style={{ fontSize: "0.6rem", letterSpacing: "0.1em" }}>
-                      <span className="pulse-cyan" style={{ width: "6px", height: "6px" }} aria-hidden="true"></span>
-                      <span>{"// ARCHIVE: KIRAN_CHAND_S_CV.PDF"}</span>
-                    </div>
+
                     <div className="d-flex align-items-center gap-2">
                       <a
                         href={PERSONAL_INFO.resumeUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="btn btn-cyber-glass rounded-pill px-3 py-2 font-syncopate text-uppercase tracking-wider d-inline-flex align-items-center gap-1"
-                        style={{ fontSize: "0.56rem" }}
+                        style={{ fontSize: "0.5rem" }}
                         title="View CV in browser"
                       >
                         <i className="bi bi-eye" style={{ color: "#38f9d7" }}></i> View CV
@@ -241,7 +241,7 @@ export default function HomeOverview({
                         href={PERSONAL_INFO.resumeUrl}
                         download="Kiran_Chand_S_CV.pdf"
                         className="btn btn-neon-cyan rounded-pill px-3 py-2 font-syncopate text-uppercase tracking-wider d-inline-flex align-items-center gap-1"
-                        style={{ fontSize: "0.56rem" }}
+                        style={{ fontSize: "0.5rem" }}
                         title="Download CV file"
                       >
                         <i className="bi bi-file-earmark-arrow-down"></i> Download CV &rarr;

@@ -127,7 +127,7 @@ export default function HomePrinciples({ isExiting = false }: HomePrinciplesProp
             </motion.h2>
             <motion.p
               variants={subtitleVariants}
-              className="font-space-grotesk text-light text-opacity-75 small mx-auto mb-1"
+              className="font-space-grotesk principle-desc text-light text-opacity-75 small mx-auto mb-1"
               style={{ maxWidth: "600px", fontSize: "0.75rem", letterSpacing: "0.025em" }}
             >
               Technical standards guiding every system I architect, from fault-tolerant backends to sub-second reactive interfaces.
@@ -139,7 +139,7 @@ export default function HomePrinciples({ isExiting = false }: HomePrinciplesProp
             variants={deckVariants}
             initial="hidden"
             animate={isExiting ? "exit" : "visible"}
-            className="w-100 mt-2 mt-md-3 position-relative"
+            className="w-100 mt-2 mt-md-3 position-relative projector"
           >
             <Principles3DDeck isExiting={isExiting} />
           </motion.div>

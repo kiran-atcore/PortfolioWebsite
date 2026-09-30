@@ -126,7 +126,7 @@ export default function HomeTelemetry({ isExiting = false }: HomeTelemetryProps)
           >
             <motion.div
               variants={badgeVariants}
-              className="d-inline-flex align-items-center gap-2 px-3 py-1 hud-telemetry-chip rounded-pill mb-2"
+              className="d-inline-flex align-items-center gap-2 px-3 py-1 hud-telemetry-chip rounded-pill mb-2 mt-2"
             >
               <span className="pulse-cyan"></span>
               <span className="text-light fw-medium font-syne tracking-wide py-1 telemetry-badge-text" style={{ letterSpacing: "0.22em" }}>

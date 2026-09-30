@@ -158,7 +158,7 @@ export default function AboutSlider() {
   return (
     <section
       style={{ borderTop: "1px solid #ffffff5c" }}
-      className="position-relative pt-3 pt-lg-2 w-100 h-100 d-flex flex-column justify-content-start align-items-center overflow-hidden"
+      className=" position-relative pt-3 pt-lg-2 w-100 h-100 d-flex flex-column justify-content-start align-items-center overflow-hidden"
     >
       {/* Dynamic Backgrounds with Smooth Crossfade */}
       <div className="position-absolute top-0 start-0 w-100 h-100" style={{ zIndex: 0 }}>
@@ -205,7 +205,7 @@ export default function AboutSlider() {
             initial="enter"
             animate="center"
             exit="exit"
-            className="w-100 d-flex justify-content-center"
+            className="test w-100 d-flex justify-content-center"
           >
             <ActiveSlideComponent />
           </motion.div>

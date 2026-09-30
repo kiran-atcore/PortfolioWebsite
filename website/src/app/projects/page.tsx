@@ -1,109 +1,197 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import Navbar from "../../components/Navbar";
-import Footer from "../../components/Footer";
-import { PROJECTS } from "../../data/portfolioData";
+import { Suspense, useState, useMemo, useEffect } from "react";
+import Image from "next/image";
+import { useSearchParams } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import { PROJECTS } from "@/data/portfolioData";
+import ProjectHeroHeader from "@/components/projects/ProjectHeroHeader";
+import ProjectFilterTabs from "@/components/projects/ProjectFilterTabs";
+import ProjectBentoCard from "@/components/projects/ProjectBentoCard";
+import CyberTreeCanvas3D from "@/components/projects/CyberTreeCanvas3D";
 
-export default function ProjectsPage() {
-  const [selectedCategory, setSelectedCategory] = useState<string>("All");
-  const categories = ["All", "Full Stack", "AI & ML", "Mobile"];
+const CATEGORIES = ["All", "Full Stack", "AI & ML", "Mobile"];
 
-  const filteredProjects = selectedCategory === "All"
-    ? PROJECTS
-    : PROJECTS.filter((p) => p.category === selectedCategory);
+const tabVariants = {
+  initial: { opacity: 0, y: 16, filter: "blur(6px)" },
+  animate: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.38, ease: [0.16, 1, 0.3, 1] as const },
+  },
+  exit: {
+    opacity: 0,
+    y: -16,
+    filter: "blur(6px)",
+    transition: { duration: 0.22, ease: "easeInOut" as const },
+  },
+};
+
+function ProjectsPageContent() {
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get("tab");
+  const categoryParam = searchParams.get("category");
+
+  const [activeTab, setActiveTab] = useState<"overview" | "showcase">(
+    tabParam === "showcase" ? "showcase" : "overview"
+  );
+  const [selectedCategory, setSelectedCategory] = useState<string>(
+    categoryParam && CATEGORIES.includes(categoryParam) ? categoryParam : "All"
+  );
+
+  useEffect(() => {
+    if (tabParam === "showcase") {
+      setActiveTab("showcase");
+    } else if (tabParam === "overview") {
+      setActiveTab("overview");
+    }
+  }, [tabParam]);
+
+  useEffect(() => {
+    if (categoryParam && CATEGORIES.includes(categoryParam)) {
+      setSelectedCategory(categoryParam);
+    }
+  }, [categoryParam]);
+
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = { All: PROJECTS.length };
+    CATEGORIES.forEach((cat) => {
+      if (cat !== "All") {
+        counts[cat] = PROJECTS.filter((p) => p.category === cat).length;
+      }
+    });
+    return counts;
+  }, []);
+
+  const filteredProjects = useMemo(() => {
+    return selectedCategory === "All"
+      ? PROJECTS
+      : PROJECTS.filter((p) => p.category === selectedCategory);
+  }, [selectedCategory]);
+
+  const getBentoColumnClass = (index: number, total: number) => {
+    if (selectedCategory !== "All") {
+      return total === 1 ? "col-12 col-md-10 col-lg-8 mx-auto" : "col-12 col-lg-6";
+    }
+    if (index === 0) return "col-12 col-lg-7";
+    if (index === 1) return "col-12 col-lg-5";
+    if (index === 2) return "col-12 col-lg-5";
+    return "col-12 col-lg-7";
+  };
+
+  const handleCategoryFromOverview = (cat: string) => {
+    setSelectedCategory(cat);
+    setActiveTab("showcase");
+  };
 
   return (
-    <div className="d-flex flex-column min-vh-100">
+    <div className="projects-page-wrapper w-100 d-flex flex-column vh-100">
       <Navbar />
-      <main className="container py-5 flex-grow-1">
-        <div className="text-center mb-5 pb-3">
-          <span className="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-20 px-3 py-2 rounded-pill small mb-3 font-mono">
-            Portfolio Showcase
-          </span>
-          <h1 className="fw-bold text-white display-5 mb-3">Featured Projects</h1>
-          <p className="text-light text-opacity-75 fs-5">Production web applications, applied AI models, and real-time platforms</p>
 
-          <div className="d-flex justify-content-center flex-wrap gap-3 mt-4">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                className={`btn rounded-pill px-4 py-2 font-mono small ${
-                  selectedCategory === cat
-                    ? "btn-amber-glow shadow-sm"
-                    : "btn-glass text-light text-opacity-75"
-                }`}
+      {/* AI Generated Minimalistic Cyber Background matching experience page */}
+      <div className="projects-bg-layer">
+        <Image
+          src="/projects-bg-minimal.jpg"
+          alt="Cybernetic Projects Environment Background"
+          fill
+          priority
+          className="object-fit-cover"
+          sizes="100vw"
+          style={{ filter: "brightness(0.85) contrast(1.1)" }}
+        />
+        <div className="projects-bg-overlay" />
+      </div>
+
+      {/* Main Content Area */}
+      <main
+        className="flex-grow-1 position-relative px-1 pt-4 px-sm-3 px-md-4 py-4 py-md-5 d-flex flex-column"
+        style={{
+          zIndex: 2,
+          paddingTop: "calc(max(1rem, env(safe-area-inset-top, 1rem)) + 65px)",
+        }}
+      >
+        <div className="container-fluid flex-grow-1 d-flex flex-column" style={{ maxWidth: "1240px" }}>
+          {/* Animated Tab Viewport */}
+          <AnimatePresence mode="wait">
+            {activeTab === "overview" ? (
+              <motion.div
+                key="tab-overview"
+                variants={tabVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                className="my-auto py-2 pt-0 py-md-4 d-flex flex-column align-items-center justify-content-center"
               >
-                {cat}
-              </button>
-            ))}
-          </div>
-        </div>
+                <ProjectHeroHeader
+                  totalCount={PROJECTS.length}
+                  onExplore={() => setActiveTab("showcase")}
+                  onSelectCategory={handleCategoryFromOverview}
+                />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="tab-showcase"
+                variants={tabVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                className="w-100 mt-5 mt-md-4"
+              >
+                {/* Back to Overview Header Ribbon */}
+                <div className="d-flex align-items-center justify-content-between gap-2 mb-3 pb-2 border-bottom border-white border-opacity-10">
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("overview")}
+                    className="btn btn-cyber-glass rounded-pill px-3 py-2 font-syncopate text-uppercase fw-light d-inline-flex align-items-center gap-2 back"
+                    style={{ fontSize: "0.38rem", letterSpacing: "0.06em" }}
+                  >
+                    <i className="bi bi-arrow-left" />
+                    <span>Back to Overview</span>
+                  </button>
 
-        <div className="row g-5">
-          {filteredProjects.map((project) => (
-            <div key={project.id} className="col-lg-6">
-              <div className="glass-panel glass-panel-spacious d-flex flex-column h-100">
-                <div className="d-flex justify-content-between align-items-start mb-3">
-                  <span className="badge bg-white bg-opacity-10 text-light border border-white border-opacity-10 px-3 py-2 rounded-pill font-mono small">
-                    {project.category}
-                  </span>
-                  <div className="d-flex gap-3">
-                    {project.githubUrl && (
-                      <a href={project.githubUrl} target="_blank" rel="noreferrer" className="text-light text-opacity-50 fs-5" title="View Source">
-                        <i className="bi bi-github"></i>
-                      </a>
-                    )}
-                    {project.liveUrl && (
-                      <a href={project.liveUrl} target="_blank" rel="noreferrer" className="text-warning fs-5" title="Live Preview">
-                        <i className="bi bi-box-arrow-up-right"></i>
-                      </a>
-                    )}
+                  <div style={{ fontSize: "0.4rem" }} className="py-2 hud-telemetry-chip rounded-pill font-mono text-light text-opacity-75 showcase">
+                    <span className="pulse-cyan" />
+                    <span>SHOWCASE: {filteredProjects.length} ACTIVE</span>
                   </div>
                 </div>
 
-                <h3 className="fw-bold text-white mb-2">{project.title}</h3>
-                <div className="text-warning font-mono small mb-4">{project.tagline}</div>
-                <p className="text-light text-opacity-75 lh-lg mb-4 flex-grow-1">{project.summary}</p>
+                {/* Filter Pills */}
+                <ProjectFilterTabs
+                  categories={CATEGORIES}
+                  selectedCategory={selectedCategory}
+                  onSelectCategory={setSelectedCategory}
+                  categoryCounts={categoryCounts}
+                />
 
-                <div className="mb-4">
-                  <div className="d-flex flex-wrap gap-2">
-                    {project.metrics.map((m, i) => (
-                      <span key={i} className="badge bg-success bg-opacity-15 text-success border border-success border-opacity-25 rounded-pill px-3 py-2 small font-mono">
-                        <i className="bi bi-graph-up me-2"></i>{m}
-                      </span>
-                    ))}
-                  </div>
+                <div 
+                  style={{ 
+                    height: 340,
+                    WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 10%, black 90%, transparent)',
+                    maskImage: 'linear-gradient(to bottom, transparent, black 10%, black 90%, transparent)'
+                  }} 
+                  className="tree-box w-100 overflow-hidden"
+                >
+                  <CyberTreeCanvas3D projects={filteredProjects} />
                 </div>
 
-                <div className="mb-4 pt-3 border-top border-white border-opacity-10">
-                  <div className="d-flex flex-wrap gap-2">
-                    {project.techStack.map((tech, i) => (
-                      <span key={i} className="badge bg-black bg-opacity-30 text-light text-opacity-75 border border-white border-opacity-10 px-3 py-2 small font-mono">
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="pt-3 border-top border-white border-opacity-10 d-flex justify-content-between align-items-center">
-                  <Link href={`/projects/${project.slug}`} className="btn btn-amber-glow rounded-pill px-4 py-2 font-mono small">
-                    Deep Dive Case Study <i className="bi bi-arrow-right ms-2"></i>
-                  </Link>
-                  {project.liveUrl && (
-                    <a href={project.liveUrl} target="_blank" rel="noreferrer" className="btn btn-glass rounded-pill px-4 py-2 font-mono small">
-                      Live App
-                    </a>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </main>
-      <Footer />
     </div>
   );
 }
+
+export default function ProjectsPage() {
+  return (
+    <Suspense fallback={null}>
+      <ProjectsPageContent />
+    </Suspense>
+  );
+}
+
+

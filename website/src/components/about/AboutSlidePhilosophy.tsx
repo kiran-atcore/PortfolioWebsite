@@ -35,7 +35,7 @@ export default function AboutSlidePhilosophy() {
   }, []);
 
   return (
-    <div className="w-100 d-flex flex-column align-items-center text-center mt-3 mt-md-0 px-3 px-md-4">
+    <div className="philosophy-container w-100 d-flex flex-column align-items-center text-center mt-3 mt-md-0 px-3 px-md-4">
       {/* Telemetry Badge */}
       <div className="d-inline-flex align-items-center gap-2 px-3 py-1 hud-telemetry-chip rounded-pill mb-1">
         <span className="pulse-cyan" aria-hidden="true" />
@@ -59,9 +59,9 @@ export default function AboutSlidePhilosophy() {
         <div className="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom border-white border-opacity-10">
           <div className="d-inline-flex align-items-center gap-1.5 font-space-grotesk text-light text-opacity-60 about-philosophy-status">
             <span className="pulse-cyan me-2" aria-hidden="true" style={{ width: "6px", height: "6px" }} />
-            <span style={{ letterSpacing: 3 }}>CORE_NARRATIVE // V2.4</span>
+            <span className="core" style={{ letterSpacing: 3 }}>CORE_NARRATIVE // V2.4</span>
           </div>
-          <span className="font-space-grotesk text-uppercase px-2 py-0.5 rounded-pill" style={{ fontSize: "0.52rem", background: "rgba(0, 242, 254, 0.08)", color: "#00f2fe", border: "1px solid rgba(0, 242, 254, 0.2)", letterSpacing: 2 }}>
+          <span className="mindset font-space-grotesk text-uppercase px-2 py-0.5 rounded-pill" style={{ fontSize: "0.52rem", background: "rgba(0, 242, 254, 0.08)", color: "#00f2fe", border: "1px solid rgba(0, 242, 254, 0.2)", letterSpacing: 2 }}>
             ENGINEER MINDSET
           </span>
         </div>
@@ -100,20 +100,20 @@ export default function AboutSlidePhilosophy() {
         </div>
 
         {/* Action Triggers */}
-        <div className="font-syncopate d-flex flex-wrap gap-2 pt-2 border-top border-white border-opacity-10">
+        <div className="font-syncopate d-flex flex-sm-column justify-content-center align-items-start gap-2 pt-2 border-top border-white border-opacity-10 phil-btn">
           <a
             href={PERSONAL_INFO.resumeUrl}
             target="_blank"
             rel="noreferrer"
             className="btn btn-neon-cyan rounded-pill tracking-wider text-uppercase d-inline-flex align-items-center about-philosophy-btn p-2 px-3"
           >
-            <i className="bi bi-file-earmark-arrow-down-fill me-1"></i> Download Full Resume
+            <i className="bi bi-file-earmark-arrow-down-fill me-1"></i> <span className="button-phil">Download Full Resume</span>
           </a>
           <Link
             href="/contact"
             className="btn btn-cyber-glass rounded-pill tracking-wider text-uppercase d-inline-flex align-items-center about-philosophy-btn p-2 px-3"
           >
-            <i className="bi bi-chat-dots-fill me-1"></i> Let&apos;s Connect
+            <i className="bi bi-chat-dots-fill me-1"></i> <span className="button-phil">Let&apos;s Connect</span>
           </Link>
         </div>
       </div>

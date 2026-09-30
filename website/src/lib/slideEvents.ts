@@ -99,3 +99,34 @@ export function subscribeAboutSlideRequest(callback: () => void) {
   window.addEventListener(ABOUT_SLIDE_REQUEST_EVENT, handler);
   return () => window.removeEventListener(ABOUT_SLIDE_REQUEST_EVENT, handler);
 }
+
+// Experience Page Tab event channels
+export type ExperienceTabType = "production" | "academic";
+
+const EXPERIENCE_TAB_EVENT = "portfolio:experience-tab";
+const EXPERIENCE_TAB_REQUEST = "portfolio:experience-tab-request";
+
+export function publishExperienceTab(tab: ExperienceTabType) {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new CustomEvent(EXPERIENCE_TAB_EVENT, { detail: { tab } }));
+}
+
+export function subscribeExperienceTab(callback: (tab: ExperienceTabType) => void) {
+  if (typeof window === "undefined") return () => {};
+  const handler = (e: Event) => {
+    const custom = e as CustomEvent<{ tab: ExperienceTabType }>;
+    if (custom.detail && custom.detail.tab) {
+      callback(custom.detail.tab);
+    }
+  };
+  window.addEventListener(EXPERIENCE_TAB_EVENT, handler);
+  window.dispatchEvent(new CustomEvent(EXPERIENCE_TAB_REQUEST));
+  return () => window.removeEventListener(EXPERIENCE_TAB_EVENT, handler);
+}
+
+export function subscribeExperienceTabRequest(callback: () => void) {
+  if (typeof window === "undefined") return () => {};
+  const handler = () => callback();
+  window.addEventListener(EXPERIENCE_TAB_REQUEST, handler);
+  return () => window.removeEventListener(EXPERIENCE_TAB_REQUEST, handler);
+}

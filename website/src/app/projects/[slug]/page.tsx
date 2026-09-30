@@ -1,14 +1,15 @@
-import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
-import { PROJECTS } from "../../../data/portfolioData";
-import Navbar from "../../../components/Navbar";
-import Footer from "../../../components/Footer";
+import { PROJECTS } from "@/data/portfolioData";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import ProjectDetailView from "@/components/projects/ProjectDetailView";
 
 export function generateStaticParams() {
   return PROJECTS.map((p) => ({ slug: p.slug }));
 }
 
-export default async function ProjectDetailPage({
+export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>;
@@ -17,77 +18,77 @@ export default async function ProjectDetailPage({
   const project = PROJECTS.find((p) => p.slug === slug);
 
   if (!project) {
+    return {
+      title: "Project Not Found | Kiran Chand S",
+    };
+  }
+
+  return {
+    title: `${project.title} | Systems Spec & Telemetry`,
+    description: project.summary,
+  };
+}
+
+export default async function ProjectDetailPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const projectIndex = PROJECTS.findIndex((p) => p.slug === slug);
+
+  if (projectIndex === -1) {
     notFound();
   }
 
+  const project = PROJECTS[projectIndex];
+  const prevProject = projectIndex > 0 ? PROJECTS[projectIndex - 1] : undefined;
+  const nextProject =
+    projectIndex < PROJECTS.length - 1 ? PROJECTS[projectIndex + 1] : undefined;
+
   return (
-    <div className="d-flex flex-column min-vh-100">
+    <div className="projects-page-wrapper w-100 d-flex flex-column min-vh-100 position-relative pb-5 pt-5">
       <Navbar />
-      <main className="container py-5 flex-grow-1">
-        <div className="row justify-content-center">
-          <div className="col-lg-9">
-            <Link href="/projects" className="btn btn-glass btn-sm rounded-pill mb-4 font-mono">
-              &larr; Back to All Projects
-            </Link>
 
-            <div className="glass-panel p-4 p-md-5 mb-4">
-              <div className="d-flex justify-content-between align-items-center mb-3">
-                <span className="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-20 px-3 py-1 rounded-pill small font-mono">
-                  {project.category}
-                </span>
-                <div className="d-flex gap-2">
-                  {project.githubUrl && (
-                    <a href={project.githubUrl} target="_blank" rel="noreferrer" className="btn btn-glass btn-sm rounded-pill font-mono">
-                      <i className="bi bi-github me-1"></i> Repository
-                    </a>
-                  )}
-                  {project.liveUrl && (
-                    <a href={project.liveUrl} target="_blank" rel="noreferrer" className="btn btn-amber-glow btn-sm rounded-pill font-mono">
-                      <i className="bi bi-box-arrow-up-right me-1"></i> Live Demo
-                    </a>
-                  )}
-                </div>
-              </div>
+      {/* Cybernetic Projects Environment Background */}
+      <div className="projects-bg-layer">
+        <Image
+          src="/projects-detail-bg.jpg"
+          alt="Cybernetic Projects Environment Background"
+          fill
+          priority
+          className="object-fit-cover"
+          sizes="100vw"
+          style={{ filter: "brightness(0.7) contrast(1.15)" }}
+        />
+        <div className="projects-bg-overlay" />
+      </div>
 
-              <h1 className="fw-bold text-white display-6 mb-2">{project.title}</h1>
-              <p className="lead text-warning fw-medium mb-4 font-mono">{project.tagline}</p>
-              <p className="text-light text-opacity-80 fs-5 mb-4 lh-base">{project.summary}</p>
-
-              <div className="row g-2 mb-4">
-                {project.metrics.map((metric, i) => (
-                  <div key={i} className="col-sm-6">
-                    <div className="p-3 bg-success bg-opacity-15 border border-success border-opacity-25 rounded-3 text-success fw-semibold font-mono small">
-                      <i className="bi bi-check-circle-fill me-2"></i> {metric}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <h4 className="fw-bold text-white mb-3">Architecture &amp; Key Highlights</h4>
-              <ul className="text-light text-opacity-75 mb-4 ps-3">
-                {project.highlights.map((item, i) => (
-                  <li key={i} className="mb-2">{item}</li>
-                ))}
-              </ul>
-
-              <h4 className="fw-bold text-white mb-2">Technical Challenges &amp; Solutions</h4>
-              <div className="p-3 bg-black bg-opacity-30 border border-white border-opacity-10 rounded-3 text-light text-opacity-75 mb-4">
-                {project.challenges}
-              </div>
-
-              <h5 className="fw-bold text-white mb-3">Technologies Leveraged</h5>
-              <div className="d-flex flex-wrap gap-2">
-                {project.techStack.map((tech, i) => (
-                  <span key={i} className="badge bg-black bg-opacity-40 text-light text-opacity-80 border border-white border-opacity-10 px-3 py-2 fs-6 font-mono">
-                    {tech}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
+      {/* Main Content Area */}
+      <main
+        className="flex-grow-1 position-relative px-2 px-sm-3 px-md-4 py-3 py-sm-4 py-md-5 d-flex flex-column align-items-center"
+        style={{
+          zIndex: 2,
+          paddingTop: "calc(max(0.75rem, env(safe-area-inset-top, 0.75rem)) + 70px)",
+        }}
+      >
+        <div className="container-fluid pt-2" style={{ maxWidth: "1080px" }}>
+          <ProjectDetailView
+            project={project}
+            prevProject={
+              prevProject
+                ? { slug: prevProject.slug, title: prevProject.title }
+                : undefined
+            }
+            nextProject={
+              nextProject
+                ? { slug: nextProject.slug, title: nextProject.title }
+                : undefined
+            }
+          />
         </div>
       </main>
-      <Footer />
     </div>
   );
 }
+

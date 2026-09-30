@@ -14,7 +14,10 @@ export default function SlideTelemetry3DCanvas({
 }: SlideTelemetry3DCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const slideRef = useRef(currentSlide);
-  slideRef.current = currentSlide;
+  
+  useEffect(() => {
+    slideRef.current = currentSlide;
+  }, [currentSlide]);
 
   useEffect(() => {
     const canvas = canvasRef.current;

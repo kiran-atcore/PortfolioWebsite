@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { HeroCardData } from "@/data/heroCardsData";
 import CardModalHolo3D from "./CardModalHolo3D";
@@ -19,6 +20,8 @@ interface ModalOrigin {
   y: number;
   scale: number;
 }
+
+
 
 function calculateCardOrigin(cardId?: string): ModalOrigin {
   if (typeof window === "undefined" || !cardId) {
@@ -129,6 +132,8 @@ export default function CardDetailModal({
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const isNarrow = useMediaQuery("(max-width: 400px)");
 
   useEffect(() => {
     if (incomingCard) {
@@ -251,12 +256,12 @@ export default function CardDetailModal({
             <div className="cyber-modal-header d-flex align-items-center justify-content-between">
               <div className="d-flex align-items-center gap-2">
                 <span className={`pulse-beacon ${isCyan ? "beacon-cyan" : "beacon-magenta"}`} />
-                <span className="font-space-grotesk small text-secondary-white" style={{ fontSize: "0.62rem", letterSpacing: "0.1em", opacity: 0.5 }}>
+                <span className="font-space-grotesk small text-secondary-white" style={isNarrow ? { fontSize: "0.5rem", letterSpacing: "0.1em", opacity: 0.5 } : { fontSize: "0.6rem", letterSpacing: "0.1em", opacity: 0.5 }}>
                   {card.telemetryCode}
                 </span>
               </div>
 
-              <div className={`font-syne fw-bold small ${accentColorClass}`} style={{ letterSpacing: "0.15em", fontSize: "0.75rem" }}>
+              <div className={`font-syne fw-bold small ${accentColorClass}`} style={isNarrow ? { fontSize: "0.6rem", letterSpacing: "0.15em" } : { fontSize: "0.75rem", letterSpacing: "0.15em" }}>
                 {card.tag}
               </div>
 

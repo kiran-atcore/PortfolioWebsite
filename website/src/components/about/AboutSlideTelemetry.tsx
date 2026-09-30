@@ -170,7 +170,7 @@ export default function AboutSlideTelemetry() {
       </div>
 
       {/* Action Trigger */}
-      <div className="font-syncopate mt-1 mt-md-2 mt-5 mt-sm-2">
+      <div className="font-syncopate mt-1 mt-md-2 mt-5 mt-sm-2 initialize-contact-btn">
         <Link
           href="/contact"
           className="btn btn-neon-cyan rounded-pill tracking-wider text-uppercase d-inline-flex align-items-center about-telemetry-btn mt-sm-3 mt-md-1"

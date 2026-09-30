@@ -20,6 +20,7 @@ function getCoprime(n: number): number {
 export interface CyberFlickerTitleProps {
   text?: string;
   className?: string;
+  style?: React.CSSProperties;
   variants?: Variants;
   forceAnimate?: boolean;
   as?: "h1" | "h2" | "h3" | "h4" | "div";
@@ -27,7 +28,8 @@ export interface CyberFlickerTitleProps {
 
 export default function CyberFlickerTitle({
   text = PERSONAL_INFO.name,
-  className = "font-bruno display-4 text-uppercase text-white tracking-scifi cyber-title-glow mb-2 my-sm-2 mb-lg-2 px-5 px-md-0 py-md-4 py-lg-2",
+  className = "font-bruno display-3 text-uppercase text-white tracking-scifi cyber-title-glow mb-2 my-sm-2 mb-lg-2 px-5 px-md-0 py-md-4 py-lg-2",
+  style,
   variants,
   forceAnimate = false,
   as = "h1",
@@ -98,6 +100,7 @@ export default function CyberFlickerTitle({
     <MotionComponent
       variants={activeVariants}
       className={className}
+      style={style}
       aria-label={text}
     >
       {words.map((word, wordIdx) => (

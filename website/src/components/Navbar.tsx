@@ -8,14 +8,18 @@ import { motion, AnimatePresence } from "framer-motion";
 import { PERSONAL_INFO } from "../data/portfolioData";
 import SlideTelemetryHUD from "./ui/SlideTelemetryHUD";
 import AboutControls from "./about/AboutControls";
+import ExperienceControls from "./experience/ExperienceControls";
 import { subscribeSlideState, SlideStatePayload } from "@/lib/slideEvents";
 
 export default function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [isProgressHovered, setIsProgressHovered] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [hoveredTab, setHoveredTab] = useState<string | null>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isCanvasSection, setIsCanvasSection] = useState(false);
 
   useEffect(() => {
     const unsub = subscribeSlideState((data: SlideStatePayload) => {
@@ -25,12 +29,60 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    let lastScrollY = window.scrollY;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        setIsCanvasSection(entries[0].isIntersecting);
+      },
+      { threshold: 0.1 }
+    );
+
+    const timer = setTimeout(() => {
+      const el = document.getElementById("skills-cards-viewport");
+      if (el) observer.observe(el);
+    }, 500);
+
+    return () => {
+      clearTimeout(timer);
+      observer.disconnect();
+    };
+  }, [pathname]);
+
+  // Force scroll position to the top on page load/reload and route navigation
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if ("scrollRestoration" in window.history) {
+        window.history.scrollRestoration = "manual";
+      }
+      window.scrollTo(0, 0);
+      setScrolled(false);
+      setScrollProgress(0);
+      setIsProgressHovered(false);
+    }
+  }, [pathname]);
+
+  useEffect(() => {
+    let lastScrollY = 0;
     let idleTimer: ReturnType<typeof setTimeout>;
 
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      setScrolled(currentScrollY > 20);
+      setScrolled(currentScrollY > 10);
+      if (currentScrollY <= 10) {
+        setIsProgressHovered(false);
+      }
+
+      // Compute scroll percentage
+      const totalHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+      if (totalHeight > 0) {
+        const progress = Math.min(
+          100,
+          Math.max(0, Math.round((currentScrollY / totalHeight) * 100))
+        );
+        setScrollProgress(progress);
+      } else {
+        setScrollProgress(0);
+      }
 
       // Auto-minimize slightly on rapid downward scroll
       if (currentScrollY > lastScrollY && currentScrollY > 120) {
@@ -44,12 +96,15 @@ export default function Navbar() {
       idleTimer = setTimeout(() => setIsMinimized(false), 1400);
     };
 
+    handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
       clearTimeout(idleTimer);
     };
-  }, []);
+  }, [pathname]);
 
   const navTabs = [
     { href: "/", label: "Home", icon: "bi-house-door" },
@@ -80,10 +135,27 @@ export default function Navbar() {
     <>
       {/* Fixed Top Brand Ribbon */}
       <header
-        className="fixed-top position-fixed py-3 bg-transparent border-transparent"
-        style={{ zIndex: 1040 }}
+        className={`fixed-top position-fixed ${scrolled
+          ? "py-2 navbar-top-scrolled"
+          : "py-3 bg-transparent border-transparent"
+          }`}
+        style={{
+          zIndex: 1040,
+          background: scrolled
+            ? "rgba(3, 8, 20, 0.82)"
+            : "transparent",
+          backdropFilter: scrolled ? "blur(16px)" : "none",
+          WebkitBackdropFilter: scrolled ? "blur(16px)" : "none",
+          borderBottom: scrolled
+            ? "1px solid rgba(0, 242, 254, 0.16)"
+            : "1px solid transparent",
+          boxShadow: scrolled
+            ? "0 4px 24px rgba(0, 0, 0, 0.5), 0 0 16px rgba(0, 242, 254, 0.05)"
+            : "none",
+          transition: "background 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s ease, padding 0.35s ease, box-shadow 0.35s ease",
+        }}
       >
-        <div className="container d-flex justify-content-between align-items-center">
+        <div className="container d-flex justify-content-between align-items-center position-relative">
           <Link className="text-decoration-none d-inline-flex align-items-center navbar-k-logo-link" href="/" aria-label="Home">
             <div className="k-emblem-wrapper">
               <Image
@@ -96,9 +168,171 @@ export default function Navbar() {
               />
             </div>
           </Link>
-          {pathname === "/" && <SlideTelemetryHUD />}
-          {(pathname === "/about" || pathname.startsWith("/about")) && <AboutControls />}
+          {/* Right Header Navigation Elements & Extreme Right Progress Indicator */}
+          <div className="d-flex align-items-center gap-2 gap-sm-3">
+            {pathname === "/" && <SlideTelemetryHUD />}
+            {(pathname === "/about" || pathname.startsWith("/about")) && <AboutControls />}
+            {(pathname === "/experience" || pathname.startsWith("/experience")) && <ExperienceControls />}
+
+            {/* Extreme Right Cyber Scroll Progress Indicator (Only for detailed spec decks) */}
+            {pathname.startsWith("/projects/") && (
+              <button
+                type="button"
+                disabled={scrollProgress === 0}
+                onClick={(e) => {
+                  if (scrollProgress > 0) {
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                    setIsProgressHovered(false);
+                    e.currentTarget.blur();
+                  }
+                }}
+                onMouseEnter={() => setIsProgressHovered(true)}
+                onMouseLeave={() => setIsProgressHovered(false)}
+                onBlur={() => setIsProgressHovered(false)}
+                className="navbar-scroll-progress-btn btn p-0 border-0 d-inline-flex align-items-center justify-content-center position-relative flex-shrink-0"
+                aria-label={
+                  scrollProgress > 0
+                    ? `Scroll progress: ${scrollProgress}%. Click to scroll to top.`
+                    : "Scroll progress: 0% (Inactive)"
+                }
+                title={
+                  scrollProgress > 0
+                    ? `Page Scroll: ${scrollProgress}% (Click to return to top)`
+                    : "Scroll progress: 0% (Inactive)"
+                }
+                style={{
+                  width: 34,
+                  height: 34,
+                  borderRadius: "50%",
+                  background:
+                    scrollProgress > 0
+                      ? "rgba(6, 14, 28, 0.7)"
+                      : "rgba(4, 9, 20, 0.4)",
+                  border:
+                    scrollProgress > 0
+                      ? "1px solid rgba(0, 242, 254, 0.22)"
+                      : "1px solid rgba(255, 255, 255, 0.08)",
+                  boxShadow:
+                    scrollProgress > 0 && isProgressHovered
+                      ? "0 0 14px rgba(0, 242, 254, 0.4), inset 0 0 8px rgba(0, 242, 254, 0.15)"
+                      : "none",
+                  opacity: scrollProgress > 0 ? 1 : 0.35,
+                  transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
+                  cursor: scrollProgress > 0 ? "pointer" : "not-allowed",
+                }}
+              >
+                {/* Circular SVG Ring */}
+                <svg
+                  width="34"
+                  height="34"
+                  viewBox="0 0 34 34"
+                  className="position-absolute top-0 start-0"
+                  style={{ transform: "rotate(-90deg)" }}
+                >
+                  {/* Background Ring Track */}
+                  <circle
+                    cx="17"
+                    cy="17"
+                    r="13"
+                    fill="transparent"
+                    stroke="rgba(255, 255, 255, 0.08)"
+                    strokeWidth="2.5"
+                  />
+                  {/* Foreground Active Progress Ring */}
+                  <circle
+                    cx="17"
+                    cy="17"
+                    r="13"
+                    fill="transparent"
+                    stroke="#00f2fe"
+                    strokeWidth="2.5"
+                    strokeDasharray={81.68}
+                    strokeDashoffset={81.68 - (scrollProgress / 100) * 81.68}
+                    strokeLinecap="round"
+                    style={{
+                      transition: "stroke-dashoffset 0.12s ease-out",
+                      filter:
+                        scrollProgress > 0
+                          ? "drop-shadow(0 0 3px #00f2fe)"
+                          : "none",
+                      opacity: scrollProgress > 0 ? 1 : 0,
+                    }}
+                  />
+                </svg>
+
+                {/* Center Content: Monospace Percentage or Up Arrow on Hover */}
+                <span
+                  className="position-relative font-mono fw-bold d-inline-flex align-items-center justify-content-center"
+                  style={{
+                    fontSize:
+                      scrollProgress > 0 && isProgressHovered
+                        ? "0.72rem"
+                        : "0.5rem",
+                    color:
+                      scrollProgress > 0
+                        ? isProgressHovered
+                          ? "#00f2fe"
+                          : "rgba(255, 255, 255, 0.85)"
+                        : "rgba(255, 255, 255, 0.3)",
+                    letterSpacing: "-0.02em",
+                    zIndex: 1,
+                    userSelect: "none",
+                    transition: "all 0.2s ease",
+                  }}
+                >
+                  {scrollProgress > 0 && isProgressHovered ? (
+                    <i className="bi bi-arrow-up" style={{ strokeWidth: "1px" }} />
+                  ) : (
+                    `${scrollProgress}%`
+                  )}
+                </span>
+              </button>
+            )}
+          </div>
+
+          {/* Scroll to Top Arrow - Only visible when in canvas section */}
+          <AnimatePresence>
+            {isCanvasSection && (
+              <motion.button
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                whileHover={{ scale: 1.1, backgroundColor: "rgba(0, 242, 254, 0.2)", borderColor: "rgba(0, 242, 254, 0.6)", boxShadow: "0 0 10px rgba(0, 242, 254, 0.3)" }}
+                whileTap={{ scale: 0.9, backgroundColor: "rgba(0, 242, 254, 0.3)" }}
+                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                className="btn btn-sm d-flex align-items-center justify-content-center position-absolute end-0 top-50 translate-middle-y me-3 me-md-4"
+                style={{
+                  width: "30px",
+                  height: "30px",
+                  background: "rgba(0, 242, 254, 0.1)",
+                  border: "1px solid rgba(0, 242, 254, 0.3)",
+                  color: "#00f2fe",
+                  borderRadius: "50%",
+                  zIndex: 2000,
+                }}
+                aria-label="Scroll to top"
+              >
+                <i className="bi bi-arrow-up" />
+              </motion.button>
+            )}
+          </AnimatePresence>
         </div>
+
+        {/* Hairline Laser Scroll Progress Line at Bottom of Header */}
+        {pathname.startsWith("/projects/") && (
+          <div
+            className="position-absolute bottom-0 start-0 pe-none"
+            style={{
+              height: "1.5px",
+              width: `${scrollProgress}%`,
+              background: "linear-gradient(90deg, transparent, #00f2fe 70%, #ffffff)",
+              boxShadow: "0 0 10px rgba(0, 242, 254, 0.9)",
+              transition: "width 0.1s ease-out",
+              opacity: scrolled ? 1 : 0,
+              zIndex: 1,
+            }}
+          />
+        )}
       </header>
 
       {/* Floating Projector Hint Note */}
@@ -117,7 +351,7 @@ export default function Navbar() {
             }}
           >
             <span
-              className="font-outfit text-uppercase"
+              className="instruction font-outfit text-uppercase"
               style={{
                 fontSize: "0.41rem",
                 letterSpacing: "0.2rem",
