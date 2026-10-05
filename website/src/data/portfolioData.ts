@@ -32,6 +32,7 @@ export interface ExperienceItem {
   period: string;
   location: string;
   project: string;
+  slug?: string;
   description: string[];
   githubUrl?: string;
   liveUrl?: string;
@@ -53,7 +54,7 @@ export const PERSONAL_INFO = {
   name: "Kiran Chand S",
   title: "Software Engineer | Full Stack Developer",
   tagline: "React • Next.js • Python • Django REST • Applied AI",
-  location: "Trivandrum, India",
+  location: "Trivandrum, Kerala",
   email: "kiranchand.0987@gmail.com",
   phone: "+91 8848314304",
   linkedin: "https://linkedin.com/in/kiranchand-s",
@@ -75,6 +76,7 @@ export const EXPERIENCES: ExperienceItem[] = [
     period: "June 2026 – August 2026",
     location: "Trivandrum",
     project: "DispatchR – Automated Reporting Web Application",
+    slug: "dispatchr-automated-reporting",
     description: [
       "Architected and deployed DispatchR utilizing Next.js and Django REST, streamlining multi-source data ingestion for over 50+ reporting endpoints.",
       "Engineered dynamic PDF generation utilizing ReportLab and implemented cron-scheduled automated email distribution, reducing manual reporting time by 75% and accelerating cross-team data delivery.",

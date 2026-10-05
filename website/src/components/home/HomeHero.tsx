@@ -184,6 +184,20 @@ export default function HomeHero() {
   };
 
   const handleSlideJump = (index: number) => {
+    if (index === 0) {
+      isTransitioning.current = false;
+      isScrollCooldown.current = false;
+      setIsExitingSlide2(false);
+      setIsExitingSlide4(false);
+      setIsExitingSlide5(false);
+      setIsExitingSlide6(false);
+      setIsExitingSlide7(false);
+      setIsBgSlidingUp(false);
+      setIsContentsRevealed(false);
+      setSelectedHeroCard(null);
+      setCurrentSlide(0);
+      return;
+    }
     if (index !== currentSlide && !isTransitioning.current) {
       if (currentSlide === 3 && index === 4) {
         transitionSlide4To5();
@@ -235,9 +249,14 @@ export default function HomeHero() {
     publishSlideState({ currentSlide, totalSlides: 7 });
   }, [currentSlide]);
 
+  const handleSlideJumpRef = useRef(handleSlideJump);
+  useEffect(() => {
+    handleSlideJumpRef.current = handleSlideJump;
+  });
+
   useEffect(() => {
     const unsubSelect = subscribeSlideSelect((targetIndex) => {
-      handleSlideJump(targetIndex);
+      handleSlideJumpRef.current(targetIndex);
     });
     const unsubRequest = subscribeSlideRequest(() => {
       publishSlideState({ currentSlide, totalSlides: 7 });
@@ -678,10 +697,10 @@ export default function HomeHero() {
                     {currentSlide === 1 && !isExitingSlide2 && (
                       <motion.div
                         key="desktop-cards-panel"
-                        initial={{ opacity: 0, x: 60, scale: 0.96 }}
-                        animate={{ opacity: 1, x: 0, scale: 1 }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
                         exit={{ opacity: 0, scale: 0.96, transition: { duration: 0.85 } }}
-                        transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+                        transition={{ duration: 0.35, ease: "easeOut" }}
                         className="w-100 d-flex justify-content-end"
                       >
                         <HeroCardGrid
@@ -711,10 +730,10 @@ export default function HomeHero() {
                     !isExitingSlide2 && (
                       <motion.div
                         key="mobile-cards"
-                        initial={{ opacity: 0, scale: 0.96 }}
-                        animate={{ opacity: 1, scale: 1 }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
                         exit={{ opacity: 0, scale: 0.96, transition: { duration: 0.85 } }}
-                        transition={{ duration: 0.75 }}
+                        transition={{ duration: 0.35, ease: "easeOut" }}
                         className="col-12 p-0 d-flex align-items-center justify-content-center"
                       >
                         <HeroCardGrid

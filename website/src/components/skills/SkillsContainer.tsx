@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { SKILL_CATEGORIES, CERTIFICATIONS } from "@/data/portfolioData";
 import SkillsHeroHeader from "./SkillsHeroHeader";
 import SkillsTabNav from "./SkillsTabNav";
@@ -71,23 +71,35 @@ export default function SkillsContainer() {
           paddingBottom: "2rem",
         }}
       >
-        <h2
+        <motion.h2
+          initial={{ opacity: 0, y: 16, filter: "blur(6px)" }}
+          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           className="font-syne fw-bold text-uppercase text-white cyber-title-glow text-center mb-1 flex-shrink-0 skills-section-viewport-title"
           style={{ letterSpacing: "0.06em" }}
         >
           {activeTab === "skills" ? "Skills & Competencies" : "Verified Certifications"}
-        </h2>
+        </motion.h2>
 
-        <p
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.5, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
           className="font-outfit text-center text-light text-opacity-50 mb-3 mb-md-4 skills-section-viewport-subtitle"
           style={{ letterSpacing: "0.02em" }}
         >
           {activeTab === "skills"
             ? "Languages, frameworks, databases, cloud architecture, and AI tooling"
             : "Official credentials in Cloud Architecture, Generative AI, and Engineering"}
-        </p>
+        </motion.p>
 
-        <div
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: 0.6, delay: 0.16, ease: [0.16, 1, 0.3, 1] }}
           className="w-100 mx-auto overflow-hidden skill-canvas position-relative"
           style={{
             maxWidth: "900px",
@@ -102,7 +114,7 @@ export default function SkillsContainer() {
               <Skills3DDepthView key="certifications" items={CERTIFICATIONS} type="certifications" />
             )}
           </AnimatePresence>
-        </div>
+        </motion.div>
       </section>
     </div>
   );

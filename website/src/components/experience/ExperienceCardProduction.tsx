@@ -120,7 +120,7 @@ export default function ExperienceCardProduction({
             </a>
           )}
           <Link
-            href="/projects/dispatchr-automated-reporting"
+            href={`/experience/${exp.slug || "dispatchr-automated-reporting"}`}
             className="btn btn-cyber-glass rounded-pill tracking-wider text-uppercase d-inline-flex align-items-center exp-card-btn"
             style={{ borderColor: "rgba(0, 242, 254, 0.4)" }}
           >

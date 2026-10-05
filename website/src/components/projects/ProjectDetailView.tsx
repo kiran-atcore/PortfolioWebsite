@@ -1065,7 +1065,7 @@ export default function ProjectDetailView({
                           style={{ overflow: "hidden" }}
                         >
                           <div
-                            className="px-3 px-sm-3.5 pb-3.5 pt-0 border-top"
+                            className="px-3 px-sm-3 pb-3.5 pt-0 border-top"
                             style={{
                               borderColor: "rgba(255, 255, 255, 0.08)",
                               backgroundColor: "rgba(2, 6, 16, 0.45)",

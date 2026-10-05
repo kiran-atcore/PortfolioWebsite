@@ -1995,6 +1995,13 @@ body {
   }
 }
 
+@media (max-width: 400px) {
+  .hero-grid-container {
+    max-width: 285px;
+    transform: translateY(-16px);
+  }
+}
+
 @media (min-width: 992px) and (max-height: 850px) {
   .hero-grid-container {
     max-width: 375px;
@@ -2216,16 +2223,9 @@ body {
 }
 
 .hero-cyber-card {
-  transform: scale(0.9) !important;
   position: relative;
   z-index: 1;
-  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
-}
-
-@media (min-width: 400px) {
-  .hero-cyber-card {
-    transform: scale(1) !important;
-  }
+  will-change: transform, opacity, filter;
 }
 
 .hero-card-offset-wrapper {
@@ -2296,6 +2296,34 @@ body {
 
   .card-offset-4 {
     transform: translate(4px, 22px) rotate(-2.8deg);
+  }
+}
+
+@media (max-width: 400px) {
+  .hero-cyber-grid {
+    gap: 0.45rem;
+  }
+
+  .card-offset-1 {
+    transform: translate(-3px, -5px) rotate(-1.8deg);
+  }
+
+  .card-offset-2 {
+    transform: translate(4px, 8px) rotate(2deg);
+  }
+
+  .card-offset-3 {
+    transform: translate(-2px, 4px) rotate(1.4deg);
+  }
+
+  .card-offset-4 {
+    transform: translate(3px, 14px) rotate(-2deg);
+  }
+
+  .hero-card-tag {
+    bottom: 0.4rem;
+    left: 0.5rem;
+    right: 0.5rem;
   }
 }
 
@@ -3615,4 +3643,1114 @@ body.modal-open {
 
 .min-w-0 {
   min-width: 0 !important;
+}
+
+/* ==========================================================================
+   CONTACT PAGE CYBERNETIC DESIGN SYSTEM & 5 RESPONSIVE SCREEN TIERS
+   Tier 1: < 400px (Ultra-compact mobile screens)
+   Tier 2: 400px to sm (400px - 575.98px)
+   Tier 3: sm to md (576px - 767.98px)
+   Tier 4: md to lg (768px - 991.98px)
+   Tier 5: > lg (992px+)
+   ========================================================================== */
+
+/* Base Cyber Contact Card Styles */
+.contact-cyber-card {
+  position: relative;
+  background: rgba(4, 9, 22, 0.85);
+  border: 1px solid rgba(0, 242, 254, 0.22);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 242, 254, 0.12), inset 0 1px 1px rgba(0, 242, 254, 0.2);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+}
+
+.contact-cyber-card:hover {
+  border-color: rgba(0, 242, 254, 0.65);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 242, 254, 0.3), 0 0 15px rgba(255, 42, 133, 0.2);
+}
+
+/* Cyber Contact Message Form Card & Scroll Container */
+.contact-message-card {
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+.contact-form-scroll-body {
+  padding: 2.25rem 2.5rem;
+}
+
+/* Aerospace Frame Rims */
+.contact-rim {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  z-index: 5;
+  filter: drop-shadow(0 0 2px rgba(0, 242, 254, 0.7));
+}
+
+.contact-rim-tl {
+  top: 0;
+  left: 0;
+  border-top: 2px solid #00f2fe;
+  border-left: 2px solid #00f2fe;
+  border-top-left-radius: 18px;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.contact-rim-tr {
+  top: 0;
+  right: 0;
+  border-top: 2px solid #00f2fe;
+  border-right: 2px solid #00f2fe;
+  border-top-right-radius: 18px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.contact-rim-bl {
+  bottom: 0;
+  left: 0;
+  border-bottom: 2px solid #00f2fe;
+  border-left: 2px solid #00f2fe;
+  border-bottom-left-radius: 18px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.contact-rim-br {
+  bottom: 0;
+  right: 0;
+  border-bottom: 2px solid #00f2fe;
+  border-right: 2px solid #00f2fe;
+  border-bottom-right-radius: 18px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+/* Base Cyber Form Controls */
+.contact-input,
+.contact-textarea {
+  background: rgba(3, 7, 18, 0.75) !important;
+  border: 1px solid rgba(0, 242, 254, 0.22) !important;
+  color: #f8fafc !important;
+  font-family: 'Space Grotesk', sans-serif;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.contact-input:focus,
+.contact-textarea:focus {
+  background: rgba(5, 12, 26, 0.95) !important;
+  border-color: #00f2fe !important;
+  box-shadow: 0 0 18px rgba(0, 242, 254, 0.35), inset 0 1px 2px rgba(0, 242, 254, 0.2) !important;
+  outline: none !important;
+}
+
+.contact-input::placeholder,
+.contact-textarea::placeholder {
+  color: rgba(148, 163, 184, 0.45) !important;
+  font-family: 'Outfit', sans-serif !important;
+}
+
+/* Base Channels */
+.contact-channel-item {
+  background: rgba(6, 14, 30, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  transition: all 0.25s ease;
+}
+
+.contact-channel-item:hover {
+  border-color: rgba(0, 242, 254, 0.45);
+  background: rgba(0, 242, 254, 0.06);
+  transform: translateX(3px);
+}
+
+.contact-channel-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 242, 254, 0.3);
+  flex-shrink: 0;
+  transition: all 0.25s ease;
+}
+
+.contact-copy-btn {
+  border-radius: 8px !important;
+  color: #94a3b8 !important;
+  transition: all 0.2s ease !important;
+}
+
+.contact-copy-btn:hover {
+  color: #00f2fe !important;
+  border-color: rgba(0, 242, 254, 0.5) !important;
+}
+
+/* Contact Channels Deck & Adaptive Cards */
+.contact-channels-deck {
+  position: relative;
+  z-index: 2;
+}
+
+.contact-channel-card {
+  padding: 0.55rem 0.85rem !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.contact-channel-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(0, 242, 254, 0.65);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 242, 254, 0.22);
+}
+
+.contact-channel-value {
+  color: #ffffff !important;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+}
+
+.contact-channel-value:hover {
+  color: #00f2fe !important;
+  text-shadow: 0 0 12px rgba(0, 242, 254, 0.4);
+}
+
+.contact-channel-meta {
+  white-space: nowrap !important;
+  line-height: 1.2;
+}
+
+.contact-nodes-ribbon {
+  background: rgba(4, 9, 22, 0.75);
+  border: 1px solid rgba(0, 242, 254, 0.2);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.contact-scroll-btn {
+  background: rgba(4, 9, 22, 0.75);
+  border: 1px solid rgba(0, 242, 254, 0.35);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: #f8fafc !important;
+  font-size: 0.62rem;
+  padding: 0.48rem 1.25rem;
+  letter-spacing: 0.12em;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5), 0 0 10px rgba(0, 242, 254, 0.12);
+}
+
+.contact-scroll-btn:hover {
+  background: rgba(0, 242, 254, 0.15);
+  border-color: #00f2fe;
+  color: #ffffff !important;
+  transform: translateY(2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 242, 254, 0.38);
+}
+
+.contact-scroll-btn:hover .bi-chevron-down {
+  transform: translateY(2px);
+}
+
+.contact-scroll-btn .bi-chevron-down {
+  transition: transform 0.2s ease;
+}
+
+/* Contact 100vh Viewport Section (Strictly between Top Navbar & Bottom Dock) */
+.contact-section-viewport {
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.contact-channels-deck {
+  position: relative;
+  z-index: 2;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+
+.contact-channel-row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.contact-channel-details {
+  gap: 0.65rem;
+}
+
+.contact-channel-actions {
+  gap: 0.35rem;
+}
+
+@media (min-width: 768px) {
+  .border-top-md {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .w-md-100 {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .w-100-mobile {
+    width: 100% !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   TIER 5: > lg (992px+) - Desktop
+   -------------------------------------------------------------------------- */
+@media (min-width: 992px) {
+  .contact-page-container {
+    max-width: 1180px;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .contact-hero-chip {
+    padding: 0.4rem 1.15rem;
+  }
+
+  .contact-hero-chip-text {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+  }
+
+  .contact-hero-role {
+    font-size: 0.82rem;
+    letter-spacing: 0.22em;
+  }
+
+  .contact-hero-title {
+    font-size: 2.55rem;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.75rem;
+  }
+
+  .contact-hero-desc {
+    font-size: 0.9rem;
+    max-width: 680px;
+    line-height: 1.68;
+  }
+
+  .contact-cyber-card {
+    padding: 2.25rem 2.5rem;
+    border-radius: 18px;
+    margin-top: 20px;
+    max-height: 410px !important;
+  }
+
+  .contact-card-title {
+    font-size: 1.15rem;
+    letter-spacing: 0.1em;
+  }
+
+  .contact-section-viewport {
+    padding-top: calc(max(0.5rem, env(safe-area-inset-top, 0.5rem)) + 52px);
+    padding-bottom: calc(max(1.25rem, env(safe-area-inset-bottom, 1.25rem)) + 70px);
+  }
+
+  .contact-channels-deck {
+    max-width: 1020px;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+
+  .contact-channel-row {
+    --bs-gutter-x: 1.25rem;
+    --bs-gutter-y: 1.25rem;
+    margin-bottom: 0.85rem;
+  }
+
+  .contact-channel-card {
+    padding: 0.7rem 1.25rem !important;
+    border-radius: 16px;
+  }
+
+  .contact-channel-details {
+    gap: 0.75rem;
+  }
+
+  .contact-channel-icon {
+    width: 46px;
+    height: 46px;
+    font-size: 1.2rem;
+  }
+
+  .contact-channel-meta {
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    margin-bottom: 0.25rem;
+  }
+
+  .contact-channel-value {
+    font-size: 0.92rem;
+  }
+
+  .contact-channel-actions {
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+    padding-top: 0.35rem;
+  }
+
+  .contact-copy-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 0.85rem;
+  }
+
+  .contact-channel-badge {
+    font-size: 0.55rem;
+    padding: 0.25rem 0.55rem;
+  }
+
+  .contact-nodes-ribbon {
+    margin-top: 2rem !important;
+    padding: 0.3rem 1.25rem !important;
+  }
+
+  .contact-social-btn {
+    font-size: 0.62rem;
+    padding: 0.52rem 1.15rem;
+  }
+
+  .contact-scroll-wrap {
+    margin-top: 1rem !important;
+  }
+
+  .contact-scroll-btn {
+    font-size: 0.64rem;
+    padding: 0.52rem 1.35rem;
+    letter-spacing: 0.14em;
+  }
+
+  .contact-form-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.45rem;
+  }
+
+  .contact-input {
+    font-size: 0.92rem;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+  }
+
+  .contact-textarea {
+    font-size: 0.92rem;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    min-height: 125px;
+  }
+
+  .contact-submit-btn {
+    font-size: 0.68rem;
+    padding: 0.85rem 1.85rem;
+    letter-spacing: 0.15em;
+  }
+
+  .contact-form-scroll-body {
+    padding: 2.25rem 2.5rem;
+  }
+
+  .contact-rim {
+    width: 18px;
+    height: 18px;
+  }
+
+  .contact-rim-tl { border-top-left-radius: 18px; }
+  .contact-rim-tr { border-top-right-radius: 18px; }
+  .contact-rim-bl { border-bottom-left-radius: 18px; }
+  .contact-rim-br { border-bottom-right-radius: 18px; }
+}
+
+/* --------------------------------------------------------------------------
+   TIER 4: md to lg (768px - 991.98px) - Tablets & Small Laptops
+   -------------------------------------------------------------------------- */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .contact-page-container {
+    max-width: 820px;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+
+  .contact-hero-chip {
+    padding: 0.36rem 1rem;
+  }
+
+  .contact-hero-chip-text {
+    font-size: 0.66rem;
+    letter-spacing: 0.18em;
+  }
+
+  .contact-hero-role {
+    font-size: 0.78rem;
+    letter-spacing: 0.2em;
+  }
+
+  .contact-hero-title {
+    font-size: 2.2rem;
+    letter-spacing: 0.07em;
+  }
+
+  .contact-hero-desc {
+    font-size: 0.92rem;
+    max-width: 600px;
+    line-height: 1.65;
+  }
+
+  .contact-cyber-card {
+    padding: 1.85rem 2rem;
+    border-radius: 16px;
+    margin-top: 20px;
+    max-height: 420px !important;
+  }
+
+  .contact-card-title {
+    font-size: 1.15rem;
+    letter-spacing: 0.09em;
+  }
+
+  .contact-section-viewport {
+    padding-top: calc(max(0.5rem, env(safe-area-inset-top, 0.5rem)) + 48px);
+    padding-bottom: calc(max(1.25rem, env(safe-area-inset-bottom, 1.25rem)) + 68px);
+  }
+
+  .contact-channels-deck {
+    max-width: 820px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .contact-channel-row {
+    --bs-gutter-x: 0.85rem;
+    --bs-gutter-y: 0.85rem;
+    margin-bottom: 0.65rem;
+  }
+
+  .contact-channel-card {
+    padding: 0.85rem 1rem !important;
+    border-radius: 14px;
+  }
+
+  .contact-channel-details {
+    gap: 0.65rem;
+  }
+
+  .contact-channel-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.08rem;
+  }
+
+  .contact-channel-meta {
+    font-size: 0.56rem;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.2rem;
+  }
+
+  .contact-channel-value {
+    font-size: 0.82rem;
+  }
+
+  .contact-channel-actions {
+    gap: 0.35rem;
+    margin-top: 0.4rem;
+    padding-top: 0.25rem;
+  }
+
+  .contact-copy-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 0.78rem;
+  }
+
+  .contact-channel-badge {
+    font-size: 0.52rem;
+    padding: 0.22rem 0.5rem;
+  }
+
+  .contact-nodes-ribbon {
+    margin-top: 2rem !important;
+    padding: 0.38rem 0.95rem !important;
+  }
+
+  .contact-social-btn {
+    font-size: 0.56rem;
+    padding: 0.44rem 0.95rem;
+  }
+
+  .contact-scroll-wrap {
+    margin-top: 0.8rem !important;
+  }
+
+  .contact-scroll-btn {
+    font-size: 0.58rem;
+    padding: 0.44rem 1.15rem;
+    letter-spacing: 0.12em;
+  }
+
+  .contact-form-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.09em;
+    margin-bottom: 0.4rem;
+  }
+
+  .contact-input {
+    font-size: 0.88rem;
+    padding: 0.7rem 0.95rem;
+    border-radius: 11px;
+  }
+
+  .contact-textarea {
+    font-size: 0.88rem;
+    padding: 0.7rem 0.95rem;
+    border-radius: 11px;
+    min-height: 115px;
+  }
+
+  .contact-submit-btn {
+    font-size: 0.62rem;
+    padding: 0.75rem 1.6rem;
+    letter-spacing: 0.13em;
+  }
+
+  .contact-form-scroll-body {
+    padding: 1.85rem 2rem;
+  }
+
+  .contact-rim {
+    width: 16px;
+    height: 16px;
+  }
+
+  .contact-rim-tl { border-top-left-radius: 16px; }
+  .contact-rim-tr { border-top-right-radius: 16px; }
+  .contact-rim-bl { border-bottom-left-radius: 16px; }
+  .contact-rim-br { border-bottom-right-radius: 16px; }
+}
+
+/* --------------------------------------------------------------------------
+   TIER 3: sm to md (576px - 767.98px) - Compact Tablets / Large Phablets
+   -------------------------------------------------------------------------- */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .contact-page-container {
+    max-width: 580px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .contact-hero-chip {
+    padding: 0.32rem 0.9rem;
+  }
+
+  .contact-hero-chip-text {
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+  }
+
+  .contact-hero-role {
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+  }
+
+  .contact-hero-title {
+    font-size: 1.6rem;
+    letter-spacing: 0.06em;
+  }
+
+  .contact-hero-desc {
+    font-size: 0.7rem;
+    max-width: 500px;
+    line-height: 1.6;
+  }
+
+  .contact-cyber-card {
+    padding: 1.6rem 1.75rem;
+    border-radius: 15px;
+    margin-top: 20px;
+    max-height: 420px !important;
+  }
+
+  .contact-card-title {
+    font-size: 1.05rem;
+    letter-spacing: 0.08em;
+  }
+
+  .contact-section-viewport {
+    padding-top: calc(max(0.5rem, env(safe-area-inset-top, 0.5rem)) + 46px);
+    padding-bottom: calc(max(1.25rem, env(safe-area-inset-bottom, 1.25rem)) + 66px);
+  }
+
+  .contact-channels-deck {
+    max-width: 580px;
+    padding-left: 0.85rem;
+    padding-right: 0.85rem;
+  }
+
+  .contact-channel-row {
+    --bs-gutter-x: 0.65rem;
+    --bs-gutter-y: 0.55rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .contact-channel-card {
+    padding: 0.3rem 0.85rem !important;
+    border-radius: 12px;
+  }
+
+  .contact-channel-details {
+    gap: 0.65rem;
+  }
+
+  .contact-channel-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+
+  .contact-channel-meta {
+    font-size: 0.54rem;
+    letter-spacing: 0.09em;
+    margin-bottom: 0.15rem;
+  }
+
+  .contact-channel-value {
+    font-size: 0.82rem;
+  }
+
+  .contact-channel-actions {
+    gap: 0.35rem;
+  }
+
+  .contact-copy-btn {
+    width: 26px;
+    height: 26px;
+    font-size: 0.74rem;
+  }
+
+  .contact-channel-badge {
+    font-size: 0.5rem;
+    padding: 0.18rem 0.45rem;
+  }
+
+  .contact-nodes-ribbon {
+    margin-top: 1.7rem !important;
+    padding: 0.2rem 0.75rem !important;
+  }
+
+  .contact-social-btn {
+    font-size: 0.52rem;
+    padding: 0.38rem 0.8rem;
+  }
+
+  .contact-scroll-wrap {
+    margin-top: 0.65rem !important;
+  }
+
+  .contact-scroll-btn {
+    font-size: 0.52rem;
+    padding: 0.38rem 1rem;
+    letter-spacing: 0.1em;
+  }
+
+  .contact-form-label {
+    font-size: 0.64rem;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.35rem;
+  }
+
+  .contact-input {
+    font-size: 0.84rem;
+    padding: 0.65rem 0.85rem;
+    border-radius: 10px;
+  }
+
+  .contact-textarea {
+    font-size: 0.84rem;
+    padding: 0.65rem 0.85rem;
+    border-radius: 10px;
+    min-height: 105px;
+  }
+
+  .contact-submit-btn {
+    font-size: 0.58rem;
+    padding: 0.7rem 1.4rem;
+    letter-spacing: 0.11em;
+  }
+
+  .contact-form-scroll-body {
+    padding: 1.6rem 1.75rem;
+  }
+
+  .contact-rim {
+    width: 15px;
+    height: 15px;
+  }
+
+  .contact-rim-tl { border-top-left-radius: 15px; }
+  .contact-rim-tr { border-top-right-radius: 15px; }
+  .contact-rim-bl { border-bottom-left-radius: 15px; }
+  .contact-rim-br { border-bottom-right-radius: 15px; }
+}
+
+/* --------------------------------------------------------------------------
+   TIER 2: 400px to sm (400px - 575.98px) - Standard Mobile Phones
+   -------------------------------------------------------------------------- */
+@media (min-width: 400px) and (max-width: 575.98px) {
+  .contact-page-container {
+    padding-left: 0.85rem;
+    padding-right: 0.85rem;
+  }
+
+  .contact-hero-chip {
+    padding: 0.3rem 0.8rem;
+    margin-bottom: 10px !important;
+    margin-top: 15px !important;
+  }
+
+  .contact-hero-chip-text {
+    font-size: 0.58rem;
+    letter-spacing: 0.14em;
+  }
+
+  .contact-hero-role {
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+  }
+
+  .contact-hero-title {
+    font-size: 1.55rem;
+    letter-spacing: 0.05em;
+  }
+
+  .contact-hero-desc {
+    font-size: 0.7rem;
+    line-height: 1.55;
+  }
+
+  .contact-cyber-card {
+    padding: 1.35rem 1.25rem;
+    border-radius: 14px;
+    max-height: 400px !important;
+    margin-top: 20px;
+  }
+
+  .contact-card-title {
+    font-size: 0.98rem;
+    letter-spacing: 0.07em;
+  }
+
+  .contact-section-viewport {
+    padding-top: calc(max(0.45rem, env(safe-area-inset-top, 0.45rem)) + 44px);
+    padding-bottom: calc(max(1rem, env(safe-area-inset-bottom, 1rem)) + 64px);
+  }
+
+  .contact-channels-deck {
+    width: 100%;
+    padding-left: 0.55rem;
+    padding-right: 0.55rem;
+  }
+
+  .contact-channel-row {
+    --bs-gutter-x: 0.5rem;
+    --bs-gutter-y: 0.5rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .contact-channel-card {
+    padding: 0.3rem 0.65rem !important;
+    border-radius: 11px;
+  }
+
+  .contact-channel-details {
+    gap: 0.6rem;
+  }
+
+  .contact-channel-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+  }
+
+  .contact-channel-meta {
+    font-size: 0.48rem;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.12rem;
+  }
+
+  .contact-channel-value {
+    font-size: 0.78rem;
+  }
+
+  .contact-channel-actions {
+    gap: 0.3rem;
+  }
+
+  .contact-copy-btn {
+    width: 25px;
+    height: 25px;
+    font-size: 0.68rem;
+  }
+
+  .contact-channel-badge {
+    font-size: 0.46rem;
+    padding: 0.16rem 0.4rem;
+  }
+
+  .contact-nodes-ribbon {
+    margin-top: 1.7rem !important;
+    padding: 0.25rem 0.5rem !important;
+
+  }
+
+  .contact-social-btn {
+    font-size: 0.48rem;
+    padding: 0.32rem 0.65rem;
+  }
+
+  .contact-scroll-wrap {
+    margin-top: 0.45rem !important;
+  }
+
+  .contact-scroll-btn {
+    font-size: 0.48rem;
+    padding: 0.32rem 0.85rem;
+    letter-spacing: 0.08em;
+  }
+
+  .contact-form-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.07em;
+    margin-bottom: 0.3rem;
+  }
+
+  .contact-input {
+    font-size: 0.8rem;
+    padding: 0.58rem 0.8rem;
+    border-radius: 9px;
+  }
+
+  .contact-textarea {
+    font-size: 0.8rem;
+    padding: 0.58rem 0.8rem;
+    border-radius: 9px;
+    min-height: 95px;
+  }
+
+  .contact-submit-btn {
+    font-size: 0.54rem;
+    padding: 0.65rem 1.25rem;
+    letter-spacing: 0.09em;
+  }
+
+  .contact-form-scroll-body {
+    padding: 1.35rem 1.25rem;
+  }
+
+  .contact-rim {
+    width: 14px;
+    height: 14px;
+  }
+
+  .contact-rim-tl { border-top-left-radius: 14px; }
+  .contact-rim-tr { border-top-right-radius: 14px; }
+  .contact-rim-bl { border-bottom-left-radius: 14px; }
+  .contact-rim-br { border-bottom-right-radius: 14px; }
+}
+
+/* --------------------------------------------------------------------------
+   TIER 1: < 400px (Ultra-compact mobile screens)
+   -------------------------------------------------------------------------- */
+@media (max-width: 399.98px) {
+  .contact-page-container {
+    padding-left: 0.45rem;
+    padding-right: 0.45rem;
+  }
+
+  .contact-hero-chip {
+    padding: 0.5rem 0.8rem !important;
+    margin-bottom: 15px !important;
+  }
+
+  .contact-hero-chip-text {
+    font-size: 0.52rem;
+    letter-spacing: 0.1em;
+  }
+
+  .contact-hero-wrap {
+    margin-bottom: 0.15rem;
+  }
+
+  .contact-hero-role {
+    font-size: 0.58rem;
+    letter-spacing: 0.1em;
+    margin-top: 0 !important;
+    margin-bottom: 0.15rem !important;
+  }
+
+  .contact-hero-title {
+    font-size: 1.2rem;
+    letter-spacing: 0.02em;
+    word-break: break-word;
+    margin-bottom: 0.15rem !important;
+    margin-bottom: 15px !important;
+  }
+
+  .contact-hero-desc {
+    font-size: 0.72rem;
+    line-height: 1.35;
+    max-width: 320px;
+  }
+
+  .contact-section-viewport {
+    padding-top: calc(max(0.4rem, env(safe-area-inset-top, 0.4rem)) + 40px);
+    padding-bottom: calc(max(0.85rem, env(safe-area-inset-bottom, 0.85rem)) + 58px);
+  }
+
+  .contact-channels-deck {
+    width: 100%;
+    padding-left: 0.25rem !important;
+    padding-right: 0.25rem !important;
+  }
+
+  .contact-channel-row {
+    --bs-gutter-x: 0.25rem;
+    --bs-gutter-y: 0.58rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .contact-cyber-card {
+    max-height: 410px !important;
+    padding: 0.85rem 0.7rem;
+    border-radius: 11px;
+    margin-top: 19px !important;
+  }
+
+  .contact-card-title {
+    font-size: 0.88rem;
+    letter-spacing: 0.05em;
+  }
+
+  .contact-channel-card {
+    padding: 0.32rem 0.5rem !important;
+    border-radius: 9px;
+  }
+
+  .contact-channel-details {
+    gap: 0.4rem;
+  }
+
+  .contact-channel-icon {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 0.78rem !important;
+    border-radius: 7px;
+  }
+
+  .contact-channel-meta {
+    font-size: 0.44rem !important;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.08rem;
+  }
+
+  .contact-channel-value {
+    font-size: 0.72rem !important;
+  }
+
+  .contact-channel-actions {
+    gap: 0.25rem;
+  }
+
+  .contact-copy-btn {
+    width: 22px !important;
+    height: 22px !important;
+    font-size: 0.62rem !important;
+  }
+
+  .contact-channel-badge {
+    font-size: 0.42rem !important;
+    padding: 0.12rem 0.32rem !important;
+  }
+
+  .contact-nodes-ribbon {
+    margin-top: 1.5rem !important;
+    padding: 0.2rem 0.35rem !important;
+  }
+
+  .contact-nodes-label {
+    display: none !important;
+  }
+
+  .contact-social-btn {
+    font-size: 0.42rem !important;
+    padding: 0.24rem 0.42rem !important;
+    letter-spacing: 0.02em !important;
+  }
+
+  .contact-scroll-wrap {
+    margin-top: 0.55rem !important;
+  }
+
+  .contact-scroll-btn {
+    font-size: 0.42rem !important;
+    padding: 0.36rem 0.75rem !important;
+    letter-spacing: 0.06em !important;
+  }
+
+  .contact-form-label {
+    font-size: 0.54rem;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.2rem;
+  }
+
+  .contact-input {
+    font-size: 0.74rem;
+    padding: 0.45rem 0.65rem;
+    border-radius: 7px;
+  }
+
+  .contact-textarea {
+    font-size: 0.74rem;
+    padding: 0.45rem 0.65rem;
+    border-radius: 7px;
+    min-height: 80px;
+  }
+
+  .contact-submit-btn {
+    font-size: 0.48rem;
+    padding: 0.52rem 0.9rem;
+    letter-spacing: 0.07em;
+  }
+
+  .contact-form-scroll-body {
+    padding: 0.85rem 0.7rem;
+  }
+
+  .contact-rim {
+    width: 12px;
+    height: 12px;
+  }
+
+  .contact-rim-tl { border-top-left-radius: 11px; }
+  .contact-rim-tr { border-top-right-radius: 11px; }
+  .contact-rim-bl { border-bottom-left-radius: 11px; }
+  .contact-rim-br { border-bottom-right-radius: 11px; }
 }

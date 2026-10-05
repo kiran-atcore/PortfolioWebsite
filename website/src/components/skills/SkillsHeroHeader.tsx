@@ -26,7 +26,7 @@ export default function SkillsHeroHeader() {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.05, ease: [0.16, 1, 0.3, 1] }}
-        className="font-syne text-uppercase fw-semibold tracking-scifi mb-2"
+        className="font-syne text-uppercase fw-semibold tracking-scifi mb-2 mt-4"
         style={{
           color: "#00f2fe",
           fontSize: "clamp(0.72rem, 1.8vw, 0.82rem)",
@@ -41,7 +41,7 @@ export default function SkillsHeroHeader() {
         initial={{ opacity: 0, y: 12, filter: "blur(6px)" }}
         animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
         transition={{ duration: 0.55, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-        className="font-syne fw-bold text-uppercase text-white cyber-title-glow mb-2"
+        className="font-syne fw-bold text-uppercase text-white cyber-title-glow mb-4"
         style={{ fontSize: "clamp(1.6rem, 4.2vw, 2.75rem)", letterSpacing: "0.06em" }}
       >
         Skills &amp; Accreditations

@@ -5,11 +5,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { PERSONAL_INFO } from "../data/portfolioData";
 import SlideTelemetryHUD from "./ui/SlideTelemetryHUD";
 import AboutControls from "./about/AboutControls";
 import ExperienceControls from "./experience/ExperienceControls";
-import { subscribeSlideState, SlideStatePayload } from "@/lib/slideEvents";
+import { subscribeSlideState, SlideStatePayload, publishSlideSelect } from "@/lib/slideEvents";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -31,15 +30,22 @@ export default function Navbar() {
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        setIsCanvasSection(entries[0].isIntersecting);
+        if (entries[0]) {
+          setIsCanvasSection(entries[0].isIntersecting);
+        }
       },
       { threshold: 0.1 }
     );
 
-    const timer = setTimeout(() => {
-      const el = document.getElementById("skills-cards-viewport");
+    const attach = () => {
+      const el =
+        document.getElementById("skills-cards-viewport") ||
+        document.getElementById("contact-message-section");
       if (el) observer.observe(el);
-    }, 500);
+    };
+
+    attach();
+    const timer = setTimeout(attach, 400);
 
     return () => {
       clearTimeout(timer);
@@ -54,9 +60,12 @@ export default function Navbar() {
         window.history.scrollRestoration = "manual";
       }
       window.scrollTo(0, 0);
-      setScrolled(false);
-      setScrollProgress(0);
-      setIsProgressHovered(false);
+      const raf = requestAnimationFrame(() => {
+        setScrolled(false);
+        setScrollProgress(0);
+        setIsProgressHovered(false);
+      });
+      return () => cancelAnimationFrame(raf);
     }
   }, [pathname]);
 
@@ -156,7 +165,22 @@ export default function Navbar() {
         }}
       >
         <div className="container d-flex justify-content-between align-items-center position-relative">
-          <Link className="text-decoration-none d-inline-flex align-items-center navbar-k-logo-link" href="/" aria-label="Home">
+          <Link
+            className="text-decoration-none d-inline-flex align-items-center navbar-k-logo-link"
+            href="/"
+            aria-label="Home"
+            onClick={(e) => {
+              if (pathname === "/") {
+                e.preventDefault();
+                if (currentSlide !== 0) {
+                  publishSlideSelect(0);
+                }
+                if (typeof window !== "undefined") {
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }
+              }
+            }}
+          >
             <div className="k-emblem-wrapper">
               <Image
                 src="/k-logo-new.png"
@@ -172,10 +196,10 @@ export default function Navbar() {
           <div className="d-flex align-items-center gap-2 gap-sm-3">
             {pathname === "/" && <SlideTelemetryHUD />}
             {(pathname === "/about" || pathname.startsWith("/about")) && <AboutControls />}
-            {(pathname === "/experience" || pathname.startsWith("/experience")) && <ExperienceControls />}
+            {pathname === "/experience" && <ExperienceControls />}
 
             {/* Extreme Right Cyber Scroll Progress Indicator (Only for detailed spec decks) */}
-            {pathname.startsWith("/projects/") && (
+            {(pathname.startsWith("/projects/") || pathname.startsWith("/experience/")) && (
               <button
                 type="button"
                 disabled={scrollProgress === 0}
@@ -290,7 +314,7 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* Scroll to Top Arrow - Only visible when in canvas section */}
+          {/* Scroll to Top Arrow - Visible when in canvas/bottom section (Skills or Contact) */}
           <AnimatePresence>
             {isCanvasSection && (
               <motion.button
@@ -393,6 +417,17 @@ export default function Navbar() {
                   onMouseLeave={() => setHoveredTab(null)}
                   aria-label={tab.label}
                   style={{ fontSize: '0.5rem', }}
+                  onClick={(e) => {
+                    if (tab.href === "/" && pathname === "/") {
+                      e.preventDefault();
+                      if (currentSlide !== 0) {
+                        publishSlideSelect(0);
+                      }
+                      if (typeof window !== "undefined") {
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                      }
+                    }
+                  }}
                 >
                   {/* Morphing Sliding Cyber Active Pill */}
                   {isActive && (

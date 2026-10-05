@@ -165,7 +165,7 @@ export default function ExperienceContainer() {
         style={{ zIndex: 2 }}
       >
         <div
-          className={`w-100 h-100 position-relative p-2 p-sm-2.5 p-md-3 ${activeTab === "production" && 'pb-lg-1'} d-flex flex-column justify-content-between overflow-hidden`}
+          className={`w-100 h-100 position-relative ${activeTab === "production" && 'pb-lg-1'} d-flex flex-column justify-content-between overflow-hidden p-0`}
           style={{
             maxWidth: 800,
             border: "1px solid #00f2fe",
@@ -179,7 +179,7 @@ export default function ExperienceContainer() {
           onWheel={handleWheel}
         >
           {/* Card Viewport with swipe/drag */}
-          <div className="w-100 flex-grow-1 overflow-hidden position-relative d-flex flex-column justify-content-center" >
+          <div className="w-100 flex-grow-1 overflow-hidden position-relative d-flex flex-column justify-content-center p-2 p-sm-2 p-md-3" >
             <AnimatePresence mode="wait" custom={direction}>
               <motion.div
                 key={`${activeTab}-${currentCardIndex}`}

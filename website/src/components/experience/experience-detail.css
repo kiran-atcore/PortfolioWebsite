@@ -1,0 +1,776 @@
+/* ==========================================================================
+   5-TIER RESPONSIVE STYLING FOR EXPERIENCE DETAIL VIEW
+   1. < 400px: Ultra-compact mobile (<400)
+   2. 400px - 575.98px: Standard mobile (400 to sm)
+   3. 576px - 767.98px: Phablet / Small tablet (sm to md)
+   4. 768px - 991.98px: Medium tablet / Small laptop (md to lg)
+   5. >= 992px: Desktop / Large displays (>lg)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   BASE / TIER 5: Desktop & Large Displays (>= 992px)
+   -------------------------------------------------------------------------- */
+.spec-deck-card {
+  position: relative;
+  padding: 44px 44px;
+  border-radius: 20px;
+  margin-bottom: 2.5rem;
+  background: linear-gradient(145deg, rgba(6, 15, 30, 0.94) 0%, rgba(10, 12, 26, 0.98) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 242, 254, 0.4);
+  border-top-color: rgba(0, 242, 254, 0.85);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(0, 242, 254, 0.2), inset 0 0 20px rgba(0, 242, 254, 0.05);
+}
+
+.spec-rim-top-left, .spec-rim-top-right, .spec-rim-bottom-left, .spec-rim-bottom-right {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+}
+.spec-rim-top-left { top: 0; left: 0; border-top: 2px solid #00f2fe; border-left: 2px solid #00f2fe; border-top-left-radius: 20px; }
+.spec-rim-top-right { top: 0; right: 0; border-top: 2px solid #00f2fe; border-right: 2px solid #00f2fe; border-top-right-radius: 20px; }
+.spec-rim-bottom-left { bottom: 0; left: 0; border-bottom: 2px solid #00f2fe; border-left: 2px solid #00f2fe; border-bottom-left-radius: 20px; }
+.spec-rim-bottom-right { bottom: 0; right: 0; border-bottom: 2px solid #00f2fe; border-right: 2px solid #00f2fe; border-bottom-right-radius: 20px; }
+
+/* Top Nav Breadcrumbs */
+.spec-top-nav {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.spec-back-btn {
+  font-size: 0.65rem;
+  padding: 0.55rem 1.4rem;
+}
+.spec-telemetry-chip {
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  padding: 0.5rem 1.15rem;
+  border-radius: 9999px;
+  background: rgba(0, 242, 254, 0.08);
+  border: 1px solid rgba(0, 242, 254, 0.3);
+}
+
+/* Header Ribbon */
+.spec-header-ribbon {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-bottom: 2.25rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(0, 242, 254, 0.2);
+}
+.spec-category-badge {
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  padding: 5px 14px;
+  background: rgba(0, 242, 254, 0.12);
+  color: #00f2fe;
+  border: 1px solid rgba(0, 242, 254, 0.35);
+}
+.spec-company-text {
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+}
+.spec-title {
+  font-size: 2.65rem;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  text-shadow: 0 0 35px rgba(0, 242, 254, 0.4);
+  word-break: break-word;
+}
+.spec-tagline {
+  font-size: 1.05rem;
+  letter-spacing: 0.03em;
+  line-height: 1.6;
+}
+.spec-meta-row {
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+}
+.spec-action-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.85rem;
+  flex-shrink: 0;
+}
+.spec-action-btn {
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.6rem 1.35rem;
+}
+
+/* KPI Cards */
+.spec-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.15rem;
+}
+.spec-kpi-card {
+  padding: 1.2rem 1.35rem;
+  border-radius: 14px;
+  background: rgba(0, 242, 254, 0.04);
+  border: 1px solid rgba(0, 242, 254, 0.22);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.spec-kpi-card:hover {
+  border-color: rgba(0, 242, 254, 0.45);
+  transform: translateY(-2px);
+}
+.spec-kpi-watermark {
+  position: absolute;
+  top: 6px;
+  right: 12px;
+  font-size: 2.8rem;
+  color: #00f2fe;
+  opacity: 0.12;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+.spec-kpi-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+}
+.spec-kpi-value {
+  font-size: 1.95rem;
+  letter-spacing: 0.05em;
+  color: #fff;
+}
+.spec-kpi-detail {
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+/* Section Headings */
+.spec-section-heading {
+  font-size: 1.22rem;
+  letter-spacing: 0.08em;
+  margin-bottom: 1.15rem;
+}
+
+/* Executive Briefing Callout */
+.spec-challenge-box {
+  padding: 1.6rem 1.85rem;
+  border-radius: 16px;
+  background: rgba(6, 14, 28, 0.85);
+  border: 1px solid rgba(0, 242, 254, 0.25);
+  border-left: 4px solid #00f2fe;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+.spec-challenge-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.spec-challenge-meta {
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+}
+.spec-badge-deployment {
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  background: rgba(0, 242, 254, 0.1);
+  border: 1px solid rgba(0, 242, 254, 0.3);
+  color: #00f2fe;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.4;
+  display: inline-block;
+  max-width: 100%;
+}
+.spec-summary {
+  font-size: 0.96rem;
+  line-height: 1.78;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* Cyber Subcards & Items (Replaces Bootstrap bg-white) */
+.spec-subcard {
+  padding: 1.25rem 1.4rem;
+  border-radius: 12px;
+  background: rgba(8, 16, 32, 0.75);
+  border: 1px solid rgba(0, 242, 254, 0.2);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  height: 100%;
+}
+.spec-subcard-item {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  background: rgba(12, 24, 46, 0.65);
+  border: 1px solid rgba(0, 242, 254, 0.14);
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.spec-subcard-item:hover {
+  background: rgba(14, 28, 54, 0.8);
+  border-color: rgba(0, 242, 254, 0.35);
+}
+.spec-tech-pill {
+  display: inline-block;
+  font-size: 0.68rem;
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: rgba(0, 242, 254, 0.08);
+  border: 1px solid rgba(0, 242, 254, 0.2);
+  color: #7dd3fc;
+}
+.spec-code-tag {
+  display: inline-block;
+  font-size: 0.64rem;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(0, 242, 254, 0.25);
+  color: #38bdf8;
+}
+
+/* Deep Dive Tabs */
+.spec-deepdive-tabs-wrapper {
+  position: relative;
+  display: inline-flex;
+  max-width: 100%;
+  vertical-align: middle;
+}
+
+.spec-deepdive-tabs-container {
+  background: rgba(6, 14, 28, 0.6);
+  border-radius: 50px;
+  border: 1px solid rgba(0, 242, 254, 0.15);
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
+  display: inline-flex;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none; /* Firefox */
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+.spec-deepdive-tabs-container::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+
+/* Scroll Chevron Indicator */
+.spec-deepdive-scroll-indicator {
+  position: absolute;
+  right: 1px;
+  top: 1px;
+  bottom: 1px;
+  width: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top-right-radius: 50px;
+  border-bottom-right-radius: 50px;
+  background: linear-gradient(90deg, rgba(6, 14, 28, 0) 0%, rgba(6, 14, 28, 0.85) 35%, rgba(6, 14, 28, 0.98) 100%);
+  color: #00f2fe;
+  border: none;
+  font-size: 0.85rem;
+  cursor: pointer;
+  z-index: 5;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(4px);
+  transition: opacity 0.25s ease, visibility 0.25s ease, transform 0.25s ease;
+  padding-left: 8px;
+}
+
+.spec-deepdive-scroll-indicator.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+}
+
+.spec-deepdive-scroll-indicator i {
+  display: inline-block;
+  animation: spec-chevron-pulse 1.4s ease-in-out infinite;
+  filter: drop-shadow(0 0 6px rgba(0, 242, 254, 0.85));
+}
+
+.spec-deepdive-scroll-indicator:hover i {
+  color: #ffffff;
+  filter: drop-shadow(0 0 10px #00f2fe);
+}
+
+@keyframes spec-chevron-pulse {
+  0%, 100% {
+    transform: translateX(0);
+    opacity: 0.75;
+  }
+  50% {
+    transform: translateX(3px);
+    opacity: 1;
+  }
+}
+
+
+.spec-deepdive-tab {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  padding: 0.55rem 1.4rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: rgba(255, 255, 255, 0.5);
+  border: 1px solid transparent;
+  background: transparent;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.spec-deepdive-tab:hover {
+  color: #fff;
+  background: rgba(0, 242, 254, 0.05);
+}
+
+.spec-deepdive-tab.active {
+  color: #00f2fe;
+  background: rgba(0, 242, 254, 0.1);
+  border-color: rgba(0, 242, 254, 0.4);
+  box-shadow: 0 0 15px rgba(0, 242, 254, 0.2), inset 0 0 8px rgba(0, 242, 254, 0.1);
+  font-weight: 600;
+  text-shadow: 0 0 8px rgba(0, 242, 254, 0.5);
+}
+
+/* Benchmark Telemetry Table */
+.spec-table-container {
+  border-radius: 14px;
+  border: 1px solid rgba(0, 242, 254, 0.2);
+  background: rgba(6, 14, 28, 0.85);
+  overflow-x: auto;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 242, 254, 0.5) rgba(6, 14, 28, 0.85);
+}
+.spec-table-container::-webkit-scrollbar {
+  height: 8px;
+}
+.spec-table-container::-webkit-scrollbar-track {
+  background: rgba(0, 242, 254, 0.05);
+  border-radius: 14px;
+}
+.spec-table-container::-webkit-scrollbar-thumb {
+  background: rgba(0, 242, 254, 0.4);
+  border-radius: 14px;
+}
+.spec-table-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 242, 254, 0.7);
+}
+.spec-table-container table {
+  margin-bottom: 0;
+  width: 100%;
+}
+.spec-table-container th {
+  padding: 0.85rem 1rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  border-bottom: 1px solid rgba(0, 242, 254, 0.25);
+}
+.spec-table-container td {
+  padding: 0.85rem 1rem;
+  font-size: 0.85rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* --------------------------------------------------------------------------
+   TIER 4: md to lg (768px - 991.98px)
+   -------------------------------------------------------------------------- */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .spec-deck-card {
+    padding: 34px 30px;
+    border-radius: 18px;
+    margin-bottom: 2.25rem;
+  }
+  .spec-rim-top-left, .spec-rim-top-right, .spec-rim-bottom-left, .spec-rim-bottom-right {
+    width: 14px;
+    height: 14px;
+  }
+  .spec-rim-top-left { border-top-left-radius: 18px; }
+  .spec-rim-top-right { border-top-right-radius: 18px; }
+  .spec-rim-bottom-left { border-bottom-left-radius: 18px; }
+  .spec-rim-bottom-right { border-bottom-right-radius: 18px; }
+
+  .spec-header-ribbon {
+    margin-bottom: 1.75rem;
+    padding-bottom: 1.25rem;
+    gap: 1.2rem;
+  }
+  .spec-title {
+    font-size: 2.25rem;
+  }
+  .spec-tagline {
+    font-size: 0.98rem;
+  }
+  .spec-kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  .spec-kpi-value {
+    font-size: 1.75rem;
+  }
+  .spec-kpi-watermark {
+    font-size: 2.5rem;
+  }
+  .spec-section-heading {
+    font-size: 1.12rem;
+  }
+  .spec-challenge-box {
+    padding: 1.4rem 1.5rem;
+  }
+  .spec-summary {
+    font-size: 0.92rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   TIER 3: sm to md (576px - 767.98px)
+   -------------------------------------------------------------------------- */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .spec-top-nav {
+    margin-bottom: 1.5rem;
+    gap: 0.75rem;
+  }
+  .spec-back-btn {
+    font-size: 0.6rem;
+    padding: 0.45rem 1.15rem;
+  }
+  .spec-telemetry-chip {
+    font-size: 0.64rem;
+    padding: 0.45rem 0.95rem;
+  }
+  .spec-deck-card {
+    padding: 26px 22px;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+  }
+  .spec-rim-top-left, .spec-rim-top-right, .spec-rim-bottom-left, .spec-rim-bottom-right {
+    width: 12px;
+    height: 12px;
+  }
+  .spec-rim-top-left { border-top-left-radius: 16px; }
+  .spec-rim-top-right { border-top-right-radius: 16px; }
+  .spec-rim-bottom-left { border-bottom-left-radius: 16px; }
+  .spec-rim-bottom-right { border-bottom-right-radius: 16px; }
+
+  .spec-header-ribbon {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.15rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.15rem;
+  }
+  .spec-action-group {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .spec-action-btn {
+    font-size: 0.62rem;
+    padding: 0.5rem 1.15rem;
+  }
+  .spec-title {
+    font-size: 1.95rem;
+  }
+  .spec-tagline {
+    font-size: 0.92rem;
+  }
+  .spec-kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.85rem;
+  }
+  .spec-kpi-card {
+    padding: 1rem 1.15rem;
+  }
+  .spec-kpi-value {
+    font-size: 1.6rem;
+  }
+  .spec-kpi-watermark {
+    font-size: 2.2rem;
+  }
+  .spec-section-heading {
+    font-size: 1.05rem;
+  }
+  .spec-challenge-box {
+    padding: 1.25rem 1.35rem;
+  }
+  .spec-summary {
+    font-size: 0.88rem;
+  }
+  .spec-subcard {
+    padding: 1rem 1.15rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   TIER 2: 400px to sm (400px - 575.98px)
+   -------------------------------------------------------------------------- */
+@media (min-width: 400px) and (max-width: 575.98px) {
+  .spec-top-nav {
+    margin-bottom: 1.25rem;
+    gap: 0.6rem;
+  }
+  .spec-back-btn {
+    font-size: 0.58rem;
+    padding: 0.42rem 1rem;
+  }
+  .spec-telemetry-chip {
+    font-size: 0.6rem;
+    padding: 0.42rem 0.85rem;
+  }
+  .spec-deck-card {
+    padding: 20px 16px;
+    border-radius: 15px;
+    margin-bottom: 1.75rem;
+  }
+  .spec-rim-top-left, .spec-rim-top-right, .spec-rim-bottom-left, .spec-rim-bottom-right {
+    width: 10px;
+    height: 10px;
+  }
+  .spec-rim-top-left { border-top-left-radius: 15px; }
+  .spec-rim-top-right { border-top-right-radius: 15px; }
+  .spec-rim-bottom-left { border-bottom-left-radius: 15px; }
+  .spec-rim-bottom-right { border-bottom-right-radius: 15px; }
+
+  .spec-header-ribbon {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.95rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+  }
+  .spec-action-group {
+    width: 100%;
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+  .spec-action-btn {
+    flex: 1;
+    justify-content: center;
+    font-size: 0.6rem;
+    padding: 0.45rem 0.85rem;
+  }
+  .spec-title {
+    font-size: 1.6rem;
+    line-height: 1.25;
+  }
+  .spec-tagline {
+    font-size: 0.85rem;
+  }
+  .spec-meta-row {
+    font-size: 0.72rem;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .spec-kpi-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  .spec-kpi-card {
+    padding: 0.9rem 1.05rem;
+  }
+  .spec-kpi-value {
+    font-size: 1.55rem;
+  }
+  .spec-kpi-watermark {
+    font-size: 2rem;
+    opacity: 0.1;
+  }
+  .spec-section-heading {
+    font-size: 1rem;
+  }
+  .spec-challenge-box {
+    padding: 1.15rem 1.2rem;
+    border-left-width: 3px;
+  }
+  .spec-challenge-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .spec-badge-deployment {
+    font-size: 0.65rem;
+    padding: 4px 10px;
+  }
+  .spec-summary {
+    font-size: 0.85rem;
+    line-height: 1.65;
+  }
+  .spec-subcard {
+    padding: 0.95rem 1.05rem;
+  }
+  .spec-deepdive-tab {
+    font-size: 0.65rem;
+    padding: 0.35rem 0.8rem;
+  }
+  .spec-table-container th,
+  .spec-table-container td {
+    padding: 0.65rem 0.75rem;
+    font-size: 0.78rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   TIER 1: < 400px (Ultra-compact mobile screens)
+   -------------------------------------------------------------------------- */
+@media (max-width: 399.98px) {
+  .spec-top-nav {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .spec-back-btn {
+    width: 100%;
+    justify-content: center;
+    font-size: 0.58rem;
+    padding: 0.42rem 0.8rem;
+  }
+  .spec-telemetry-chip {
+    width: 100%;
+    justify-content: center;
+    font-size: 0.56rem;
+    letter-spacing: 0.1em;
+    padding: 0.38rem 0.65rem;
+  }
+  .spec-deck-card {
+    padding: 15px 12px;
+    border-radius: 13px;
+    margin-bottom: 1.5rem;
+  }
+  .spec-rim-top-left, .spec-rim-top-right, .spec-rim-bottom-left, .spec-rim-bottom-right {
+    width: 9px;
+    height: 9px;
+  }
+  .spec-rim-top-left { border-top-left-radius: 13px; }
+  .spec-rim-top-right { border-top-right-radius: 13px; }
+  .spec-rim-bottom-left { border-bottom-left-radius: 13px; }
+  .spec-rim-bottom-right { border-bottom-right-radius: 13px; }
+
+  .spec-header-ribbon {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.85rem;
+  }
+  .spec-category-badge {
+    align-self: flex-start;
+    font-size: 0.58rem;
+    letter-spacing: 0.1em;
+    padding: 3px 8px;
+  }
+  .spec-company-text {
+    font-size: 0.85rem;
+  }
+  .spec-action-group {
+    width: 100%;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+  .spec-action-btn {
+    width: 100%;
+    justify-content: center;
+    font-size: 0.58rem;
+    padding: 0.45rem 0.75rem;
+  }
+  .spec-title {
+    font-size: 1.35rem;
+    letter-spacing: 0.04em;
+    line-height: 1.25;
+  }
+  .spec-tagline {
+    font-size: 0.78rem;
+    line-height: 1.45;
+  }
+  .spec-meta-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+    font-size: 0.68rem;
+  }
+  .spec-meta-row .opacity-30 {
+    display: none;
+  }
+  .spec-kpi-grid {
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+  }
+  .spec-kpi-card {
+    padding: 0.8rem 0.9rem;
+    border-radius: 10px;
+  }
+  .spec-kpi-label {
+    font-size: 0.55rem;
+  }
+  .spec-kpi-value {
+    font-size: 1.35rem;
+  }
+  .spec-kpi-detail {
+    font-size: 0.74rem;
+  }
+  .spec-kpi-watermark {
+    font-size: 1.7rem;
+    opacity: 0.08;
+    right: 8px;
+    top: 4px;
+  }
+  .spec-section-heading {
+    font-size: 0.92rem;
+    letter-spacing: 0.04em;
+  }
+  .spec-challenge-box {
+    padding: 0.95rem 1rem;
+    border-radius: 11px;
+    border-left-width: 3px;
+  }
+  .spec-challenge-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.45rem;
+  }
+  .spec-challenge-meta {
+    font-size: 0.6rem;
+  }
+  .spec-badge-deployment {
+    font-size: 0.6rem;
+    padding: 3px 8px;
+    border-radius: 6px;
+  }
+  .spec-summary {
+    font-size: 0.8rem;
+    line-height: 1.55;
+  }
+  .spec-subcard {
+    padding: 0.8rem 0.9rem;
+    border-radius: 10px;
+  }
+  .spec-subcard-item {
+    padding: 0.6rem 0.75rem;
+  }
+  .spec-deepdive-tab {
+    font-size: 0.62rem;
+    padding: 0.3rem 0.65rem;
+  }
+  .spec-deepdive-scroll-indicator {
+    width: 30px;
+    font-size: 0.72rem;
+    padding-left: 4px;
+  }
+  .spec-table-container th,
+  .spec-table-container td {
+    padding: 0.5rem 0.6rem;
+    font-size: 0.72rem;
+  }
+}
+

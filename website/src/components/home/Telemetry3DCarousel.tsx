@@ -20,8 +20,9 @@ interface Telemetry3DCarouselProps {
 
 export default function Telemetry3DCarousel({
   metrics,
-  isExiting = false,
+  isExiting: _isExiting = false,
 }: Telemetry3DCarouselProps) {
+  void _isExiting;
   const [activeIndex, setActiveIndex] = useState(0);
   const [screenTier, setScreenTier] = useState<"mobile" | "tablet" | "desktop">(() => {
     if (typeof window !== "undefined") {
@@ -34,8 +35,21 @@ export default function Telemetry3DCarousel({
   });
   const [hasMounted, setHasMounted] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const activeIndexRef = useRef(activeIndex);
-  activeIndexRef.current = activeIndex;
+  const total = metrics.length;
+  const lastActiveIndexRef = useRef(activeIndex);
+  const rotorTargetAngleRef = useRef(
+    total > 0 ? (activeIndex * (Math.PI * 2)) / total : 0
+  );
+
+  useEffect(() => {
+    if (total <= 0) return;
+    const last = lastActiveIndexRef.current;
+    let diff = (activeIndex - last) % total;
+    if (diff < -total / 2) diff += total;
+    if (diff > total / 2) diff -= total;
+    rotorTargetAngleRef.current += diff * ((Math.PI * 2) / total);
+    lastActiveIndexRef.current = activeIndex;
+  }, [activeIndex, total]);
 
   // Touch / Drag tracking refs
   const dragStartPos = useRef<number | null>(null);
@@ -43,7 +57,7 @@ export default function Telemetry3DCarousel({
 
   // Responsive breakpoint tracking (<576 mobile, 576-991 tablet, >=992 desktop)
   useEffect(() => {
-    setHasMounted(true);
+    const raf = requestAnimationFrame(() => setHasMounted(true));
     const checkViewport = () => {
       const w = window.innerWidth;
       if (w >= 992) {
@@ -56,13 +70,14 @@ export default function Telemetry3DCarousel({
     };
     checkViewport();
     window.addEventListener("resize", checkViewport);
-    return () => window.removeEventListener("resize", checkViewport);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", checkViewport);
+    };
   }, []);
 
   const isDesktop = screenTier === "desktop";
   const isTablet = screenTier === "tablet";
-
-  const total = metrics.length;
 
   const handlePrev = useCallback(() => {
     setActiveIndex((prev) => (prev - 1 + total) % total);
@@ -161,44 +176,372 @@ export default function Telemetry3DCarousel({
     const rootGroup = new THREE.Group();
     scene.add(rootGroup);
 
-    // 1. Holographic Wireframe Cylindrical Cage (Rotor Drum)
-    const cylGeom = new THREE.CylinderGeometry(3.2, 3.2, 1.8, 24, 4, true);
-    const cylMat = new THREE.MeshBasicMaterial({
-      color: 0x00f2fe,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.12,
-      blending: THREE.AdditiveBlending,
-    });
+    // PBR Lighting for realistic metallic and holographic reflections
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+    scene.add(ambientLight);
+
+    const dirLight = new THREE.DirectionalLight(0x00f2fe, 1.8);
+    dirLight.position.set(5, 8, 6);
+    scene.add(dirLight);
+
+    const pointLightFront = new THREE.PointLight(0x00f2fe, 3.2, 14);
+    pointLightFront.position.set(0, 1.6, 3.8);
+    scene.add(pointLightFront);
+
+    const pointLightUnder = new THREE.PointLight(0xff2a85, 2.6, 12);
+    pointLightUnder.position.set(0, -1.8, 3.2);
+    scene.add(pointLightUnder);
+
+    const pointLightBack = new THREE.PointLight(0x38f9d7, 1.8, 10);
+    pointLightBack.position.set(0, 0, -3.2);
+    scene.add(pointLightBack);
+
+    // Track all disposable Three.js resources for clean unmount
+    const disposables: { dispose: () => void }[] = [];
+    const track = <T extends { dispose: () => void }>(item: T): T => {
+      disposables.push(item);
+      return item;
+    };
+
+    // 1. Semi-translucent Solid Composite Hull (Realistic 3D body with curvature reflection)
+    const hullGeom = track(new THREE.CylinderGeometry(3.18, 3.18, 1.76, 64, 1, true));
+    const hullMat = track(
+      new THREE.MeshStandardMaterial({
+        color: 0x060d1b,
+        roughness: 0.28,
+        metalness: 0.85,
+        transparent: true,
+        opacity: 0.42,
+        side: THREE.DoubleSide,
+      })
+    );
+    const cylinderHull = new THREE.Mesh(hullGeom, hullMat);
+    rootGroup.add(cylinderHull);
+
+    // 2. Holographic HUD Wireframe Overlay (Subtle technical cage over the solid hull)
+    const cylGeom = track(new THREE.CylinderGeometry(3.2, 3.2, 1.8, 24, 6, true));
+    const cylMat = track(
+      new THREE.MeshBasicMaterial({
+        color: 0x00f2fe,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.08,
+        blending: THREE.AdditiveBlending,
+      })
+    );
     const cylinderCage = new THREE.Mesh(cylGeom, cylMat);
     rootGroup.add(cylinderCage);
 
-    // 2. Dual Glowing Gyro Rings
-    const ringGeom = new THREE.TorusGeometry(3.22, 0.02, 16, 64);
-    const ringMatCyan = new THREE.MeshBasicMaterial({
-      color: 0x00f2fe,
-      transparent: true,
-      opacity: 0.35,
-      blending: THREE.AdditiveBlending,
-    });
-    const topRing = new THREE.Mesh(ringGeom, ringMatCyan);
+    // 3. Machined Heavy Collar Flanges (Top & Bottom Industrial Rims)
+    const flangeGeom = track(new THREE.CylinderGeometry(3.24, 3.24, 0.08, 64, 1, true));
+    const flangeMat = track(
+      new THREE.MeshStandardMaterial({
+        color: 0x16233b,
+        metalness: 0.9,
+        roughness: 0.22,
+      })
+    );
+    const topFlange = new THREE.Mesh(flangeGeom, flangeMat);
+    topFlange.position.y = 0.88;
+    rootGroup.add(topFlange);
+
+    const bottomFlange = new THREE.Mesh(flangeGeom, flangeMat);
+    bottomFlange.position.y = -0.88;
+    rootGroup.add(bottomFlange);
+
+    // 4. Chamfered Torus Rims with Glowing Cyber Edges
+    const rimTorusGeom = track(new THREE.TorusGeometry(3.24, 0.035, 16, 64));
+    const rimMatCyan = track(
+      new THREE.MeshStandardMaterial({
+        color: 0x00f2fe,
+        emissive: 0x00f2fe,
+        emissiveIntensity: 0.6,
+        metalness: 0.8,
+        roughness: 0.2,
+      })
+    );
+    const topRim = new THREE.Mesh(rimTorusGeom, rimMatCyan);
+    topRim.position.y = 0.92;
+    topRim.rotation.x = Math.PI / 2;
+    rootGroup.add(topRim);
+
+    const rimMatMagenta = track(
+      new THREE.MeshStandardMaterial({
+        color: 0xff2a85,
+        emissive: 0xff2a85,
+        emissiveIntensity: 0.5,
+        metalness: 0.8,
+        roughness: 0.2,
+      })
+    );
+    const bottomRim = new THREE.Mesh(rimTorusGeom, rimMatMagenta);
+    bottomRim.position.y = -0.92;
+    bottomRim.rotation.x = Math.PI / 2;
+    rootGroup.add(bottomRim);
+
+    // Inner Lip Bevels
+    const innerBevelGeom = track(new THREE.TorusGeometry(3.14, 0.02, 12, 64));
+    const innerBevelMat = track(
+      new THREE.MeshStandardMaterial({
+        color: 0x223654,
+        metalness: 0.92,
+        roughness: 0.25,
+      })
+    );
+    const topInnerBevel = new THREE.Mesh(innerBevelGeom, innerBevelMat);
+    topInnerBevel.position.y = 0.86;
+    topInnerBevel.rotation.x = Math.PI / 2;
+    rootGroup.add(topInnerBevel);
+
+    const bottomInnerBevel = new THREE.Mesh(innerBevelGeom, innerBevelMat);
+    bottomInnerBevel.position.y = -0.86;
+    bottomInnerBevel.rotation.x = Math.PI / 2;
+    rootGroup.add(bottomInnerBevel);
+
+    // 5. Arrayed Hex Fastener Studs / Precision Rivets on Rims
+    const rivetGeom = track(new THREE.CylinderGeometry(0.022, 0.022, 0.04, 8));
+    const rivetMat = track(
+      new THREE.MeshStandardMaterial({
+        color: 0x6280a8,
+        metalness: 0.95,
+        roughness: 0.15,
+      })
+    );
+    const rivetCount = 16;
+    for (let i = 0; i < rivetCount; i++) {
+      const angle = (i / rivetCount) * Math.PI * 2;
+      const x = Math.cos(angle) * 3.23;
+      const z = Math.sin(angle) * 3.23;
+
+      const topRivet = new THREE.Mesh(rivetGeom, rivetMat);
+      topRivet.position.set(x, 0.92, z);
+      rootGroup.add(topRivet);
+
+      const bottomRivet = new THREE.Mesh(rivetGeom, rivetMat);
+      bottomRivet.position.set(x, -0.92, z);
+      rootGroup.add(bottomRivet);
+    }
+
+    // 6. Segmented Curved Armor Panels (Modular high-tech shroud with seams)
+    const panelCount = 8;
+    const panelMat = track(
+      new THREE.MeshStandardMaterial({
+        color: 0x0c172a,
+        metalness: 0.88,
+        roughness: 0.32,
+        transparent: true,
+        opacity: 0.62,
+        side: THREE.DoubleSide,
+      })
+    );
+    const panelAngleLength = ((Math.PI * 2) / panelCount) * 0.72;
+    for (let i = 0; i < panelCount; i++) {
+      const startAngle = (i / panelCount) * Math.PI * 2 + 0.05;
+      const panelGeom = track(
+        new THREE.CylinderGeometry(3.205, 3.205, 1.36, 16, 1, true, startAngle, panelAngleLength)
+      );
+      const panel = new THREE.Mesh(panelGeom, panelMat);
+      rootGroup.add(panel);
+    }
+
+    // 7. Vertical Structural Struts / Support Pillars
+    const strutGeom = track(new THREE.BoxGeometry(0.05, 1.76, 0.05));
+    const strutMat = track(
+      new THREE.MeshStandardMaterial({
+        color: 0x162238,
+        metalness: 0.9,
+        roughness: 0.25,
+      })
+    );
+    const bracketGeom = track(new THREE.BoxGeometry(0.08, 0.07, 0.08));
+    const bracketMat = track(
+      new THREE.MeshStandardMaterial({
+        color: 0x273b5c,
+        metalness: 0.92,
+        roughness: 0.2,
+      })
+    );
+    const neonStripeGeom = track(new THREE.BoxGeometry(0.015, 1.1, 0.02));
+    const neonCyanMat = track(
+      new THREE.MeshBasicMaterial({ color: 0x00f2fe, blending: THREE.AdditiveBlending })
+    );
+    const neonMagentaMat = track(
+      new THREE.MeshBasicMaterial({ color: 0xff2a85, blending: THREE.AdditiveBlending })
+    );
+
+    for (let i = 0; i < 8; i++) {
+      const angle = (i / 8) * Math.PI * 2;
+      const x = Math.cos(angle) * 3.2;
+      const z = Math.sin(angle) * 3.2;
+
+      const strut = new THREE.Mesh(strutGeom, strutMat);
+      strut.position.set(x, 0, z);
+      strut.rotation.y = -angle;
+      rootGroup.add(strut);
+
+      const topBracket = new THREE.Mesh(bracketGeom, bracketMat);
+      topBracket.position.set(x, 0.88, z);
+      topBracket.rotation.y = -angle;
+      rootGroup.add(topBracket);
+
+      const bottomBracket = new THREE.Mesh(bracketGeom, bracketMat);
+      bottomBracket.position.set(x, -0.88, z);
+      bottomBracket.rotation.y = -angle;
+      rootGroup.add(bottomBracket);
+
+      if (i % 2 === 0) {
+        const neonStripe = new THREE.Mesh(
+          neonStripeGeom,
+          i % 4 === 0 ? neonCyanMat : neonMagentaMat
+        );
+        neonStripe.position.set(x * 1.008, 0, z * 1.008);
+        neonStripe.rotation.y = -angle;
+        rootGroup.add(neonStripe);
+      }
+    }
+
+    // 8. Central Telemetry Track & Notched Optical Encoder Teeth
+    const midRailGeom = track(new THREE.TorusGeometry(3.21, 0.02, 16, 64));
+    const midRailMat = track(
+      new THREE.MeshStandardMaterial({
+        color: 0x223554,
+        metalness: 0.85,
+        roughness: 0.3,
+      })
+    );
+    const midRail = new THREE.Mesh(midRailGeom, midRailMat);
+    midRail.rotation.x = Math.PI / 2;
+    rootGroup.add(midRail);
+
+    const notchGeom = track(new THREE.BoxGeometry(0.035, 0.065, 0.04));
+    const notchMat = track(
+      new THREE.MeshStandardMaterial({
+        color: 0x48658a,
+        metalness: 0.9,
+        roughness: 0.2,
+      })
+    );
+    const notchCount = 32;
+    for (let i = 0; i < notchCount; i++) {
+      const angle = (i / notchCount) * Math.PI * 2;
+      const x = Math.cos(angle) * 3.215;
+      const z = Math.sin(angle) * 3.215;
+      const notch = new THREE.Mesh(notchGeom, notchMat);
+      notch.position.set(x, 0, z);
+      notch.rotation.y = -angle;
+      rootGroup.add(notch);
+    }
+
+    // Optical Guide Laser Rings (Accent guide lines around the mid rail)
+    const laserRingGeom = track(new THREE.TorusGeometry(3.212, 0.012, 12, 64));
+    const laserMatCyan = track(
+      new THREE.MeshBasicMaterial({
+        color: 0x00f2fe,
+        transparent: true,
+        opacity: 0.55,
+        blending: THREE.AdditiveBlending,
+      })
+    );
+    const topLaser = new THREE.Mesh(laserRingGeom, laserMatCyan);
+    topLaser.position.y = 0.2;
+    topLaser.rotation.x = Math.PI / 2;
+    rootGroup.add(topLaser);
+
+    const laserMatMagenta = track(
+      new THREE.MeshBasicMaterial({
+        color: 0xff2a85,
+        transparent: true,
+        opacity: 0.45,
+        blending: THREE.AdditiveBlending,
+      })
+    );
+    const bottomLaser = new THREE.Mesh(laserRingGeom, laserMatMagenta);
+    bottomLaser.position.y = -0.2;
+    bottomLaser.rotation.x = Math.PI / 2;
+    rootGroup.add(bottomLaser);
+
+    // 9. Inner Concentric Turbine Stator Core & Radial Spokes (Internal 3D Mechanical Depth)
+    const innerCoreGeom = track(new THREE.CylinderGeometry(2.05, 2.05, 1.76, 32, 1, true));
+    const innerCoreMat = track(
+      new THREE.MeshStandardMaterial({
+        color: 0x070e1c,
+        metalness: 0.92,
+        roughness: 0.35,
+        side: THREE.DoubleSide,
+      })
+    );
+    const innerCore = new THREE.Mesh(innerCoreGeom, innerCoreMat);
+    rootGroup.add(innerCore);
+
+    const corePlasmaGeom = track(new THREE.TorusGeometry(2.06, 0.026, 16, 48));
+    const corePlasmaMat = track(
+      new THREE.MeshBasicMaterial({
+        color: 0x00f2fe,
+        transparent: true,
+        opacity: 0.55,
+        blending: THREE.AdditiveBlending,
+      })
+    );
+    const corePlasmaRing = new THREE.Mesh(corePlasmaGeom, corePlasmaMat);
+    corePlasmaRing.rotation.x = Math.PI / 2;
+    rootGroup.add(corePlasmaRing);
+
+    // Radial Structural Spokes connecting Inner Core (r=2.05) to Outer Drum (r=3.20)
+    const spokeGeom = track(new THREE.BoxGeometry(1.15, 0.025, 0.04));
+    const spokeMat = track(
+      new THREE.MeshStandardMaterial({
+        color: 0x1b283d,
+        metalness: 0.88,
+        roughness: 0.3,
+      })
+    );
+    const spokeCount = 8;
+    for (let i = 0; i < spokeCount; i++) {
+      const angle = (i / spokeCount) * Math.PI * 2;
+      const cx = Math.cos(angle) * 2.625;
+      const cz = Math.sin(angle) * 2.625;
+
+      const topSpoke = new THREE.Mesh(spokeGeom, spokeMat);
+      topSpoke.position.set(cx, 0.86, cz);
+      topSpoke.rotation.y = -angle;
+      rootGroup.add(topSpoke);
+
+      const bottomSpoke = new THREE.Mesh(spokeGeom, spokeMat);
+      bottomSpoke.position.set(cx, -0.86, cz);
+      bottomSpoke.rotation.y = -angle;
+      rootGroup.add(bottomSpoke);
+    }
+
+    // 10. Glowing Gyro Rings (Cyan Top, Magenta Bottom)
+    const ringGeom = track(new THREE.TorusGeometry(3.22, 0.02, 16, 64));
+    const gyroRingMatCyan = track(
+      new THREE.MeshBasicMaterial({
+        color: 0x00f2fe,
+        transparent: true,
+        opacity: 0.35,
+        blending: THREE.AdditiveBlending,
+      })
+    );
+    const topRing = new THREE.Mesh(ringGeom, gyroRingMatCyan);
     topRing.position.y = 0.9;
     topRing.rotation.x = Math.PI / 2;
     rootGroup.add(topRing);
 
-    const ringMatMagenta = new THREE.MeshBasicMaterial({
-      color: 0xff2a85,
-      transparent: true,
-      opacity: 0.25,
-      blending: THREE.AdditiveBlending,
-    });
-    const bottomRing = new THREE.Mesh(ringGeom, ringMatMagenta);
+    const gyroRingMatMagenta = track(
+      new THREE.MeshBasicMaterial({
+        color: 0xff2a85,
+        transparent: true,
+        opacity: 0.25,
+        blending: THREE.AdditiveBlending,
+      })
+    );
+    const bottomRing = new THREE.Mesh(ringGeom, gyroRingMatMagenta);
     bottomRing.position.y = -0.9;
     bottomRing.rotation.x = Math.PI / 2;
     rootGroup.add(bottomRing);
 
-    // 3. Ambient Cyber Hologram Particles
-    const particleCount = 70;
+    // 11. Ambient Cyber Hologram Particles
+    const particleCount = 80;
     const particlePositions = new Float32Array(particleCount * 3);
     for (let i = 0; i < particleCount * 3; i += 3) {
       const radius = 2.8 + Math.random() * 1.8;
@@ -207,15 +550,17 @@ export default function Telemetry3DCarousel({
       particlePositions[i + 1] = (Math.random() - 0.5) * 3;
       particlePositions[i + 2] = Math.sin(angle) * radius;
     }
-    const particleGeom = new THREE.BufferGeometry();
+    const particleGeom = track(new THREE.BufferGeometry());
     particleGeom.setAttribute("position", new THREE.BufferAttribute(particlePositions, 3));
-    const particleMat = new THREE.PointsMaterial({
-      color: 0x38f9d7,
-      size: 0.05,
-      transparent: true,
-      opacity: 0.45,
-      blending: THREE.AdditiveBlending,
-    });
+    const particleMat = track(
+      new THREE.PointsMaterial({
+        color: 0x38f9d7,
+        size: 0.05,
+        transparent: true,
+        opacity: 0.45,
+        blending: THREE.AdditiveBlending,
+      })
+    );
     const particles = new THREE.Points(particleGeom, particleMat);
     rootGroup.add(particles);
 
@@ -223,26 +568,26 @@ export default function Telemetry3DCarousel({
     window.addEventListener("resize", updateSize);
 
     let animId: number;
-    let currentRotorAngle = (activeIndexRef.current * (Math.PI * 2)) / 4;
+    let currentRotorAngle = rotorTargetAngleRef.current;
 
     const animate = () => {
       animId = requestAnimationFrame(animate);
 
-      // Smoothly interpolate 3D rotor rotation to follow active index
-      const targetAngle = (activeIndexRef.current * (Math.PI * 2)) / 4;
+      // Smoothly interpolate 3D rotor rotation to follow continuous target angle (no rewind)
+      const targetAngle = rotorTargetAngleRef.current;
       currentRotorAngle += (targetAngle - currentRotorAngle) * 0.08;
 
-      // Always Upright wireframe cylinder rotating horizontally around Y-axis
-      cylinderCage.rotation.set(0, 0, 0);
-      topRing.position.set(0, 0.9, 0);
-      topRing.rotation.set(Math.PI / 2, 0, 0);
-      bottomRing.position.set(0, -0.9, 0);
-      bottomRing.rotation.set(Math.PI / 2, 0, 0);
-
+      // Always upright rotor drum rotating horizontally around Y-axis
       rootGroup.rotation.y = -currentRotorAngle;
       rootGroup.rotation.x = 0.1;
       rootGroup.rotation.z = 0;
       camera.position.z = isDesktop ? 7 : isTablet ? 7.2 : 7.35;
+
+      // Subtle dynamic micro-motion
+      const time = performance.now() * 0.0015;
+      laserMatCyan.opacity = 0.45 + Math.sin(time * 3) * 0.12;
+      laserMatMagenta.opacity = 0.35 + Math.cos(time * 3) * 0.1;
+      corePlasmaRing.scale.setScalar(1 + Math.sin(time * 2.5) * 0.012);
 
       particles.rotation.y += 0.002;
       renderer.render(scene, camera);
@@ -252,16 +597,10 @@ export default function Telemetry3DCarousel({
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener("resize", updateSize);
-      cylGeom.dispose();
-      cylMat.dispose();
-      ringGeom.dispose();
-      ringMatCyan.dispose();
-      ringMatMagenta.dispose();
-      particleGeom.dispose();
-      particleMat.dispose();
+      disposables.forEach((item) => item.dispose());
       renderer.dispose();
     };
-  }, [screenTier]);
+  }, [screenTier, isDesktop, isTablet]);
 
   // Compute 3D cylinder transform for each card (Always horizontal carousel)
   const getCardStyle = (index: number) => {

@@ -105,12 +105,13 @@ export default function DomainCyberCanvas3D({
     resizeObserver.observe(parent);
 
     let animId: number;
-    let clock = new THREE.Clock();
+    const timer = new THREE.Timer();
     const targetColor = new THREE.Color();
 
-    const animate = () => {
+    const animate = (timestamp?: number) => {
       animId = requestAnimationFrame(animate);
-      const time = clock.getElapsedTime();
+      timer.update(timestamp);
+      const time = timer.getElapsed();
       const { activeDomainIndex: dIdx, isExploreHovered: hovered } = stateRef.current;
 
       targetColor.copy(DOMAIN_COLORS[dIdx] || DOMAIN_COLORS[0]);
@@ -147,6 +148,7 @@ export default function DomainCyberCanvas3D({
 
     return () => {
       cancelAnimationFrame(animId);
+      timer.dispose();
       resizeObserver.disconnect();
       gridGeom.dispose();
       gridMat.dispose();

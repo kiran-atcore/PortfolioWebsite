@@ -50,16 +50,17 @@ export default function SkillsTabNav({
               }`}
             style={{
               padding: "0.5rem 1.25rem",
-              fontSize: "0.82rem",
+              fontSize: "0.70rem",
             }}
           >
             <i className={`bi ${tab.icon} ${isActive ? "text-dark" : "text-cyan"}`} />
-            <span className="font-syncopate fw-semibold tracking-wider text-uppercase" style={{ fontSize: "0.72rem" }}>
+            <span className={`${tab.id !== 'skills' ? 'fw-light' : 'fw-semibold'} font-syncopate tracking-wider text-uppercase`} style={{ fontSize: "0.66rem" }}>
               {tab.label}
             </span>
             <span
-              className="badge font-mono rounded-pill"
+              className="badge font-space-grotesk rounded-pill"
               style={{
+                letterSpacing: tab.id === 'skills' ? '0.08rem' : '0.12rem',
                 fontSize: "0.68rem",
                 padding: "0.2rem 0.55rem",
                 background: isActive ? "rgba(0, 0, 0, 0.25)" : "rgba(0, 242, 254, 0.12)",
