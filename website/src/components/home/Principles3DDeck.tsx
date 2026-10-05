@@ -674,18 +674,19 @@ export default function Principles3DDeck({ isExiting = false }: Principles3DDeck
       mouseRef.current.x += (mouseRef.current.targetX - mouseRef.current.x) * 0.05;
       mouseRef.current.y += (mouseRef.current.targetY - mouseRef.current.y) * 0.05;
 
-      const isMobile = window.innerWidth < 992;
-      const isSmall = window.innerWidth < 769;
+      const isMdToLg = window.innerWidth >= 768 && window.innerWidth < 992;
+      const isSmall = window.innerWidth < 768;
       const canvasRect = canvas.getBoundingClientRect();
 
       // Position projector tucked securely into bottom-left corner just above the bottom navbar
-      const projScreenX = canvasRect.left + (isSmall ? 42 : (isMobile ? 16 : 60));
-      const projScreenY = canvasRect.bottom - (isSmall ? 28 : (isMobile ? 100 : 70));
+      // For md to lg (768px-991px), translate projector to the right (72px) so the back of the base isn't cut off
+      const projScreenX = canvasRect.left + (isSmall ? 42 : (isMdToLg ? 72 : 60));
+      const projScreenY = canvasRect.bottom - (isSmall ? 28 : (isMdToLg ? 100 : 70));
       const projPos = screenToWorld(projScreenX, projScreenY, 0.2);
       projectorGroup.position.copy(projPos);
 
       // Dynamically scale projector to avoid crowding on smaller screens (<lg and <sm)
-      const projScale = isSmall ? 0.45 : (isMobile ? 0.60 : (window.innerWidth < 1200 ? 0.70 : 0.85));
+      const projScale = isSmall ? 0.45 : (isMdToLg ? 0.60 : (window.innerWidth < 1200 ? 0.70 : 0.85));
       projectorGroup.scale.setScalar(projScale);
 
       // Aim turret directly at card center (with subtle mouse parallax)
