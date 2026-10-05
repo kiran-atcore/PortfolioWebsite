@@ -45,19 +45,26 @@ export default function CockpitFlightHUD({
   };
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.stopPropagation();
     isDraggingRef.current = true;
     setIsDragging(true);
-    e.currentTarget.setPointerCapture(e.pointerId);
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch {
+      // safe ignore
+    }
     updateProgressFromPointer(e.clientX);
   };
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!isDraggingRef.current) return;
+    e.stopPropagation();
     updateProgressFromPointer(e.clientX);
   };
 
   const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
     if (isDraggingRef.current) {
+      e.stopPropagation();
       isDraggingRef.current = false;
       setIsDragging(false);
       try {
@@ -70,6 +77,31 @@ export default function CockpitFlightHUD({
     }
   };
 
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    isDraggingRef.current = true;
+    setIsDragging(true);
+    if (e.touches[0]) {
+      updateProgressFromPointer(e.touches[0].clientX);
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    if (!isDraggingRef.current) return;
+    if (e.touches[0]) {
+      updateProgressFromPointer(e.touches[0].clientX);
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    if (isDraggingRef.current) {
+      isDraggingRef.current = false;
+      setIsDragging(false);
+    }
+  };
+
   const currentItem = items[activeIndex];
   const itemTitle = currentItem
     ? "title" in currentItem
@@ -78,7 +110,11 @@ export default function CockpitFlightHUD({
     : "";
 
   return (
-    <div className="w-100 position-relative px-4 pb-4 pb-lg-0 px-sm-3" style={{ zIndex: 10 }}>
+    <div
+      data-cockpit-hud="true"
+      className="w-100 position-relative px-4 pb-4 pb-lg-0 px-sm-3"
+      style={{ zIndex: 10 }}
+    >
       <div
         className="w-100 p-2 p-sm-3 rounded-3 position-relative overflow-hidden"
         style={{
@@ -190,11 +226,19 @@ export default function CockpitFlightHUD({
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
             onPointerCancel={handlePointerUp}
-            className="flex-grow-1 position-relative py-1"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            onTouchCancel={handleTouchEnd}
+            className="flex-grow-1 position-relative py-3"
             style={{
               cursor: isDragging ? "grabbing" : "grab",
               touchAction: "none",
               userSelect: "none",
+              WebkitUserSelect: "none",
+              minHeight: "36px",
+              display: "flex",
+              alignItems: "center",
             }}
             title="Slide or click to warp through cards"
           >
@@ -249,8 +293,8 @@ export default function CockpitFlightHUD({
                 style={{
                   left: puckPercent,
                   transform: "translate(-50%, -50%)",
-                  width: isDragging ? "14px" : "10px",
-                  height: isDragging ? "14px" : "10px",
+                  width: isDragging ? "16px" : "12px",
+                  height: isDragging ? "16px" : "12px",
                   background: "#ffffff",
                   border: isDragging ? "2.5px solid #00f2fe" : "2px solid #00f2fe",
                   boxShadow: isDragging

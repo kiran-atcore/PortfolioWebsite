@@ -3010,7 +3010,7 @@ body.modal-open {
 }
 
 .tree-box {
-  height: 350px !important;
+  height: 440px !important;
 }
 
 .architecture-container {
@@ -3021,11 +3021,13 @@ body.modal-open {
   margin-top: -30px !important;
 }
 
-@media (max-width: 499px) {
+@media (min-width: 500px) and (max-width: 576px) {
   .tree-box {
-    height: 440px !important;
+    height: 350px !important;
   }
+}
 
+@media (max-width: 499px) {
   .principles-offset-wrapper {
     margin-top: 30px !important;
   }
@@ -3035,6 +3037,10 @@ body.modal-open {
 @media (min-width: 576px) and (max-width: 767.98px) {
   .exp-card-title {
     font-size: 1.05rem;
+  }
+
+  .tree-box {
+    height: 350px !important;
   }
 
   .telemetry-container {
@@ -3101,10 +3107,6 @@ body.modal-open {
 
   .projects-filter-btn {
     font-size: 0.5rem !important;
-  }
-
-  .tree-box {
-    height: 320px !important;
   }
 }
 

@@ -51,12 +51,14 @@ export default function Skills3DDepthView({ items, type }: Skills3DDepthViewProp
     };
 
     const handleTouchStart = (e: TouchEvent) => {
+      if ((e.target as HTMLElement)?.closest("[data-cockpit-hud]")) return;
       touchStartY.current = e.touches[0].clientY;
       touchStartProgress.current = scrollProgress.get();
       touchStartTime.current = Date.now();
     };
 
     const handleTouchMove = (e: TouchEvent) => {
+      if ((e.target as HTMLElement)?.closest("[data-cockpit-hud]")) return;
       // Unconditionally trap vertical swipe inside canvas; prevent entire page from scrolling!
       e.preventDefault();
       e.stopPropagation();
@@ -69,6 +71,7 @@ export default function Skills3DDepthView({ items, type }: Skills3DDepthViewProp
     };
 
     const handleTouchEnd = (e: TouchEvent) => {
+      if ((e.target as HTMLElement)?.closest("[data-cockpit-hud]")) return;
       const elapsed = Date.now() - touchStartTime.current;
       const current = scrollProgress.get();
       const maxProgress = items.length - 1;

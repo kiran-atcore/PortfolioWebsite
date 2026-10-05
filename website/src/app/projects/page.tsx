@@ -175,7 +175,6 @@ function ProjectsPageContent() {
 
                 <div
                   style={{
-                    height: 340,
                     WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 10%, black 90%, transparent)',
                     maskImage: 'linear-gradient(to bottom, transparent, black 10%, black 90%, transparent)'
                   }}
