@@ -9,7 +9,14 @@ export const metadata = {
 
 export default function ExperiencePage() {
   return (
-    <div className="vh-100 w-100 position-relative overflow-hidden d-flex flex-column">
+    <div
+      className="w-100 position-relative overflow-hidden d-flex flex-column"
+      style={{
+        height: "100dvh",
+        minHeight: "100dvh",
+        maxHeight: "100dvh",
+      }}
+    >
       <Navbar />
 
       {/* Cybernetic Environment Background */}

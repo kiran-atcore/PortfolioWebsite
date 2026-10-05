@@ -88,7 +88,14 @@ function ProjectsPageContent() {
   };
 
   return (
-    <div className="projects-page-wrapper w-100 d-flex flex-column vh-100">
+    <div
+      className="projects-page-wrapper w-100 d-flex flex-column overflow-hidden"
+      style={{
+        height: "100dvh",
+        minHeight: "100dvh",
+        maxHeight: "100dvh",
+      }}
+    >
       <Navbar />
 
       {/* AI Generated Minimalistic Cyber Background matching experience page */}
@@ -107,7 +114,7 @@ function ProjectsPageContent() {
 
       {/* Main Content Area */}
       <main
-        className="flex-grow-1 position-relative px-1 pt-4 px-sm-3 px-md-4 py-4 py-md-5 d-flex flex-column"
+        className="flex-grow-1 position-relative px-1 pt-4 px-sm-3 px-md-4 pb-2 pb-md-4 d-flex flex-column overflow-hidden"
         style={{
           zIndex: 2,
           paddingTop: "calc(max(1rem, env(safe-area-inset-top, 1rem)) + 65px)",

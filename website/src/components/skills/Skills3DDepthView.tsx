@@ -30,7 +30,12 @@ export default function Skills3DDepthView({ items, type }: Skills3DDepthViewProp
     setBgVelocity(latest * 0.05); // Scale velocity for background effect
   });
 
-  // Wheel listener inside canvas container
+  // Touch swipe refs
+  const touchStartY = useRef(0);
+  const touchStartProgress = useRef(0);
+  const touchStartTime = useRef(0);
+
+  // Wheel and Touch listeners inside canvas container
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -45,6 +50,42 @@ export default function Skills3DDepthView({ items, type }: Skills3DDepthViewProp
       scrollProgress.set(Math.max(0, Math.min(maxProgress, nextProgress)));
     };
 
+    const handleTouchStart = (e: TouchEvent) => {
+      touchStartY.current = e.touches[0].clientY;
+      touchStartProgress.current = scrollProgress.get();
+      touchStartTime.current = Date.now();
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      // Unconditionally trap vertical swipe inside canvas; prevent entire page from scrolling!
+      e.preventDefault();
+      e.stopPropagation();
+
+      const deltaY = touchStartY.current - e.touches[0].clientY;
+      const maxProgress = items.length - 1;
+      const nextProgress = touchStartProgress.current + deltaY * 0.012;
+
+      scrollProgress.set(Math.max(0, Math.min(maxProgress, nextProgress)));
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      const elapsed = Date.now() - touchStartTime.current;
+      const current = scrollProgress.get();
+      const maxProgress = items.length - 1;
+
+      // Snap on release or quick flick
+      const deltaY = touchStartY.current - (e.changedTouches[0]?.clientY ?? touchStartY.current);
+      let target = Math.round(current);
+      if (elapsed < 280 && Math.abs(deltaY) > 25) {
+        if (deltaY > 0) {
+          target = Math.min(maxProgress, Math.floor(touchStartProgress.current) + 1);
+        } else {
+          target = Math.max(0, Math.ceil(touchStartProgress.current) - 1);
+        }
+      }
+      scrollProgress.set(Math.max(0, Math.min(maxProgress, target)));
+    };
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName || "")) return;
       const current = scrollProgress.get();
@@ -57,34 +98,19 @@ export default function Skills3DDepthView({ items, type }: Skills3DDepthViewProp
     };
 
     el.addEventListener("wheel", handleWheel, { passive: false });
+    el.addEventListener("touchstart", handleTouchStart, { passive: false });
+    el.addEventListener("touchmove", handleTouchMove, { passive: false });
+    el.addEventListener("touchend", handleTouchEnd, { passive: false });
     window.addEventListener("keydown", handleKeyDown);
+
     return () => {
       el.removeEventListener("wheel", handleWheel);
+      el.removeEventListener("touchstart", handleTouchStart);
+      el.removeEventListener("touchmove", handleTouchMove);
+      el.removeEventListener("touchend", handleTouchEnd);
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [items.length, scrollProgress]);
-
-  // Touch swipe support (continuous)
-  const touchStartY = useRef(0);
-  const touchStartProgress = useRef(0);
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartY.current = e.touches[0].clientY;
-    touchStartProgress.current = scrollProgress.get();
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    // We can only preventDefault if e.cancelable is true in React Synthetic Events
-    // To properly prevent native touch scroll, we should add a native event listener,
-    // but doing it here prevents React's touch scroll if passive: false is set.
-    if (e.cancelable) e.preventDefault();
-
-    const deltaY = touchStartY.current - e.touches[0].clientY;
-    const maxProgress = items.length - 1;
-    const nextProgress = touchStartProgress.current + deltaY * 0.015;
-
-    scrollProgress.set(Math.max(0, Math.min(maxProgress, nextProgress)));
-  };
 
   const jumpToIndex = (index: number) => {
     scrollProgress.set(index);
@@ -93,12 +119,11 @@ export default function Skills3DDepthView({ items, type }: Skills3DDepthViewProp
   return (
     <div
       ref={containerRef}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
       className="position-relative w-100 h-100 d-flex flex-column justify-content-between overflow-hidden select-none"
       style={{
         perspective: "1100px",
         transformStyle: "preserve-3d",
+        touchAction: "none",
       }}
     >
       {/* Three.js Cybernetic Background */}

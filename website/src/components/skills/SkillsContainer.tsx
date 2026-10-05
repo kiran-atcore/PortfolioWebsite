@@ -21,7 +21,7 @@ export default function SkillsContainer() {
     //    with this scroll if executed too quickly.
     setTimeout(() => {
       if (cardsSectionRef.current) {
-        const targetY = cardsSectionRef.current.getBoundingClientRect().top + window.scrollY;
+        const targetY = cardsSectionRef.current.offsetTop;
 
         // Prevent scrolling if already at or very near the target to avoid jumpy restarts
         if (Math.abs(window.scrollY - targetY) < 15) return;
@@ -36,14 +36,14 @@ export default function SkillsContainer() {
 
   return (
     <div className="w-100 flex-grow-1 d-flex flex-column" style={{ zIndex: 2 }}>
-      {/* Top Header & Tab Switcher Section (100vh) */}
+      {/* Top Header & Tab Switcher Section (100dvh) */}
       <section
         className="w-100 d-flex flex-column justify-content-center align-items-center position-relative px-3 px-md-4"
         style={{
-          height: "100vh",
-          minHeight: "100vh",
+          height: "100dvh",
+          minHeight: "100dvh",
           paddingTop: "calc(max(1rem, env(safe-area-inset-top, 1rem)) + 65px)",
-          paddingBottom: "2rem",
+          paddingBottom: "1.5rem",
         }}
       >
         <div className="w-100 mx-auto" style={{ maxWidth: "1280px" }}>
@@ -57,18 +57,18 @@ export default function SkillsContainer() {
         </div>
       </section>
 
-      {/* Dynamic Tab Viewport Section (100vh with overflow hidden) */}
+      {/* Dynamic Tab Viewport Section (100dvh with overflow hidden) */}
       <section
         ref={cardsSectionRef}
         id="skills-cards-viewport"
         className="w-100 position-relative d-flex flex-column justify-content-center justify-content-md-start px-3 px-md-4"
         style={{
-          height: "100vh",
-          minHeight: "100vh",
-          maxHeight: "100vh",
+          height: "100dvh",
+          minHeight: "100dvh",
+          maxHeight: "100dvh",
           overflow: "hidden",
           paddingTop: "calc(max(1rem, env(safe-area-inset-top, 1rem)) + 65px)",
-          paddingBottom: "2rem",
+          paddingBottom: "calc(max(0.5rem, env(safe-area-inset-bottom, 0.5rem)))",
         }}
       >
         <motion.h2

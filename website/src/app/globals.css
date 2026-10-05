@@ -3688,6 +3688,7 @@ body.modal-open {
 
 .skill-canvas {
   height: 310px !important;
+  touch-action: none !important;
 }
 
 /* md to lg (768px - 991.98px) */
