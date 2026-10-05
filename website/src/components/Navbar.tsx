@@ -60,7 +60,9 @@ export default function Navbar() {
       if ("scrollRestoration" in window.history) {
         window.history.scrollRestoration = "manual";
       }
-      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
 
       const isViewportLocked =
         pathname === "/" ||
@@ -432,6 +434,7 @@ export default function Navbar() {
               <div key={tab.href} className="position-relative d-inline-flex align-items-center">
                 <Link
                   href={tab.href}
+                  scroll={false}
                   className={`dock-item ${isActive ? "active" : ""} font-syncopate`}
                   onMouseEnter={() => setHoveredTab(tab.href)}
                   onMouseLeave={() => setHoveredTab(null)}

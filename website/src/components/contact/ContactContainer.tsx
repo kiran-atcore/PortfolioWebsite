@@ -10,8 +10,10 @@ const useIsomorphicLayoutEffect =
 
 export default function ContactContainer() {
   useIsomorphicLayoutEffect(() => {
-    // Instantly land on top section of contact page on mount
-    window.scrollTo(0, 0);
+    // Instantly land on top section of contact page before browser paint
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
   }, []);
 
   return (
