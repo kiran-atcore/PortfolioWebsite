@@ -779,10 +779,8 @@ export default function CyberTreeCanvas3D({ projects }: CyberTreeCanvas3DProps) 
             xOffset = 50;
           }
 
-          const containerW = container.clientWidth;
-          const containerH = container.clientHeight;
-          const rawX = (cradleWorld.x * 0.5 + 0.5) * containerW + xOffset;
-          const rawY = -(cradleWorld.y * 0.5 - 0.5) * containerH;
+          const rawX = (cradleWorld.x * 0.5 + 0.5) * window.innerWidth + xOffset;
+          const y = -(cradleWorld.y * 0.5 - 0.5) * window.innerHeight;
 
           const baseScale = isCompact ? 0.82 : 1.0;
           const distNorm = Math.max(0, Math.min(1, (dist - 0.20) / 0.80));
@@ -791,16 +789,12 @@ export default function CyberTreeCanvas3D({ projects }: CyberTreeCanvas3DProps) 
 
           const zIndex = Math.round((1 - distNorm) * 20);
 
-          // Boundary safe-guard: clamp X and Y so cards never clip outside the container border
+          // Boundary safe-guard: clamp X so cards never clip outside the container border
           const cardWidth = window.innerWidth >= 860 ? 330 : window.innerWidth >= 768 ? 300 : 250;
           const halfCardW = (cardWidth * scale) / 2;
+          const containerW = container.clientWidth;
           const safePadding = 14;
           const x = Math.max(halfCardW + safePadding, Math.min(containerW - halfCardW - safePadding, rawX));
-
-          const cardHeight = isCompact ? 220 : 250;
-          const halfCardH = (cardHeight * scale) / 2;
-          const safePaddingY = 12;
-          const y = Math.max(halfCardH + safePaddingY, Math.min(containerH - halfCardH - safePaddingY, rawY));
 
           const cardEl = cardsRef.current[i];
           if (cardEl) {
@@ -813,8 +807,8 @@ export default function CyberTreeCanvas3D({ projects }: CyberTreeCanvas3DProps) 
           // Update SVG Tether Path
           const pathEl = tetherPathsRef.current[i];
           if (pathEl) {
-            const kx = (cradleWorld.x * 0.5 + 0.5) * containerW;
-            const ky = -(cradleWorld.y * 0.5 - 0.5) * containerH;
+            const kx = (cradleWorld.x * 0.5 + 0.5) * window.innerWidth;
+            const ky = -(cradleWorld.y * 0.5 - 0.5) * window.innerHeight;
             // Draw a cyber-arc from keystone to card edge
             const anchorX = x - halfCardW; // Left edge of card
             const anchorY = y;
