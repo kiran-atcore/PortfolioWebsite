@@ -175,8 +175,8 @@ function ProjectsPageContent() {
 
                 <div
                   style={{
-                    WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 10%, black 90%, transparent)',
-                    maskImage: 'linear-gradient(to bottom, transparent, black 10%, black 90%, transparent)'
+                    WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 3%, black 97%, transparent)',
+                    maskImage: 'linear-gradient(to bottom, transparent, black 3%, black 97%, transparent)'
                   }}
                   className="tree-box w-100 overflow-hidden"
                 >

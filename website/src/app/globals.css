@@ -3028,6 +3028,10 @@ body.modal-open {
 }
 
 @media (max-width: 499px) {
+  .tree-box {
+    height: 440px !important;
+  }
+
   .principles-offset-wrapper {
     margin-top: 30px !important;
   }
