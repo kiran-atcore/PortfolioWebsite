@@ -3021,7 +3021,7 @@ body.modal-open {
   margin-top: -30px !important;
 }
 
-@media (max-width: 499px) and (min-height: 591px) {
+@media (max-width: 767.98px) and (min-height: 620px) {
   .tree-box {
     height: 440px !important;
   }
