@@ -53,19 +53,39 @@ export default function Navbar() {
     };
   }, [pathname]);
 
-  // Force scroll position to the top on page load/reload and route navigation
+  // Force scroll position to the top on page load/reload and route navigation,
+  // and lock html/body scrolling on single-screen viewport pages (home, about, experience, projects)
   useEffect(() => {
     if (typeof window !== "undefined") {
       if ("scrollRestoration" in window.history) {
         window.history.scrollRestoration = "manual";
       }
       window.scrollTo(0, 0);
+
+      const isViewportLocked =
+        pathname === "/" ||
+        pathname === "/about" ||
+        pathname === "/experience" ||
+        pathname === "/projects";
+
+      if (isViewportLocked) {
+        document.documentElement.classList.add("viewport-locked");
+        document.body.classList.add("viewport-locked");
+      } else {
+        document.documentElement.classList.remove("viewport-locked");
+        document.body.classList.remove("viewport-locked");
+      }
+
       const raf = requestAnimationFrame(() => {
         setScrolled(false);
         setScrollProgress(0);
         setIsProgressHovered(false);
       });
-      return () => cancelAnimationFrame(raf);
+      return () => {
+        cancelAnimationFrame(raf);
+        document.documentElement.classList.remove("viewport-locked");
+        document.body.classList.remove("viewport-locked");
+      };
     }
   }, [pathname]);
 

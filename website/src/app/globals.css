@@ -32,10 +32,21 @@ body {
   background-color: var(--bg-main);
   color: var(--text-primary);
   min-height: 100vh;
+  min-height: 100dvh;
   position: relative;
   overflow-x: hidden;
   scrollbar-width: none !important;
   -ms-overflow-style: none !important;
+}
+
+/* Locked Fullscreen Viewport Mode (Strict 100dvh for Home, About, Experience, Projects) */
+html.viewport-locked,
+body.viewport-locked {
+  height: 100% !important;
+  height: 100dvh !important;
+  max-height: 100dvh !important;
+  overflow: hidden !important;
+  overscroll-behavior-y: none !important;
 }
 
 /* Ambient Radial Glow */
@@ -3347,6 +3358,7 @@ body.modal-open {
 .projects-page-wrapper {
   position: relative;
   min-height: 100vh;
+  min-height: 100dvh;
   width: 100%;
   overflow-x: hidden;
   background-color: #030712;
