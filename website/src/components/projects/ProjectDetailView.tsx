@@ -804,10 +804,11 @@ export default function ProjectDetailView({
         <div className="spec-rim-bottom-right" />
 
         {/* Header Ribbon: Category Badge & Interactive Action Triggers */}
-        <div className="spec-header-ribbon border-bottom border-white border-opacity-10">
+        <div className="d-flex flex-column flex-sm-row gap-3 align-items-sm-center justify-content-sm-between border-bottom py-2 mb-3 border-white border-opacity-25">
           <div
             className="d-inline-flex px-3 align-items-center gap-1.5 rounded-pill font-space-grotesk text-uppercase spec-category-badge"
             style={{
+              alignSelf: "flex-start",
               background: theme.bg,
               border: `1px solid ${theme.border}`,
               color: theme.primary,

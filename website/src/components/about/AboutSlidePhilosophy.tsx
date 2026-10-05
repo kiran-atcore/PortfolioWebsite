@@ -103,9 +103,9 @@ export default function AboutSlidePhilosophy() {
         <div className="font-syncopate d-flex flex-sm-column justify-content-center align-items-start gap-2 pt-2 border-top border-white border-opacity-10 phil-btn">
           <a
             href={PERSONAL_INFO.resumeUrl}
-            target="_blank"
-            rel="noreferrer"
+            download="Kiran_Chand_S_CV.pdf"
             className="btn btn-neon-cyan rounded-pill tracking-wider text-uppercase d-inline-flex align-items-center about-philosophy-btn p-2 px-3"
+            title="Download CV file"
           >
             <i className="bi bi-file-earmark-arrow-down-fill me-1"></i> <span className="button-phil">Download Full Resume</span>
           </a>
