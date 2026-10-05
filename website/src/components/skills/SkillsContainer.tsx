@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SKILL_CATEGORIES, CERTIFICATIONS } from "@/data/portfolioData";
 import SkillsHeroHeader from "./SkillsHeroHeader";

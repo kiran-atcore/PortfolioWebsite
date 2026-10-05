@@ -1,10 +1,19 @@
 "use client";
 
+import { useEffect, useLayoutEffect } from "react";
 import ContactHeroHeader from "./ContactHeroHeader";
 import ContactDirectChannels from "./ContactDirectChannels";
 import ContactMessageForm from "./ContactMessageForm";
 
+const useIsomorphicLayoutEffect =
+  typeof window !== "undefined" ? useLayoutEffect : useEffect;
+
 export default function ContactContainer() {
+  useIsomorphicLayoutEffect(() => {
+    // Instantly land on top section of contact page on mount
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className="contact-page-container container my-auto">
       {/* Section 1: Header & Direct Channels */}
