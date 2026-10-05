@@ -13,7 +13,7 @@ export default function SkillsContainer() {
 
   const handleSelectTab = (tab: "skills" | "certifications") => {
     setActiveTab(tab);
-    
+
     // We delay the scroll slightly (250ms) for two critical reasons:
     // 1. On mobile devices, triggering a smooth scroll while the user's finger 
     //    is still lifting off the screen (touch events) can instantly cancel the scroll.
@@ -22,7 +22,7 @@ export default function SkillsContainer() {
     setTimeout(() => {
       if (cardsSectionRef.current) {
         const targetY = cardsSectionRef.current.getBoundingClientRect().top + window.scrollY;
-        
+
         // Prevent scrolling if already at or very near the target to avoid jumpy restarts
         if (Math.abs(window.scrollY - targetY) < 15) return;
 
@@ -61,7 +61,7 @@ export default function SkillsContainer() {
       <section
         ref={cardsSectionRef}
         id="skills-cards-viewport"
-        className="w-100 position-relative d-flex flex-column justify-content-start px-3 px-md-4"
+        className="w-100 position-relative d-flex flex-column justify-content-center justify-content-md-start px-3 px-md-4"
         style={{
           height: "100vh",
           minHeight: "100vh",

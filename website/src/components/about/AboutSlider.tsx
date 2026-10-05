@@ -196,7 +196,7 @@ export default function AboutSlider() {
       </div>
 
       {/* Slide Content with Directional Animation anchored near top below navbar */}
-      <div className="position-relative w-100 d-flex flex-column align-items-center justify-content-start flex-grow-1 pt-2 pt-md-3" style={{ zIndex: 2 }}>
+      <div className="position-relative w-100 d-flex flex-column align-items-center justify-content-center justify-content-md-start flex-grow-1 pt-md-3" style={{ zIndex: 2 }}>
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={currentSlide}
@@ -205,7 +205,7 @@ export default function AboutSlider() {
             initial="enter"
             animate="center"
             exit="exit"
-            className="test w-100 d-flex justify-content-center"
+            className="test w-100 d-flex justify-content-center my-auto my-md-0"
           >
             <ActiveSlideComponent />
           </motion.div>

@@ -79,11 +79,20 @@ export default function Telemetry3DCarousel({
   const isDesktop = screenTier === "desktop";
   const isTablet = screenTier === "tablet";
 
+  const lastSwipeTime = useRef(0);
+  const hasSwipedRef = useRef(false);
+
   const handlePrev = useCallback(() => {
+    const now = Date.now();
+    if (now - lastSwipeTime.current < 380) return;
+    lastSwipeTime.current = now;
     setActiveIndex((prev) => (prev - 1 + total) % total);
   }, [total]);
 
   const handleNext = useCallback(() => {
+    const now = Date.now();
+    if (now - lastSwipeTime.current < 380) return;
+    lastSwipeTime.current = now;
     setActiveIndex((prev) => (prev + 1) % total);
   }, [total]);
 
@@ -92,14 +101,21 @@ export default function Telemetry3DCarousel({
   const touchStartY = useRef<number | null>(null);
 
   const handlePointerDown = (e: React.PointerEvent) => {
+    if (e.pointerType === "touch") return; // Touch events handle mobile swipes
     isDragging.current = true;
     dragStartPos.current = e.clientX;
+    hasSwipedRef.current = false;
   };
 
   const handlePointerUp = (e: React.PointerEvent) => {
+    if (e.pointerType === "touch") return;
     if (!isDragging.current || dragStartPos.current === null) return;
     const delta = dragStartPos.current - e.clientX;
     if (Math.abs(delta) > 35) {
+      hasSwipedRef.current = true;
+      setTimeout(() => {
+        hasSwipedRef.current = false;
+      }, 350);
       if (delta > 0) {
         handleNext();
       } else {
@@ -113,6 +129,7 @@ export default function Telemetry3DCarousel({
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
     touchStartY.current = e.touches[0].clientY;
+    hasSwipedRef.current = false;
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
@@ -122,8 +139,13 @@ export default function Telemetry3DCarousel({
     const deltaX = touchStartX.current - touchEndX;
     const deltaY = (touchStartY.current ?? touchEndY) - touchEndY;
 
-    // Trigger swipe if horizontal displacement exceeds 30px and dominates vertical motion
-    if (Math.abs(deltaX) > 30 && Math.abs(deltaX) > Math.abs(deltaY)) {
+    // Trigger swipe if horizontal displacement exceeds 28px and dominates vertical motion
+    if (Math.abs(deltaX) > 28 && Math.abs(deltaX) > Math.abs(deltaY)) {
+      hasSwipedRef.current = true;
+      setTimeout(() => {
+        hasSwipedRef.current = false;
+      }, 350);
+
       if (deltaX > 0) {
         handleNext();
       } else {
@@ -657,6 +679,7 @@ export default function Telemetry3DCarousel({
   return (
     <div
       className="telemetry-rotor-wrapper position-relative w-100 my-0"
+      data-horizontal-carousel="true"
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}
       onTouchStart={handleTouchStart}
@@ -694,7 +717,10 @@ export default function Telemetry3DCarousel({
           return (
             <div
               key={idx}
-              onClick={() => setActiveIndex(idx)}
+              onClick={() => {
+                if (hasSwipedRef.current) return;
+                setActiveIndex(idx);
+              }}
               className="telemetry-rotor-card position-absolute top-50 start-50"
               style={{
                 ...cardStyle,

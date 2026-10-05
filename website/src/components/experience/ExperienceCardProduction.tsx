@@ -28,7 +28,7 @@ export default function ExperienceCardProduction({
   const total = totalCards ?? EXPERIENCES.length;
 
   return (
-    <div className="w-100 h-100 d-flex flex-column justify-content-between py-1">
+    <div className="w-100 h-100 d-flex flex-column justify-content-between py-1 my-auto">
       {/* Top Role & Period Header */}
       <h2 className="font-syne fw-bold text-white mb-2 exp-card-title text-truncate">
         {exp.role}

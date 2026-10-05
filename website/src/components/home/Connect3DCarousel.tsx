@@ -95,6 +95,8 @@ export default function Connect3DCarousel({ isExiting = false }: Connect3DCarous
   const touchStartX = useRef<number | null>(null);
   const touchStartY = useRef<number | null>(null);
   const laserPulseTrigger = useRef(1.0);
+  const lastSwipeTime = useRef(0);
+  const hasSwipedRef = useRef(false);
 
   // Responsive breakpoint tracking
   useEffect(() => {
@@ -126,12 +128,24 @@ export default function Connect3DCarousel({ isExiting = false }: Connect3DCarous
   }, []);
 
   const handlePrev = useCallback(() => {
-    triggerLaserRecalibration((activeIndex - 1 + total) % total);
-  }, [activeIndex, total, triggerLaserRecalibration]);
+    const now = Date.now();
+    if (now - lastSwipeTime.current < 380) return;
+    lastSwipeTime.current = now;
+    laserPulseTrigger.current = 1.0;
+    setLaserPulse(true);
+    setActiveIndex((prev) => (prev - 1 + total) % total);
+    setTimeout(() => setLaserPulse(false), 380);
+  }, [total]);
 
   const handleNext = useCallback(() => {
-    triggerLaserRecalibration((activeIndex + 1) % total);
-  }, [activeIndex, total, triggerLaserRecalibration]);
+    const now = Date.now();
+    if (now - lastSwipeTime.current < 380) return;
+    lastSwipeTime.current = now;
+    laserPulseTrigger.current = 1.0;
+    setLaserPulse(true);
+    setActiveIndex((prev) => (prev + 1) % total);
+    setTimeout(() => setLaserPulse(false), 380);
+  }, [total]);
 
   const handleCopyEmail = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -152,14 +166,21 @@ export default function Connect3DCarousel({ isExiting = false }: Connect3DCarous
 
   // Pointer & Touch handlers
   const handlePointerDown = (e: React.PointerEvent) => {
+    if (e.pointerType === "touch") return; // Touch events handle mobile swipes
     isDragging.current = true;
     dragStartPos.current = e.clientX;
+    hasSwipedRef.current = false;
   };
 
   const handlePointerUp = (e: React.PointerEvent) => {
+    if (e.pointerType === "touch") return;
     if (!isDragging.current || dragStartPos.current === null) return;
     const delta = dragStartPos.current - e.clientX;
     if (Math.abs(delta) > 30) {
+      hasSwipedRef.current = true;
+      setTimeout(() => {
+        hasSwipedRef.current = false;
+      }, 350);
       if (delta > 0) handleNext();
       else handlePrev();
     }
@@ -178,6 +199,7 @@ export default function Connect3DCarousel({ isExiting = false }: Connect3DCarous
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
     touchStartY.current = e.touches[0].clientY;
+    hasSwipedRef.current = false;
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
@@ -188,6 +210,10 @@ export default function Connect3DCarousel({ isExiting = false }: Connect3DCarous
     const deltaY = (touchStartY.current ?? touchEndY) - touchEndY;
 
     if (Math.abs(deltaX) > 28 && Math.abs(deltaX) > Math.abs(deltaY)) {
+      hasSwipedRef.current = true;
+      setTimeout(() => {
+        hasSwipedRef.current = false;
+      }, 350);
       if (deltaX > 0) handleNext();
       else handlePrev();
     }
@@ -537,7 +563,8 @@ export default function Connect3DCarousel({ isExiting = false }: Connect3DCarous
 
   return (
     <div
-      className="quantum-pylon-wrapper position-relative w-100 d-flex flex-column align-items-center user-select-none"
+      className="quantum-pylon-wrapper connect-rotor-wrapper position-relative w-100 d-flex flex-column align-items-center user-select-none"
+      data-horizontal-carousel="true"
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}
       onPointerMove={handlePointerMove}
@@ -568,7 +595,10 @@ export default function Connect3DCarousel({ isExiting = false }: Connect3DCarous
           return (
             <div
               key={node.id}
-              onClick={() => triggerLaserRecalibration(idx)}
+              onClick={() => {
+                if (hasSwipedRef.current) return;
+                triggerLaserRecalibration(idx);
+              }}
               className="fan-deck-card-slot position-absolute top-50 start-50"
               style={{
                 ...style,

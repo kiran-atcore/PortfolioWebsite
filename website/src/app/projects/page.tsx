@@ -138,7 +138,7 @@ function ProjectsPageContent() {
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                className="w-100 mt-5 mt-md-4"
+                className="w-100 my-auto"
               >
                 {/* Back to Overview Header Ribbon */}
                 <div className="d-flex align-items-center justify-content-between gap-2 mb-3 pb-2 border-bottom border-white border-opacity-10">
@@ -166,12 +166,12 @@ function ProjectsPageContent() {
                   categoryCounts={categoryCounts}
                 />
 
-                <div 
-                  style={{ 
+                <div
+                  style={{
                     height: 340,
                     WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 10%, black 90%, transparent)',
                     maskImage: 'linear-gradient(to bottom, transparent, black 10%, black 90%, transparent)'
-                  }} 
+                  }}
                   className="tree-box w-100 overflow-hidden"
                 >
                   <CyberTreeCanvas3D projects={filteredProjects} />

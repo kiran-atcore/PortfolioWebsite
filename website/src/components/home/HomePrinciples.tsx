@@ -94,10 +94,9 @@ export default function HomePrinciples({ isExiting = false }: HomePrinciplesProp
   return (
     <div
       id="hero-principles"
-      className="w-100 pt-1 pt-sm-2 principles-offset-wrapper d-flex flex-column justify-content-start h-100"
-      style={{ marginTop: -45 }}
+      className="w-100 pt-1 pt-sm-2 principles-offset-wrapper d-flex flex-column justify-content-center align-items-center my-auto my-md-0"
     >
-      <div className="row justify-content-center m-0">
+      <div className="row justify-content-center align-items-center m-0 w-100">
         <div className="col-12 col-md-11 col-lg-11 col-xl-10 p-0">
           {/* Header */}
           <motion.div

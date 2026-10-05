@@ -10,12 +10,12 @@ export default function SkillsHeroHeader() {
         initial={{ opacity: 0, y: -8, scale: 0.96 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-        className="d-inline-flex align-items-center gap-2 px-3 py-1 hud-telemetry-chip rounded-pill mb-2"
+        className="d-inline-flex align-items-center gap-2 px-3 py-2 hud-telemetry-chip rounded-pill mb-2"
       >
         <span className="pulse-cyan" aria-hidden="true" />
         <span
           className="text-light fw-medium font-syne tracking-wide"
-          style={{ fontSize: "0.68rem", letterSpacing: "0.18em" }}
+          style={{ fontSize: "0.65rem", letterSpacing: "0.18em" }}
         >
           {"// KNOWLEDGE ARSENAL & CREDENTIALS //"}
         </span>

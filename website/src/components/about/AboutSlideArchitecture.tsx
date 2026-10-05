@@ -27,7 +27,7 @@ const ARCH_HIGHLIGHTS = [
 
 export default function AboutSlideArchitecture() {
   return (
-    <div className="w-100 d-flex flex-column align-items-center justify-content-center text-center mt-0 mt-sm-3 px-3 px-md-4">
+    <div className="w-100 architecture-container d-flex flex-column align-items-center justify-content-center text-center mt-0 mt-sm-3 px-3 px-md-4 my-auto my-md-0">
       {/* Telemetry Badge */}
       <div className="d-inline-flex align-items-center gap-2 px-3 py-1 hud-telemetry-chip rounded-pill mb-1">
         <span className="pulse-cyan" aria-hidden="true" />

@@ -22,7 +22,7 @@ export default function ExperienceCardAcademic({ item }: ExperienceCardAcademicP
   const edu = item ?? EDUCATION[0];
 
   return (
-    <div className="w-100 h-100 d-flex flex-column justify-content-between py-1">
+    <div className="w-100 h-100 d-flex flex-column justify-content-between py-1 my-auto">
       {/* Degree & Period Header */}
       <div className="text-truncate">
         <h2 className="font-syne fw-bold text-white mb-0 text-wrap exp-card-title">

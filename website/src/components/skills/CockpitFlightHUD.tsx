@@ -78,7 +78,7 @@ export default function CockpitFlightHUD({
     : "";
 
   return (
-    <div className="w-100 position-relative px-4 px-sm-3 pb-2" style={{ zIndex: 10 }}>
+    <div className="w-100 position-relative px-4 pb-4 pb-lg-0 px-sm-3" style={{ zIndex: 10 }}>
       <div
         className="w-100 p-2 p-sm-3 rounded-3 position-relative overflow-hidden"
         style={{

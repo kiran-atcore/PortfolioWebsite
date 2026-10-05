@@ -119,7 +119,7 @@ export default function ExperienceContainer() {
 
   return (
     <div
-      className="position-relative w-100 h-100 d-flex flex-column justify-content-start align-items-center overflow-hidden"
+      className="position-relative w-100 h-100 d-flex flex-column justify-content-center justify-content-md-start align-items-center overflow-hidden"
       style={{
         paddingTop: "calc(max(0.75rem, env(safe-area-inset-top, 0.75rem)) + 58px)",
         paddingBottom: "calc(max(1.25rem, env(safe-area-inset-bottom, 1.25rem)) + 60px)",

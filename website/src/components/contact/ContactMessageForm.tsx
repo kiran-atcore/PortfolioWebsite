@@ -183,6 +183,12 @@ export default function ContactMessageForm() {
       <span className="contact-rim contact-rim-br" aria-hidden="true" />
 
       <style>{`
+        @media (max-width: 767.98px) {
+          .contact-message-card {
+            max-height: 540px !important;
+            height: 520px !important;
+          }
+        }
         .cyber-scroll-container {
           scrollbar-width: none;
           -ms-overflow-style: none;

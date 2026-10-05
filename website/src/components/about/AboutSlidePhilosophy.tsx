@@ -35,7 +35,7 @@ export default function AboutSlidePhilosophy() {
   }, []);
 
   return (
-    <div className="philosophy-container w-100 d-flex flex-column align-items-center text-center mt-3 mt-md-0 px-3 px-md-4">
+    <div className="philosophy-container w-100 d-flex flex-column align-items-center text-center mt-0 mt-sm-3 px-3 px-md-4 my-auto my-md-0">
       {/* Telemetry Badge */}
       <div className="d-inline-flex align-items-center gap-2 px-3 py-1 hud-telemetry-chip rounded-pill mb-1">
         <span className="pulse-cyan" aria-hidden="true" />
@@ -100,7 +100,7 @@ export default function AboutSlidePhilosophy() {
         </div>
 
         {/* Action Triggers */}
-        <div className="font-syncopate d-flex flex-sm-column justify-content-center align-items-start gap-2 pt-2 border-top border-white border-opacity-10 phil-btn">
+        <div className="font-syncopate d-flex justify-content-center align-items-start gap-2 pt-2 border-top border-white border-opacity-10 phil-btn">
           <a
             href={PERSONAL_INFO.resumeUrl}
             download="Kiran_Chand_S_CV.pdf"

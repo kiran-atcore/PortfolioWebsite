@@ -108,8 +108,8 @@ export default function HomeOverview({
   const isNarrow = useMediaQuery("(max-width: 400px)");
 
   return (
-    <div id="hero-overview" className="w-100 py-1 py-md-2 overview-offset-wrapper">
-      <div className="row justify-content-center m-0 pt-lg-4">
+    <div id="hero-overview" className="w-100 py-1 overview-offset-wrapper my-auto d-flex flex-column justify-content-center align-items-center">
+      <div className="row justify-content-center align-items-center m-0 w-100">
         <div className="col-11 col-md-10 col-lg-9 col-xl-8 p-0">
           {/* Section Tag & Title (Animated Cyber Intro for Slide 3) */}
           <motion.div
@@ -120,7 +120,7 @@ export default function HomeOverview({
           >
             <motion.div
               variants={badgeVariants}
-              className="d-inline-flex align-items-center gap-2 px-3 py-1 hud-telemetry-chip rounded-pill mb-2 mt-2 mt-sm-5 mt-md-3"
+              className="d-inline-flex align-items-center gap-2 px-3 py-1 hud-telemetry-chip rounded-pill mb-2 mt-2"
             >
               <span className="pulse-cyan"></span>
               <span className="text-light fw-medium font-syne tracking-wide py-1" style={isNarrow ? { fontSize: "0.5rem", letterSpacing: "0.22em" } : { fontSize: "0.65rem", letterSpacing: "0.22em" }}>

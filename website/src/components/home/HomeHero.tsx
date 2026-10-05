@@ -30,6 +30,7 @@ export default function HomeHero() {
   const isScrollCooldown = useRef(false);
   const lastWheelTime = useRef(0);
   const touchStartY = useRef(0);
+  const touchStartX = useRef(0);
 
   const isDesktop = windowWidth >= 992;
 
@@ -388,6 +389,7 @@ export default function HomeHero() {
         return;
       }
       touchStartY.current = e.touches[0].clientY;
+      touchStartX.current = e.touches[0].clientX;
     };
 
     const handleTouchMove = (e: TouchEvent) => {
@@ -407,11 +409,26 @@ export default function HomeHero() {
       }
       if (isTransitioning.current) return;
 
+      const touchEndX = e.changedTouches[0].clientX;
       const touchEndY = e.changedTouches[0].clientY;
+      const deltaX = touchStartX.current - touchEndX;
       const deltaY = touchStartY.current - touchEndY;
 
-      // 1. Calibrated touch sensitivity threshold (24px)
-      if (Math.abs(deltaY) < 24) return;
+      // 1. If horizontal motion dominates (e.g. Swiping cards or carousel), do NOT trigger slide transition
+      if (Math.abs(deltaX) > Math.abs(deltaY)) return;
+
+      // 2. Check if touch was inside an interactive horizontal carousel / deck
+      const target = e.target as HTMLElement | null;
+      const isInsideCarousel = target?.closest?.(
+        ".telemetry-rotor-wrapper, .principles-deck-container, .connect-deck-container, .connect-rotor-wrapper, [data-horizontal-carousel]"
+      );
+
+      // If user moved finger horizontally by more than 20px inside a carousel, ignore vertical slide trigger
+      if (isInsideCarousel && Math.abs(deltaX) > 20) return;
+
+      // Inside a horizontal carousel, require a deliberate vertical swipe (50px) to prevent accidental slide changes while swiping cards
+      const threshold = isInsideCarousel ? 50 : 24;
+      if (Math.abs(deltaY) < threshold) return;
 
       // 2. Guaranteed single-slide progression
       if (deltaY > 0) {
@@ -759,7 +776,7 @@ export default function HomeHero() {
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             exit={{ opacity: 0, y: -16, filter: "blur(8px)", transition: { duration: 0.35, ease: "easeInOut" } }}
             transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-            className="container position-relative h-100 d-flex flex-column overview-slides-container"
+            className="container position-relative h-100 d-flex flex-column justify-content-center align-items-center overview-slides-container"
             style={{ zIndex: 4 }}
           >
             <HomeOverview
@@ -779,7 +796,7 @@ export default function HomeHero() {
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             exit={{ opacity: 0, y: -20, filter: "blur(10px)", transition: { duration: 0.35, ease: "easeInOut" } }}
             transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-            className="container position-relative h-100 d-flex flex-column telemetry-slides-container"
+            className="container position-relative h-100 d-flex flex-column justify-content-center align-items-center telemetry-slides-container"
             style={{ zIndex: 4 }}
           >
             <HomeTelemetry
@@ -798,7 +815,7 @@ export default function HomeHero() {
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             exit={{ opacity: 0, y: -20, filter: "blur(10px)", transition: { duration: 0.35, ease: "easeInOut" } }}
             transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-            className="container position-relative h-100 d-flex flex-column principles-slides-container"
+            className="container position-relative h-100 d-flex flex-column justify-content-center align-items-center principles-slides-container"
             style={{ zIndex: 4 }}
           >
             <HomePrinciples
@@ -817,7 +834,7 @@ export default function HomeHero() {
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             exit={{ opacity: 0, y: -20, filter: "blur(10px)", transition: { duration: 0.35, ease: "easeInOut" } }}
             transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-            className="container position-relative h-100 d-flex flex-column connect-slides-container"
+            className="container position-relative h-100 d-flex flex-column justify-content-center align-items-center connect-slides-container"
             style={{ zIndex: 4 }}
           >
             <HomeConnect

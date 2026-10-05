@@ -38,7 +38,7 @@ const FACTS = [
 
 export default function AboutSlideTelemetry() {
   return (
-    <div className="w-100 d-flex flex-column align-items-center justify-content-center text-center mt-0 mt-sm-3 px-3 px-md-4">
+    <div className="w-100 d-flex telemetry-container flex-column align-items-center justify-content-center text-center mt-0 mt-sm-3 px-3 px-md-4 my-auto my-md-0">
       {/* Telemetry Badge */}
       <div className="d-inline-flex align-items-center gap-2 px-3 py-1 hud-telemetry-chip rounded-pill mb-1">
         <span className="pulse-cyan" aria-hidden="true" />
@@ -170,7 +170,7 @@ export default function AboutSlideTelemetry() {
       </div>
 
       {/* Action Trigger */}
-      <div className="font-syncopate mt-1 mt-md-2 mt-5 mt-sm-2 initialize-contact-btn">
+      <div className="font-syncopate mt-lg-3 mt-xl-5 initialize-contact-btn">
         <Link
           href="/contact"
           className="btn btn-neon-cyan rounded-pill tracking-wider text-uppercase d-inline-flex align-items-center about-telemetry-btn mt-sm-3 mt-md-1"

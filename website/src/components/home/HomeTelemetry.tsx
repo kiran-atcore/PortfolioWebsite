@@ -113,8 +113,8 @@ const TELEMETRY_METRICS: TelemetryMetric[] = [
 
 export default function HomeTelemetry({ isExiting = false }: HomeTelemetryProps) {
   return (
-    <div id="hero-telemetry" className="w-100 pt-3 py-sm-0 telemetry-offset-wrapper d-flex flex-column justify-content-start h-100 pb-3 pb-lg-0" style={{ marginTop: -30 }}>
-      <div className="row justify-content-center m-0">
+    <div id="hero-telemetry" className="w-100 pt-3 py-sm-0 telemetry-offset-wrapper d-flex flex-column justify-content-center align-items-center my-auto my-md-0 pb-3 pb-lg-0">
+      <div className="row justify-content-center align-items-center m-0 w-100">
         <div className="col-12 col-md-11 col-lg-11 col-xl-10 p-0">
           {/* Compact Responsive Telemetry HUD Top Header */}
           <motion.div

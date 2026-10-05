@@ -125,10 +125,10 @@ export default function HomeConnect({ isExiting = false }: HomeConnectProps) {
   return (
     <div
       id="hero-connect"
-      className="w-100 pt-0 connect-offset-wrapper d-flex flex-column justify-content-start"
+      className="w-100 pt-0 connect-offset-wrapper d-flex flex-column justify-content-center align-items-center"
     >
-      <div className="row justify-content-center m-0 w-100">
-        <div className="col-12 col-md-11 col-lg-11 col-xl-10 p-0 d-flex flex-column align-items-center">
+      <div className="row justify-content-center align-items-center m-0 w-100">
+        <div className="col-12 col-md-11 col-lg-11 col-xl-10 p-0 d-flex flex-column justify-content-center align-items-center">
           {/* Top Header with Cyber Badges and Title */}
           <motion.div
             variants={headerVariants}

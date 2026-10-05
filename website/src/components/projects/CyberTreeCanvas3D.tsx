@@ -307,7 +307,7 @@ export default function CyberTreeCanvas3D({ projects }: CyberTreeCanvas3DProps) 
     // Living Creeper Vine Plant
     const vinePts: THREE.Vector3[] = [];
     const vineLeaves: THREE.Mesh[] = [];
-    
+
     // Organic Teardrop Leaf Shape
     const leafShape = new THREE.Shape();
     leafShape.moveTo(0, 0);
@@ -394,42 +394,42 @@ export default function CyberTreeCanvas3D({ projects }: CyberTreeCanvas3DProps) 
         new THREE.Vector3(3.0, 0.6, 0.08),
         new THREE.Vector3(3.6, 0.8, 0.04)
       ];
-      
+
       twigBases.forEach((basePt, tIdx) => {
         // Sprout 1-3 small twigs from each base
         const numTwigs = 1 + Math.floor(Math.random() * 2);
-        for(let j=0; j<numTwigs; j++) {
-            const dir = new THREE.Vector3((Math.random()-0.5)*1.2, Math.random()*1.0 + 0.2, (Math.random()-0.5)*1.2).normalize();
-            const length = 0.25 + Math.random() * 0.35;
-            const endPt = basePt.clone().add(dir.multiplyScalar(length));
-            const midPt = basePt.clone().lerp(endPt, 0.5).add(new THREE.Vector3(0, 0.1, 0)); // Natural upward curve
-            
-            // Render Twig
-            createSplineTube([basePt, midPt, endPt], 0.012, barkMat, branchGroup, 8);
-            
-            // Canopy Leaf Cluster at twig end
-            const clusterSize = 6 + Math.floor(Math.random() * 8);
-            for(let k=0; k<clusterSize; k++) {
-                const lMat = Math.random() > 0.5 ? emeraldFoliageMat : cyanFoliageMat;
-                const leafMesh = new THREE.Mesh(leafGeom, lMat);
-                
-                // Natural spherical canopy scatter
-                const scatter = new THREE.Vector3(
-                  (Math.random() - 0.5) * 0.45, 
-                  (Math.random() - 0.5) * 0.45, 
-                  (Math.random() - 0.5) * 0.45
-                );
-                leafMesh.position.copy(endPt).add(scatter);
-                
-                // Align leaf to point outwards from center of cluster
-                const outwardDir = scatter.clone().normalize();
-                leafMesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), outwardDir);
-                leafMesh.rotateX((Math.random()-0.5) * 0.8); // Add organic jitter
-                
-                leafMesh.scale.setScalar(0.9 + Math.random() * 0.8);
-                branchGroup.add(leafMesh);
-                crystalLeaves.push(leafMesh);
-            }
+        for (let j = 0; j < numTwigs; j++) {
+          const dir = new THREE.Vector3((Math.random() - 0.5) * 1.2, Math.random() * 1.0 + 0.2, (Math.random() - 0.5) * 1.2).normalize();
+          const length = 0.25 + Math.random() * 0.35;
+          const endPt = basePt.clone().add(dir.multiplyScalar(length));
+          const midPt = basePt.clone().lerp(endPt, 0.5).add(new THREE.Vector3(0, 0.1, 0)); // Natural upward curve
+
+          // Render Twig
+          createSplineTube([basePt, midPt, endPt], 0.012, barkMat, branchGroup, 8);
+
+          // Canopy Leaf Cluster at twig end
+          const clusterSize = 6 + Math.floor(Math.random() * 8);
+          for (let k = 0; k < clusterSize; k++) {
+            const lMat = Math.random() > 0.5 ? emeraldFoliageMat : cyanFoliageMat;
+            const leafMesh = new THREE.Mesh(leafGeom, lMat);
+
+            // Natural spherical canopy scatter
+            const scatter = new THREE.Vector3(
+              (Math.random() - 0.5) * 0.45,
+              (Math.random() - 0.5) * 0.45,
+              (Math.random() - 0.5) * 0.45
+            );
+            leafMesh.position.copy(endPt).add(scatter);
+
+            // Align leaf to point outwards from center of cluster
+            const outwardDir = scatter.clone().normalize();
+            leafMesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), outwardDir);
+            leafMesh.rotateX((Math.random() - 0.5) * 0.8); // Add organic jitter
+
+            leafMesh.scale.setScalar(0.9 + Math.random() * 0.8);
+            branchGroup.add(leafMesh);
+            crystalLeaves.push(leafMesh);
+          }
         }
       });
 
