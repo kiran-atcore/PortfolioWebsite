@@ -281,7 +281,7 @@ export default function HomeHero() {
     const handleWheel = (e: WheelEvent) => {
       // Disable background screen scroll when modal is opened
       if (document.body.classList.contains("modal-open")) {
-        const isInsideModalScroll = (e.target as HTMLElement)?.closest?.(".cyber-modal-body");
+        const isInsideModalScroll = (e.target as HTMLElement)?.closest?.(".cyber-modal-body, .cyber-chat-body");
         if (!isInsideModalScroll) {
           e.preventDefault();
         }
@@ -394,7 +394,7 @@ export default function HomeHero() {
 
     const handleTouchMove = (e: TouchEvent) => {
       if (document.body.classList.contains("modal-open")) {
-        const isInsideModalScroll = (e.target as HTMLElement)?.closest?.(".cyber-modal-body");
+        const isInsideModalScroll = (e.target as HTMLElement)?.closest?.(".cyber-modal-body, .cyber-chat-body");
         if (!isInsideModalScroll) {
           e.preventDefault();
         }

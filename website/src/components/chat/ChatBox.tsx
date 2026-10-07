@@ -36,6 +36,8 @@ export default function ChatBox({ isMinimized }: ChatBoxProps) {
                 WebkitBackdropFilter: "blur(3px)",
                 zIndex: 1050, // Below trigger (1055) and modal (1060)
                 pointerEvents: "auto",
+                touchAction: "none",
+                overscrollBehavior: "contain",
               }}
               onClick={() => setIsOpen(false)}
             />

@@ -179,6 +179,89 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
     }
   }, [isOpen]);
 
+  // Lock background scroll when ChatModal is active, allowing only the chat box to scroll
+  useEffect(() => {
+    if (!isOpen) return;
+
+    document.body.classList.add("modal-open");
+    document.documentElement.classList.add("modal-open");
+
+    let touchStartY = 0;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length === 1) {
+        touchStartY = e.touches[0].clientY;
+      }
+    };
+
+    const handleWheel = (e: WheelEvent) => {
+      const target = e.target as HTMLElement | null;
+      const chatBody = target?.closest(".cyber-chat-body") as HTMLElement | null;
+
+      // Cursor outside the chat scrollable body (e.g. backdrop, modal header/footer, background page)
+      if (!chatBody) {
+        if (e.cancelable) e.preventDefault();
+        return;
+      }
+
+      // Check boundary inside chat body to prevent overscroll chaining to window/page behind
+      const { scrollTop, scrollHeight, clientHeight } = chatBody;
+      const isAtTop = scrollTop <= 0;
+      const isAtBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight;
+
+      if ((e.deltaY < 0 && isAtTop) || (e.deltaY > 0 && isAtBottom)) {
+        if (e.cancelable) e.preventDefault();
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      const target = e.target as HTMLElement | null;
+      const chatBody = target?.closest(".cyber-chat-body") as HTMLElement | null;
+
+      if (!chatBody) {
+        if (e.cancelable) e.preventDefault();
+        return;
+      }
+
+      const { scrollTop, scrollHeight, clientHeight } = chatBody;
+      if (scrollHeight <= clientHeight) {
+        if (e.cancelable) e.preventDefault();
+        return;
+      }
+
+      const currentY = e.touches[0].clientY;
+      const deltaY = touchStartY - currentY;
+      const isAtTop = scrollTop <= 0;
+      const isAtBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight;
+
+      if ((deltaY < 0 && isAtTop) || (deltaY > 0 && isAtBottom)) {
+        if (e.cancelable) e.preventDefault();
+      }
+    };
+
+    const handleWindowKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+
+    window.addEventListener("wheel", handleWheel, { passive: false });
+    window.addEventListener("touchstart", handleTouchStart, { passive: true });
+    window.addEventListener("touchmove", handleTouchMove, { passive: false });
+    window.addEventListener("keydown", handleWindowKeyDown);
+
+    return () => {
+      if (!document.querySelector(".cyber-modal-overlay")) {
+        document.body.classList.remove("modal-open");
+        document.documentElement.classList.remove("modal-open");
+      }
+      window.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("keydown", handleWindowKeyDown);
+    };
+  }, [isOpen, onClose]);
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isLoading]);

@@ -5094,6 +5094,7 @@ body.modal-open {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  overscroll-behavior: contain;
   pointer-events: auto;
 }
 
@@ -5231,6 +5232,9 @@ body.modal-open {
 .cyber-chat-body {
   flex: 1;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
   padding: 0.85rem;
   display: flex;
   flex-direction: column;
