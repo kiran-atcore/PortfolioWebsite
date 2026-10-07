@@ -110,13 +110,15 @@ const ctaVariants: Variants = {
 };
 
 const footerVariants: Variants = {
-  hidden: { opacity: 0 },
+  hidden: { opacity: 0, filter: "blur(4px)" },
   visible: {
     opacity: 1,
-    transition: { duration: 0.4, ease: "easeOut", delay: 0.24 },
+    filter: "blur(0px)",
+    transition: { duration: 0.5, ease: "easeOut", delay: 0.25 },
   },
   exit: {
     opacity: 0,
+    filter: "blur(4px)",
     transition: { duration: 0.2, ease: "easeIn" },
   },
 };
@@ -125,9 +127,9 @@ export default function HomeConnect({ isExiting = false }: HomeConnectProps) {
   return (
     <div
       id="hero-connect"
-      className="w-100 pt-0 connect-offset-wrapper d-flex flex-column justify-content-center align-items-center"
+      className="w-100 h-100 pt-0 connect-offset-wrapper d-flex flex-column justify-content-center align-items-center position-relative pb-5"
     >
-      <div className="row justify-content-center align-items-center m-0 w-100">
+      <div className="row justify-content-center align-items-center m-0 w-100 pb-md-4">
         <div className="col-12 col-md-11 col-lg-11 col-xl-10 p-0 d-flex flex-column justify-content-center align-items-center">
           {/* Top Header with Cyber Badges and Title */}
           <motion.div
@@ -189,42 +191,46 @@ export default function HomeConnect({ isExiting = false }: HomeConnectProps) {
               <i className="bi bi-send me-2"></i> Get In Touch &rarr;
             </Link>
           </motion.div>
-
-          {/* Integrated Slide 7 Footer */}
-          <motion.div
-            variants={footerVariants}
-            initial="hidden"
-            animate={isExiting ? "exit" : "visible"}
-            className="w-100 mt-3 mt-md-3 pt-2 pb-2 border-top d-flex flex-column flex-sm-row justify-content-between align-items-center gap-1 connect-slide-footer"
-            style={{ borderColor: "rgba(0, 242, 254, 0.12)" }}
-          >
-            <div className="text-light text-opacity-65 font-bruno text-center text-sm-start" style={{ fontSize: "0.58rem" }}>
-              <span className="text-white fw-semibold me-3 me-sm-1">{PERSONAL_INFO.name}</span>
-              <span className="ms-3 ms-sm-2 opacity-75 font-syne">&copy; {new Date().getFullYear()} All rights reserved.</span>
-            </div>
-            <div className="d-flex align-items-center gap-3 font-outfit fw-light" style={{ fontSize: "0.6rem", letterSpacing: 2 }}>
-              <a href={PERSONAL_INFO.github} target="_blank" rel="noreferrer" className="text-light text-opacity-70 text-decoration-none hover-cyan">
-                GitHub
-              </a>
-              <a href={PERSONAL_INFO.linkedin} target="_blank" rel="noreferrer" className="text-light text-opacity-70 text-decoration-none hover-cyan">
-                LinkedIn
-              </a>
-              <a href={`mailto:${PERSONAL_INFO.email}`} className="text-light text-opacity-70 text-decoration-none hover-cyan">
-                Email
-              </a>
-              <button
-                type="button"
-                onClick={() => publishSlideSelect(0)}
-                className="bg-transparent border-0 p-0 text-warning text-decoration-none cursor-pointer"
-                style={{ fontSize: "0.58rem" }}
-                title="Return to Slide 1"
-              >
-                Top &uarr;
-              </button>
-            </div>
-          </motion.div>
         </div>
       </div>
+
+      {/* Integrated Slide 7 Footer */}
+      <motion.div
+        variants={footerVariants}
+        initial="hidden"
+        animate={isExiting ? "exit" : "visible"}
+        className="w-100 pt-3 pb-3 border-top d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2 connect-slide-footer position-absolute bottom-0 start-0 px-3 px-md-4"
+        style={{
+          borderColor: "rgba(0, 242, 254, 0.12)",
+          transform: "translateZ(0)",
+          willChange: "transform, opacity",
+        }}
+      >
+        <div className="text-light text-opacity-65 font-bruno text-center text-sm-start" style={{ fontSize: "0.58rem" }}>
+          <span className="text-white fw-semibold me-3 me-sm-1">{PERSONAL_INFO.name}</span>
+          <span className="ms-3 ms-sm-2 opacity-75 font-syne">&copy; {new Date().getFullYear()} All rights reserved.</span>
+        </div>
+        <div className="d-flex align-items-center gap-3 font-outfit fw-light" style={{ fontSize: "0.6rem", letterSpacing: 2 }}>
+          <a href={PERSONAL_INFO.github} target="_blank" rel="noreferrer" className="text-light text-opacity-70 text-decoration-none hover-cyan">
+            GitHub
+          </a>
+          <a href={PERSONAL_INFO.linkedin} target="_blank" rel="noreferrer" className="text-light text-opacity-70 text-decoration-none hover-cyan">
+            LinkedIn
+          </a>
+          <a href={`mailto:${PERSONAL_INFO.email}`} className="text-light text-opacity-70 text-decoration-none hover-cyan">
+            Email
+          </a>
+          <button
+            type="button"
+            onClick={() => publishSlideSelect(0)}
+            className="bg-transparent border-0 p-0 text-warning text-decoration-none cursor-pointer"
+            style={{ fontSize: "0.58rem" }}
+            title="Return to Slide 1"
+          >
+            Top &uarr;
+          </button>
+        </div>
+      </motion.div>
     </div>
   );
 }

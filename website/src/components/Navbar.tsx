@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import SlideTelemetryHUD from "./ui/SlideTelemetryHUD";
 import AboutControls from "./about/AboutControls";
 import ExperienceControls from "./experience/ExperienceControls";
+import ChatBox from "./chat/ChatBox";
 import { subscribeSlideState, SlideStatePayload, publishSlideSelect } from "@/lib/slideEvents";
 
 export default function Navbar() {
@@ -486,6 +487,9 @@ export default function Navbar() {
           })}
         </div>
       </nav>
+
+      {/* Floating Bottom-Right Personalized AI Chatbot */}
+      <ChatBox isMinimized={isMinimized} />
     </>
   );
 }

@@ -76,7 +76,7 @@ export default function ExperienceCardProduction({
         <div className="font-syne fw-semibold text-white text-uppercase tracking-wide exp-card-section-label mb-2 mt-1">
           Architectural Contributions &amp; Business Impact:
         </div>
-        <ul className="list-unstyled d-flex flex-column gap-1 gap-sm-1.5 py-2 ps-0">
+        <ul className="list-unstyled d-flex flex-column gap-1 mb-0 gap-sm-1 py-2 ps-0">
           {exp.description.map((desc, dIdx) => (
             <li
               key={dIdx}

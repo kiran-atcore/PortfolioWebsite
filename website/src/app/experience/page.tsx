@@ -34,7 +34,7 @@ export default function ExperiencePage() {
       </div>
 
       <main
-        className="w-100 flex-grow-1 position-relative overflow-hidden d-flex flex-column"
+        className="exp-fix w-100 flex-grow-1 position-relative overflow-hidden d-flex flex-column"
         style={{ zIndex: 2 }}
       >
         <ExperienceContainer />

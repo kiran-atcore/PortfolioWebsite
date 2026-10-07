@@ -81,7 +81,7 @@ export default async function ExperienceDetailPage({
 
       {/* Main Content Viewport */}
       <main
-        className="flex-grow-1 position-relative px-1 px-sm-3 px-md-4 py-3 py-sm-4 py-md-5 d-flex flex-column align-items-center"
+        className="flex-grow-1 case-study position-relative px-1 px-sm-3 px-md-4 py-3 py-sm-4 py-md-5 d-flex flex-column align-items-center"
         style={{
           zIndex: 2,
           paddingTop: "calc(max(0.75rem, env(safe-area-inset-top, 0.75rem)) + 70px)",

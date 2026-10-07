@@ -66,13 +66,13 @@ export default async function ProjectDetailPage({
 
       {/* Main Content Area */}
       <main
-        className="flex-grow-1 position-relative px-2 px-sm-3 px-md-4 py-3 py-sm-4 py-md-5 d-flex flex-column align-items-center"
+        className="project-details flex-grow-1 position-relative px-2 px-sm-3 px-md-4 py-3 py-sm-4 py-md-5 d-flex flex-column align-items-center"
         style={{
           zIndex: 2,
           paddingTop: "calc(max(0.75rem, env(safe-area-inset-top, 0.75rem)) + 70px)",
         }}
       >
-        <div className="container-fluid pt-2" style={{ maxWidth: "1080px" }}>
+        <div className="container-fluid project-detail pt-2" style={{ maxWidth: "1080px" }}>
           <ProjectDetailView
             project={project}
             prevProject={
